@@ -21,3 +21,6 @@ data/cache/
 Thumbs.db
 .vscode/
 .idea/
+
+# n8n workflows with the real shared secret baked in
+n8n/local/

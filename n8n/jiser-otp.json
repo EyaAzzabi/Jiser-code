@@ -2,7 +2,7 @@
   "name": "JISER · Code OTP par e-mail",
   "nodes": [
     {
-      "id": "7df540ed-9275-4c7c-a741-7459657245fc",
+      "id": "3acbc24e-8431-4737-a86b-81dda5d2cad0",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "710d51ed-f5e2-489e-91f1-ba41e12c95d9"
+      "webhookId": "a8f8c48e-fc29-4b19-b9e4-7145a0ed2988"
     },
     {
-      "id": "a9416647-94a2-4396-b3d9-fa1d5eef9dc8",
+      "id": "ac597706-6995-48d0-9323-d2c5ec2bdc1b",
       "name": "Secret valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -36,7 +36,7 @@
           },
           "conditions": [
             {
-              "id": "3f5d835c-76dc-4845-b270-5623f1773634",
+              "id": "027d8f6a-e34f-4eee-90fb-ee032774af6f",
               "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
               "rightValue": "CHANGE_ME_SECRET",
               "operator": {
@@ -51,7 +51,7 @@
       }
     },
     {
-      "id": "f7afccc7-1f93-424f-a097-56eb32e5b29d",
+      "id": "aa827c87-7045-4f98-9dd6-b907f56c17af",
       "name": "Envoyer le code",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "e2cc6de9-ddac-401d-9ce5-efc0a522315b",
+      "id": "58282a95-b7b1-4a8e-9e20-15af0787c575",
       "name": "Réponse OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "29ccdfbb-6166-4443-aa34-9c0fe0a9cc05",
+      "id": "63fab545-4265-46cd-a56e-973a61ab1a7c",
       "name": "Refusé",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,

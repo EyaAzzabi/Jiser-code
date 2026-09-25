@@ -6,14 +6,17 @@
 
 After import in n8n: set the SMTP credential on the "Envoyer" nodes, replace CHANGE_ME_SECRET with the
 value of N8N_SHARED_SECRET from .env, set the API URL in the reminder workflow, then activate.
+`--local you@gmail.com` (SMTP) or `--cloud` (n8n Cloud, Gmail node) bakes the real secret into n8n/local/ (git-ignored).
 """
 from __future__ import annotations
 
 import json
+import sys
 import uuid
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parents[1] / "n8n"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "n8n"
 SECRET = "CHANGE_ME_SECRET"
 FROM = "JISER <no-reply@jiser.tn>"
 API = "http://localhost:8000"
@@ -54,7 +57,15 @@ def respond(name: str, code: int, pos) -> dict:
         "options": {"responseCode": code}}, pos)
 
 
+USE_GMAIL = False   # --cloud: Gmail node with Google sign-in (no SMTP password needed)
+
+
 def email(name: str, to: str, subject: str, html: str, pos) -> dict:
+    if USE_GMAIL:
+        return node(name, "n8n-nodes-base.gmail", 2.1, {
+            "sendTo": to, "subject": subject, "emailType": "html", "message": html,
+            "options": {"appendAttribution": False, "senderName": "JISER"}},
+            pos, {"gmailOAuth2": {"id": "", "name": "Gmail JISER"}})
     return node(name, "n8n-nodes-base.emailSend", 2.1, {
         "fromEmail": FROM, "toEmail": to, "subject": subject, "emailFormat": "html", "html": html, "options": {}},
         pos, {"smtp": {"id": "", "name": "SMTP JISER"}})
@@ -134,7 +145,17 @@ def reminders_workflow() -> dict:
 
 
 def main() -> None:
-    OUT.mkdir(exist_ok=True)
+    """`--local EMAIL`: bake the real secret (from .env) and sender into n8n/local/ (git-ignored)."""
+    global OUT, SECRET, FROM, USE_GMAIL
+    if len(sys.argv) >= 2 and sys.argv[1] in ("--local", "--cloud"):
+        from dotenv import dotenv_values
+        SECRET = dotenv_values(ROOT / ".env").get("N8N_SHARED_SECRET") or SECRET
+        if sys.argv[1] == "--cloud":
+            USE_GMAIL = True
+        else:
+            FROM = f"JISER <{sys.argv[2]}>"
+        OUT = ROOT / "n8n" / "local"
+    OUT.mkdir(parents=True, exist_ok=True)
     for fname, wf in (("jiser-otp.json", otp_workflow()), ("jiser-bienvenue.json", welcome_workflow()),
                       ("jiser-rappels.json", reminders_workflow())):
         (OUT / fname).write_text(json.dumps(wf, ensure_ascii=False, indent=2), encoding="utf-8")
