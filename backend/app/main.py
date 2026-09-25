@@ -8,14 +8,16 @@ from __future__ import annotations
 
 import json
 import logging
+import re
+import threading
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, LEGAL_DIR, SYNTHETIC_DIR
 from .schemas import AnalyseNotification, Notification
-from .services import administration, analysis, drafting, extraction, llm
+from .services import administration, analysis, auth, drafting, extraction, llm
 from .services.legal_rag import get_index
 from .services.store import TODAY, get_store
 
@@ -29,6 +31,7 @@ app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["*
 def warm_up() -> None:
     get_index()
     get_store()
+    threading.Thread(target=llm.probe, daemon=True).start()
 
 
 @app.get("/api/status", tags=["système"])
@@ -123,6 +126,96 @@ async def controle_qualite(fichier: UploadFile = File(...)):
 @app.get("/api/admin/tableau-de-bord", tags=["administration"])
 def tableau_de_bord():
     return administration.dashboard()
+
+
+# ---- Onboarding sécurisé (OTP) --------------------------------------------------------------
+
+class OtpRequest(BaseModel):
+    canal: str
+    destination: str
+
+
+class OtpVerify(OtpRequest):
+    code: str
+
+
+ROLES = {"entreprise", "conseil", "verificateur", "contentieux", "admin"}
+# Fields each role must provide during onboarding (validated server-side, not only in the UI)
+REQUIRED_FIELDS = {
+    "entreprise": ["raison_sociale", "matricule_fiscal", "forme_juridique", "secteur", "gouvernorat", "effectif", "regime"],
+    "conseil": ["cabinet", "profession", "numero_inscription", "gouvernorat"],
+    "verificateur": ["matricule_agent", "grade", "structure", "gouvernorat"],
+    "contentieux": ["structure", "perimetre", "objectifs"],
+    "admin": ["structure", "perimetre"],
+}
+MATRICULE_RE = re.compile(r"^\d{7}[A-Z]/[A-Z]/[A-Z]/\d{3}$")
+
+
+class ProfilRequest(BaseModel):
+    role: str
+    nom: str
+    prenom: str
+    fonction: str = ""
+    langue: str = "fr"
+    details: dict
+    consentements: dict[str, bool]
+
+
+def _session(authorization: str | None):
+    token = (authorization or "").removeprefix("Bearer ").strip()
+    try:
+        return auth.get_session(token)
+    except auth.AuthError as e:
+        raise HTTPException(401, str(e)) from e
+
+
+@app.post("/api/auth/otp/demander", tags=["authentification"])
+def otp_demander(req: OtpRequest):
+    try:
+        return auth.request_otp(req.canal, req.destination)
+    except auth.AuthError as e:
+        raise HTTPException(400, str(e)) from e
+
+
+@app.post("/api/auth/otp/verifier", tags=["authentification"])
+def otp_verifier(req: OtpVerify):
+    try:
+        s = auth.verify_otp(req.canal, req.destination, req.code)
+    except auth.AuthError as e:
+        raise HTTPException(400, str(e)) from e
+    get_store().log("otp_verifie", auth._mask(s.destination), "Identité vérifiée par code à usage unique", "securite")
+    return {"token": s.token, "expire_dans_s": auth.SESSION_TTL_S}
+
+
+@app.post("/api/auth/profil", tags=["authentification"])
+def enregistrer_profil(req: ProfilRequest, authorization: str | None = Header(default=None)):
+    session = _session(authorization)
+    if req.role not in ROLES:
+        raise HTTPException(422, "Rôle inconnu.")
+    missing = [f for f in REQUIRED_FIELDS[req.role] if not str(req.details.get(f, "")).strip()]
+    if not req.nom.strip() or not req.prenom.strip():
+        missing.insert(0, "nom / prénom")
+    if missing:
+        raise HTTPException(422, "Champs obligatoires manquants : " + ", ".join(missing))
+    if req.role == "entreprise" and not MATRICULE_RE.match(str(req.details["matricule_fiscal"]).upper().replace(" ", "")):
+        raise HTTPException(422, "Matricule fiscal invalide (format : 1234567A/A/M/000).")
+    if not (req.consentements.get("cgu") and req.consentements.get("donnees_personnelles")):
+        raise HTTPException(422, "Les conditions d'utilisation et le traitement des données (loi 2004-63) doivent être acceptés.")
+    session.profil = req.model_dump() | {"contact": session.destination, "canal": session.canal}
+    get_store().log("onboarding", f"{req.prenom} {req.nom} ({req.role})", "Profil créé après vérification OTP", "securite")
+    return {"ok": True, "profil": session.profil}
+
+
+@app.get("/api/auth/moi", tags=["authentification"])
+def moi(authorization: str | None = Header(default=None)):
+    s = _session(authorization)
+    return {"contact": auth._mask(s.destination), "profil": s.profil}
+
+
+@app.post("/api/auth/deconnexion", tags=["authentification"])
+def deconnexion(authorization: str | None = Header(default=None)):
+    auth.logout((authorization or "").removeprefix("Bearer ").strip())
+    return {"ok": True}
 
 
 # ---- Admin plateforme -----------------------------------------------------------------------

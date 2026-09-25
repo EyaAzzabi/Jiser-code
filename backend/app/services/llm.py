@@ -53,6 +53,22 @@ def status() -> dict:
     return {"ia": True, "modele": LLM_MODEL}
 
 
+def probe() -> None:
+    """Cheap startup check (a few tokens) so the UI shows the real AI status from the first page."""
+    if not available():
+        return
+    try:
+        _get_client().messages.create(model=LLM_MODEL, max_tokens=16, thinking={"type": "disabled"},
+                                      messages=[{"role": "user", "content": "ok"}])
+    except (anthropic.AuthenticationError, anthropic.PermissionDeniedError):
+        _disable("Clé API refusée")
+    except anthropic.BadRequestError as e:
+        if "credit balance" in str(e):
+            _disable("Crédit API épuisé : mode hors ligne")
+    except anthropic.APIError as e:
+        log.warning("LLM probe failed: %s", e)
+
+
 def _get_client() -> anthropic.Anthropic:
     global _client
     if _client is None:
