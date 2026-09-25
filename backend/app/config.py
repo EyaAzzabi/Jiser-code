@@ -21,12 +21,15 @@ def _env(name: str, default: str = "") -> str:
 
 
 # --- LLM ------------------------------------------------------------------------------------
-# Gemini (Google AI Studio) has a permanent free tier; Claude is kept as an option.
+# OpenAI (paid) is the main provider when configured; Gemini (free tier) backs it up; Claude optional.
+OPENAI_API_KEY = _env("OPENAI_API_KEY")
+OPENAI_MODEL = _env("OPENAI_MODEL", "gpt-5.4-mini")
 GEMINI_API_KEY = _env("GEMINI_API_KEY")
 GEMINI_MODEL = _env("GEMINI_MODEL")            # empty = pick the best available Flash model
 ANTHROPIC_API_KEY = _env("ANTHROPIC_API_KEY")
 ANTHROPIC_MODEL = _env("JISER_LLM_MODEL", "claude-sonnet-5")
-LLM_PROVIDER = _env("JISER_LLM_PROVIDER") or ("gemini" if GEMINI_API_KEY else "anthropic" if ANTHROPIC_API_KEY else "none")
+LLM_PROVIDER = _env("JISER_LLM_PROVIDER") or ("openai" if OPENAI_API_KEY else "gemini" if GEMINI_API_KEY
+                                               else "anthropic" if ANTHROPIC_API_KEY else "none")
 OFFLINE = _env("JISER_OFFLINE", "0") == "1" or LLM_PROVIDER == "none"
 
 # --- Database (Supabase) --------------------------------------------------------------------

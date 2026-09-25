@@ -33,7 +33,8 @@ Documentation de l'API (Swagger) : http://localhost:8000/docs
 
 | Service | Rôle | Mise en place |
 |---|---|---|
-| **Gemini** (gratuit) | Lecture des photos, explications en français et en tounsi, assistant, rédaction, avis juridique | Créer une clé sur https://aistudio.google.com/apikey → `GEMINI_API_KEY` |
+| **OpenAI** | IA principale : lecture des photos, explications en français et en tounsi, assistant, rédaction, avis juridique | `OPENAI_API_KEY` (modèle par défaut `gpt-5.4-mini`, réglable par `OPENAI_MODEL`) |
+| **Gemini** (gratuit) | IA de secours automatique si OpenAI ne répond pas | Clé sur https://aistudio.google.com/apikey → `GEMINI_API_KEY` |
 | **Supabase** | Base de données : comptes, sessions, codes OTP (hachés), analyses, réponses, journal, dossiers | Créer un projet → SQL Editor → exécuter `supabase/schema.sql` → `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (Project Settings › API) → `python scripts/seed_supabase.py` |
 | **n8n** | E-mails : code OTP, bienvenue à l'activation du compte, rappels quotidiens des délais | Importer les 3 fichiers de `n8n/`, choisir un identifiant SMTP (ex. Gmail + mot de passe d'application), remplacer `CHANGE_ME_SECRET` par `N8N_SHARED_SECRET`, activer, puis copier les URL de production des webhooks dans `N8N_OTP_WEBHOOK_URL` et `N8N_WELCOME_WEBHOOK_URL` |
 | **Admin plateforme** | Espace privé `/plateforme` | Mettre les e-mails autorisés dans `ADMIN_EMAILS` |
@@ -84,7 +85,7 @@ Voir `models/metrics.json`. Sur 625 dossiers de test : AUC 0,71 par chef ; avec 
 ## Sources, modèles et bibliothèques
 
 - Textes de loi : [Jurisite Tunisie](https://www.jurisitetunisie.com) (CDPF, Code de la TVA, Code de l'IRPP et de l'IS), version publiée sur le site ; à vérifier avec les dernières lois de finances.
-- LLM : Gemini (Google AI Studio, niveau gratuit) par défaut ; Claude (Anthropic) en option.
+- LLM : OpenAI (gpt-5.4-mini) en principal, Gemini (Google AI Studio, niveau gratuit) en secours automatique ; Claude (Anthropic) en option.
 - Automatisation : n8n (e-mails). Base de données : Supabase (PostgreSQL).
 - Bibliothèques : FastAPI, Pydantic, XGBoost, SHAP, scikit-learn, rank-bm25, pypdf, ReportLab, React, Tailwind CSS, Recharts, lucide-react.
 - Données : entièrement synthétiques (aucune donnée réelle de contribuable).

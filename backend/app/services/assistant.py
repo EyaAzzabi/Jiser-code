@@ -64,7 +64,7 @@ def answer(question: str, langue: str = "fr", historique: list[Echange] | None =
                  if langue == "fr" else "L'assistant IA mouch disponible tawa. Hethom les articles elli a9rab l so2alek :")
         return AssistantAnswer(reponse=intro, articles=articles, suggestions=SUGGESTIONS.get(langue, SUGGESTIONS["fr"]), mode="hors_ligne")
 
-    lang = ("Réponds en derja tunisienne (caractères latins, chiffres 3/7/9), termes juridiques en français."
+    lang = ("Réponds en derja tunisienne en caractères latins uniquement (arabizi, chiffres 3/7/9/5, aucun caractère arabe), termes juridiques en français."
             if langue == "derja" else "Réponds en français simple.")
     parts = [
         lang,
@@ -80,7 +80,7 @@ def answer(question: str, langue: str = "fr", historique: list[Echange] | None =
         parts.append("CONVERSATION :\n" + "\n".join(f"{e.role} : {e.texte}" for e in historique[-6:]))
     parts.append(f"QUESTION : {question}")
     try:
-        out = llm.parse("assistant", "\n\n".join(parts), _Answer, max_tokens=2000)
+        out = llm.parse("assistant", "\n\n".join(parts), _Answer, max_tokens=2000, latin_only=langue == "derja")
     except llm.LLMUnavailable as e:
         return AssistantAnswer(reponse=f"L'assistant IA n'a pas pu répondre ({e}). Articles les plus proches :",
                                articles=articles, suggestions=SUGGESTIONS.get(langue, SUGGESTIONS["fr"]), mode="hors_ligne")

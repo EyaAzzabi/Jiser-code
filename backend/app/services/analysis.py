@@ -118,7 +118,7 @@ class _LLMAnalyse(BaseModel):
 def _llm_rewrite(analyse: AnalyseNotification, langue: str = "fr") -> _LLMAnalyse | None:
     if not llm.available():
         return None
-    langue_txt = ("Écris tout en derja tunisienne (caractères latins, chiffres 3/7/9 comme à l'écrit tunisien), "
+    langue_txt = ("Écris tout en derja tunisienne en caractères latins uniquement (arabizi, chiffres 3/7/9/5, aucun caractère arabe), "
                   "en gardant les noms d'articles et termes juridiques en français." if langue == "derja"
                   else "Écris en français simple.")
     parts = [langue_txt,
@@ -130,7 +130,7 @@ def _llm_rewrite(analyse: AnalyseNotification, langue: str = "fr") -> _LLMAnalys
         analyse.model_dump_json(exclude={"mode"}),
     ]
     try:
-        return llm.parse("analyse", "\n\n".join(parts), _LLMAnalyse)
+        return llm.parse("analyse", "\n\n".join(parts), _LLMAnalyse, latin_only=langue == "derja")
     except llm.LLMUnavailable:
         return None
 

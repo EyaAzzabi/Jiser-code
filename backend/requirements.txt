@@ -20,3 +20,4 @@ httpx==0.28.*
 pytest==8.*
 google-genai>=1.0
 supabase>=2.0
+openai>=1.50
