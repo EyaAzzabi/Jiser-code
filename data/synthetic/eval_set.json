@@ -1,0 +1,1863 @@
+[
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-000\nDate de notification : 21/04/2025\n\nDestinataire : Société Résidences Kerkennah SA\nMatricule fiscal : 1656118F/M/M/000\nActivité : Promotion immobilière\nGouvernorat : Tunis\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 31/01/2025\nDate de début de la vérification : 25/02/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2024\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Prix de vente anormalement bas avec une société liée.\nMontant en principal : 15 000,000 DT\nPénalités : 4 793,325 DT\n\nRÉCAPITULATIF\nTotal en principal : 15 000,000 DT\nTotal des pénalités : 4 793,325 DT\nTOTAL EXIGIBLE : 19 793,325 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-000",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-01-31",
+   "date_debut_verification": "2025-02-25",
+   "date_notification": "2025-04-21",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Résidences Kerkennah SA",
+    "matricule_fiscal": "1656118F/M/M/000",
+    "secteur": "Promotion immobilière",
+    "taille": "TPE",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 15000.0,
+     "penalites": 4793.325,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Prix de vente anormalement bas avec une société liée.",
+     "motivation_qualite": "sommaire",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Le Kef\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-001\nDate de notification : 18/01/2026\n\nDestinataire : Société Digital Jasmin SARL\nMatricule fiscal : 1341034R/M/M/000\nActivité : Services informatiques\nGouvernorat : Le Kef\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 22/05/2025\nDate de début de la vérification : 11/06/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2025\nBase légale : article 9 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Factures non conformes, TVA non déductible.\nMontant en principal : 31 000,000 DT\nPénalités : 3 373,562 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2024\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 292 365 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 73 000,000 DT\nPénalités : 7 553,599 DT\n\nRÉCAPITULATIF\nTotal en principal : 104 000,000 DT\nTotal des pénalités : 10 927,161 DT\nTOTAL EXIGIBLE : 114 927,161 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-001",
+   "centre": "Centre régional de contrôle des impôts de Le Kef",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-05-22",
+   "date_debut_verification": "2025-06-11",
+   "date_notification": "2026-01-18",
+   "exercices_verifies": [
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Digital Jasmin SARL",
+    "matricule_fiscal": "1341034R/M/M/000",
+    "secteur": "Services informatiques",
+    "taille": "PME",
+    "gouvernorat": "Le Kef",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2025,
+     "montant_principal": 31000.0,
+     "penalites": 3373.562,
+     "article_invoque": "article 9 du Code de la TVA",
+     "motivation": "Factures non conformes, TVA non déductible.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2024,
+     "montant_principal": 73000.0,
+     "penalites": 7553.599,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 292 365 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ariana\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-002\nDate de notification : 09/05/2026\n\nDestinataire : Société Promotion Byrsa SARL\nMatricule fiscal : 1945092R/M/M/000\nActivité : Promotion immobilière\nGouvernorat : Ariana\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 11/11/2025\nDate de début de la vérification : 03/12/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\n\nCHEF N°1 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2025\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 3 725 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 1 000,000 DT\nPénalités : 346,724 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2025\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : Chiffre d'affaires reconstitué par application d'un coefficient de marge.\nMontant en principal : 11 000,000 DT\nPénalités : 2 181,118 DT\n\nCHEF N°3 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2025\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 78 222 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 24 000,000 DT\nPénalités : 3 014,758 DT\n\nRÉCAPITULATIF\nTotal en principal : 36 000,000 DT\nTotal des pénalités : 5 542,600 DT\nTOTAL EXIGIBLE : 41 542,600 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-002",
+   "centre": "Centre régional de contrôle des impôts de Ariana",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-11-11",
+   "date_debut_verification": "2025-12-03",
+   "date_notification": "2026-05-09",
+   "exercices_verifies": [
+    2025
+   ],
+   "mention_assistance": false,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Promotion Byrsa SARL",
+    "matricule_fiscal": "1945092R/M/M/000",
+    "secteur": "Promotion immobilière",
+    "taille": "TPE",
+    "gouvernorat": "Ariana",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 1000.0,
+     "penalites": 346.724,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 3 725 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 11000.0,
+     "penalites": 2181.118,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Chiffre d'affaires reconstitué par application d'un coefficient de marge.",
+     "motivation_qualite": "sommaire",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2025,
+     "montant_principal": 24000.0,
+     "penalites": 3014.758,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 78 222 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": [
+   "MENTION_ASSISTANCE"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Nabeul\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-003\nDate de notification : 13/01/2025\n\nDestinataire : Société Transport Oasis SUARL\nMatricule fiscal : 1914674J/P/M/000\nActivité : Transport et logistique\nGouvernorat : Nabeul\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 19/07/2024\nDate de début de la vérification : 09/08/2024\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2022, 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 148 906 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 42 000,000 DT\nPénalités : 11 648,443 DT\n\nCHEF N°2 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2023\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 79 289 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 24 000,000 DT\nPénalités : 6 625,103 DT\n\nRÉCAPITULATIF\nTotal en principal : 66 000,000 DT\nTotal des pénalités : 18 273,546 DT\nTOTAL EXIGIBLE : 84 273,546 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-003",
+   "centre": "Centre régional de contrôle des impôts de Nabeul",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2024-07-19",
+   "date_debut_verification": "2024-08-09",
+   "date_notification": "2025-01-13",
+   "exercices_verifies": [
+    2022,
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Transport Oasis SUARL",
+    "matricule_fiscal": "1914674J/P/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "PME",
+    "gouvernorat": "Nabeul",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 42000.0,
+     "penalites": 11648.443,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 148 906 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C2",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 24000.0,
+     "penalites": 6625.103,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 79 289 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Médenine\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-004\nDate de notification : 24/05/2026\n\nDestinataire : Société Market Ulysse SUARL\nMatricule fiscal : 1991028B/M/M/000\nActivité : Commerce de détail\nGouvernorat : Médenine\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 04/03/2026\nDate de début de la vérification : 28/03/2026\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2025\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 243 243 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 43 000,000 DT\nPénalités : 7 437,195 DT\n\nRÉCAPITULATIF\nTotal en principal : 43 000,000 DT\nTotal des pénalités : 7 437,195 DT\nTOTAL EXIGIBLE : 50 437,195 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-004",
+   "centre": "Centre régional de contrôle des impôts de Médenine",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2026-03-04",
+   "date_debut_verification": "2026-03-28",
+   "date_notification": "2026-05-24",
+   "exercices_verifies": [
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Market Ulysse SUARL",
+    "matricule_fiscal": "1991028B/M/M/000",
+    "secteur": "Commerce de détail",
+    "taille": "PME",
+    "gouvernorat": "Médenine",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 43000.0,
+     "penalites": 7437.195,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 243 243 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Monastir\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-005\nDate de notification : 28/09/2025\n\nDestinataire : Société Boutiques Sahel SUARL\nMatricule fiscal : 1281157J/M/M/000\nActivité : Commerce de détail\nGouvernorat : Monastir\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 10/05/2025\nDate de début de la vérification : 25/05/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Charges non justifiées réintégrées.\nMontant en principal : 17 000,000 DT\nPénalités : 2 778,446 DT\n\nRÉCAPITULATIF\nTotal en principal : 17 000,000 DT\nTotal des pénalités : 2 778,446 DT\nTOTAL EXIGIBLE : 19 778,446 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-005",
+   "centre": "Centre régional de contrôle des impôts de Monastir",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-05-10",
+   "date_debut_verification": "2025-05-25",
+   "date_notification": "2025-09-28",
+   "exercices_verifies": [
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Boutiques Sahel SUARL",
+    "matricule_fiscal": "1281157J/M/M/000",
+    "secteur": "Commerce de détail",
+    "taille": "TPE",
+    "gouvernorat": "Monastir",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 17000.0,
+     "penalites": 2778.446,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Charges non justifiées réintégrées.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-006\nDate de notification : 01/11/2025\n\nDestinataire : Société Immobilière Didon SA\nMatricule fiscal : 1481195Q/M/M/000\nActivité : Promotion immobilière\nGouvernorat : Tunis\nTaille : PME\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.47 observé sur un échantillon de factures de vente.\nMontant en principal : 48 000,000 DT\nPénalités : 5 847,772 DT\n\nCHEF N°2 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2024\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Les ventes à la société liée Société Oasis SARL ont été facturées à des prix inférieurs de 26 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.\nMontant en principal : 31 000,000 DT\nPénalités : 9 267,328 DT\n\nCHEF N°3 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 368 478 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 78 000,000 DT\nPénalités : 10 352,755 DT\n\nCHEF N°4 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Charges non justifiées réintégrées.\nMontant en principal : 91 000,000 DT\nPénalités : 12 173,637 DT\n\nRÉCAPITULATIF\nTotal en principal : 248 000,000 DT\nTotal des pénalités : 37 641,492 DT\nTOTAL EXIGIBLE : 285 641,492 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-006",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": true,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2025-11-01",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Immobilière Didon SA",
+    "matricule_fiscal": "1481195Q/M/M/000",
+    "secteur": "Promotion immobilière",
+    "taille": "PME",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 48000.0,
+     "penalites": 5847.772,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.47 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 31000.0,
+     "penalites": 9267.328,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Les ventes à la société liée Société Oasis SARL ont été facturées à des prix inférieurs de 26 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.",
+     "motivation_qualite": "detaillee",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    },
+    {
+     "id": "C3",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 78000.0,
+     "penalites": 10352.755,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 368 478 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C4",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 91000.0,
+     "penalites": 12173.637,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Charges non justifiées réintégrées.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Kairouan\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-007\nDate de notification : 10/01/2026\n\nDestinataire : Société Clinique Horizon SARL\nMatricule fiscal : 1775388R/A/M/000\nActivité : Professions libérales\nGouvernorat : Kairouan\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 24/06/2025\nDate de début de la vérification : 13/07/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2023, 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2025\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Retenue à la source non effectuée.\nMontant en principal : 57 000,000 DT\nPénalités : 7 309,536 DT\n\nCHEF N°2 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Néant.\nMontant en principal : 11 000,000 DT\nPénalités : 3 383,700 DT\n\nCHEF N°3 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2023\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.44 observé sur un échantillon de factures de vente.\nMontant en principal : 5 000,000 DT\nPénalités : 1 155,695 DT\n\nCHEF N°4 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 9 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 107 à 826 émises par le fournisseur Société Djerba SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 11 000,000 DT\nPénalités : 2 770,189 DT\n\nRÉCAPITULATIF\nTotal en principal : 84 000,000 DT\nTotal des pénalités : 14 619,120 DT\nTOTAL EXIGIBLE : 98 619,120 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-007",
+   "centre": "Centre régional de contrôle des impôts de Kairouan",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-06-24",
+   "date_debut_verification": "2025-07-13",
+   "date_notification": "2026-01-10",
+   "exercices_verifies": [
+    2023,
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Clinique Horizon SARL",
+    "matricule_fiscal": "1775388R/A/M/000",
+    "secteur": "Professions libérales",
+    "taille": "TPE",
+    "gouvernorat": "Kairouan",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2025,
+     "montant_principal": 57000.0,
+     "penalites": 7309.536,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Retenue à la source non effectuée.",
+     "motivation_qualite": "sommaire",
+     "methode": "Application du taux de retenue aux montants versés"
+    },
+    {
+     "id": "C2",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 11000.0,
+     "penalites": 3383.7,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C3",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 5000.0,
+     "penalites": 1155.695,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.44 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C4",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 11000.0,
+     "penalites": 2770.189,
+     "article_invoque": "article 9 du Code de la TVA",
+     "motivation": "Les factures n° 107 à 826 émises par le fournisseur Société Djerba SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nDirection des grandes entreprises\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-008\nDate de notification : 13/06/2026\n\nDestinataire : Société Import-Export Méditerranée SUARL\nMatricule fiscal : 1899576D/M/M/000\nActivité : Commerce de gros\nGouvernorat : Jendouba\nTaille : GE\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.42 observé sur un échantillon de factures de vente.\nMontant en principal : 238 000,000 DT\nPénalités : 25 959,263 DT\n\nRÉCAPITULATIF\nTotal en principal : 238 000,000 DT\nTotal des pénalités : 25 959,263 DT\nTOTAL EXIGIBLE : 263 959,263 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-008",
+   "centre": "Direction des grandes entreprises",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": true,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2026-06-13",
+   "exercices_verifies": [
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Import-Export Méditerranée SUARL",
+    "matricule_fiscal": "1899576D/M/M/000",
+    "secteur": "Commerce de gros",
+    "taille": "GE",
+    "gouvernorat": "Jendouba",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 238000.0,
+     "penalites": 25959.263,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.42 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Manouba\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-009\nDate de notification : 22/11/2025\n\nDestinataire : Société Trans Essalem SUARL\nMatricule fiscal : 1448398Y/P/M/000\nActivité : Transport et logistique\nGouvernorat : Manouba\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 05/05/2025\nDate de début de la vérification : 03/06/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2023\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 102 433 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 31 000,000 DT\nPénalités : 8 302,764 DT\n\nCHEF N°2 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2023\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Les ventes à la société liée Société Ennasr SARL ont été facturées à des prix inférieurs de 30 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.\nMontant en principal : 28 000,000 DT\nPénalités : 4 946,873 DT\n\nRÉCAPITULATIF\nTotal en principal : 59 000,000 DT\nTotal des pénalités : 13 249,637 DT\nTOTAL EXIGIBLE : 72 249,637 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-009",
+   "centre": "Centre régional de contrôle des impôts de Manouba",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-05-05",
+   "date_debut_verification": "2025-06-03",
+   "date_notification": "2025-11-22",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Trans Essalem SUARL",
+    "matricule_fiscal": "1448398Y/P/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "PME",
+    "gouvernorat": "Manouba",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 31000.0,
+     "penalites": 8302.764,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 102 433 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C2",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 28000.0,
+     "penalites": 4946.873,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Les ventes à la société liée Société Ennasr SARL ont été facturées à des prix inférieurs de 30 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.",
+     "motivation_qualite": "detaillee",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ben Arous\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-010\nDate de notification : 11/02/2025\n\nDestinataire : Société Huilerie Djerba SARL\nMatricule fiscal : 1935540Q/P/M/000\nActivité : Agroalimentaire\nGouvernorat : Ben Arous\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 04/08/2024\nDate de début de la vérification : 24/08/2024\nComptabilité : non admise (non probante)\nExercices vérifiés : 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2024\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Les ventes à la société liée Société Cap Bon SARL ont été facturées à des prix inférieurs de 17 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.\nMontant en principal : 15 000,000 DT\nPénalités : 3 326,202 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2024\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 124 524 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 21 000,000 DT\nPénalités : 4 795,094 DT\n\nRÉCAPITULATIF\nTotal en principal : 36 000,000 DT\nTotal des pénalités : 8 121,296 DT\nTOTAL EXIGIBLE : 44 121,296 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-010",
+   "centre": "Centre régional de contrôle des impôts de Ben Arous",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2024-08-04",
+   "date_debut_verification": "2024-08-24",
+   "date_notification": "2025-02-11",
+   "exercices_verifies": [
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Huilerie Djerba SARL",
+    "matricule_fiscal": "1935540Q/P/M/000",
+    "secteur": "Agroalimentaire",
+    "taille": "TPE",
+    "gouvernorat": "Ben Arous",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 15000.0,
+     "penalites": 3326.202,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Les ventes à la société liée Société Cap Bon SARL ont été facturées à des prix inférieurs de 17 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.",
+     "motivation_qualite": "detaillee",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2024,
+     "montant_principal": 21000.0,
+     "penalites": 4795.094,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 124 524 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Médenine\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-011\nDate de notification : 17/06/2025\n\nDestinataire : Société Soft Ennasr SARL\nMatricule fiscal : 1366041R/M/M/000\nActivité : Services informatiques\nGouvernorat : Médenine\nTaille : TPE\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 119 271 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 22 000,000 DT\nPénalités : 4 056,892 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : Chiffre d'affaires reconstitué par application d'un coefficient de marge.\nMontant en principal : 23 000,000 DT\nPénalités : 4 250,241 DT\n\nCHEF N°3 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2024\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Les ventes à la société liée Société Tabarka SARL ont été facturées à des prix inférieurs de 28 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.\nMontant en principal : 31 000,000 DT\nPénalités : 8 472,142 DT\n\nRÉCAPITULATIF\nTotal en principal : 76 000,000 DT\nTotal des pénalités : 16 779,275 DT\nTOTAL EXIGIBLE : 92 779,275 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-011",
+   "centre": "Centre régional de contrôle des impôts de Médenine",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": false,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2025-06-17",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Soft Ennasr SARL",
+    "matricule_fiscal": "1366041R/M/M/000",
+    "secteur": "Services informatiques",
+    "taille": "TPE",
+    "gouvernorat": "Médenine",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 22000.0,
+     "penalites": 4056.892,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 119 271 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 23000.0,
+     "penalites": 4250.241,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Chiffre d'affaires reconstitué par application d'un coefficient de marge.",
+     "motivation_qualite": "sommaire",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 31000.0,
+     "penalites": 8472.142,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Les ventes à la société liée Société Tabarka SARL ont été facturées à des prix inférieurs de 28 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.",
+     "motivation_qualite": "detaillee",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Sousse\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-012\nDate de notification : 21/05/2026\n\nDestinataire : Société Clinique Hannibal SA\nMatricule fiscal : 1528368B/A/M/000\nActivité : Professions libérales\nGouvernorat : Sousse\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 26/02/2026\nDate de début de la vérification : 17/03/2026\nComptabilité : non admise (non probante)\nExercices vérifiés : 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 326 711 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 86 000,000 DT\nPénalités : 21 080,022 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2025\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : Chiffre d'affaires reconstitué par application d'un coefficient de marge.\nMontant en principal : 65 000,000 DT\nPénalités : 18 209,721 DT\n\nCHEF N°3 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 176 018 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 34 000,000 DT\nPénalités : 4 871,734 DT\n\nCHEF N°4 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2025\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 138 741 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 24 000,000 DT\nPénalités : 3 194,850 DT\n\nRÉCAPITULATIF\nTotal en principal : 209 000,000 DT\nTotal des pénalités : 47 356,327 DT\nTOTAL EXIGIBLE : 256 356,327 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-012",
+   "centre": "Centre régional de contrôle des impôts de Sousse",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2026-02-26",
+   "date_debut_verification": "2026-03-17",
+   "date_notification": "2026-05-21",
+   "exercices_verifies": [
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Clinique Hannibal SA",
+    "matricule_fiscal": "1528368B/A/M/000",
+    "secteur": "Professions libérales",
+    "taille": "PME",
+    "gouvernorat": "Sousse",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 86000.0,
+     "penalites": 21080.022,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 326 711 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 65000.0,
+     "penalites": 18209.721,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Chiffre d'affaires reconstitué par application d'un coefficient de marge.",
+     "motivation_qualite": "sommaire",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 34000.0,
+     "penalites": 4871.734,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 176 018 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C4",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2025,
+     "montant_principal": 24000.0,
+     "penalites": 3194.85,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 138 741 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Sousse\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-013\nDate de notification : 19/05/2025\n\nDestinataire : Société Clinique Nour SUARL\nMatricule fiscal : 1252204F/A/M/000\nActivité : Professions libérales\nGouvernorat : Sousse\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 01/02/2025\nDate de début de la vérification : 24/02/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2023\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.46 observé sur un échantillon de factures de vente.\nMontant en principal : 10 000,000 DT\nPénalités : 2 518,629 DT\n\nCHEF N°2 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 34 908 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 8 000,000 DT\nPénalités : 1 904,114 DT\n\nCHEF N°3 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2023\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Prix de vente anormalement bas avec une société liée.\nMontant en principal : 6 000,000 DT\nPénalités : 1 058,155 DT\n\nRÉCAPITULATIF\nTotal en principal : 24 000,000 DT\nTotal des pénalités : 5 480,898 DT\nTOTAL EXIGIBLE : 29 480,898 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-013",
+   "centre": "Centre régional de contrôle des impôts de Sousse",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-02-01",
+   "date_debut_verification": "2025-02-24",
+   "date_notification": "2025-05-19",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Clinique Nour SUARL",
+    "matricule_fiscal": "1252204F/A/M/000",
+    "secteur": "Professions libérales",
+    "taille": "TPE",
+    "gouvernorat": "Sousse",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 10000.0,
+     "penalites": 2518.629,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.46 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 8000.0,
+     "penalites": 1904.114,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 34 908 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C3",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 6000.0,
+     "penalites": 1058.155,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Prix de vente anormalement bas avec une société liée.",
+     "motivation_qualite": "sommaire",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ariana\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-014\nDate de notification : 03/03/2025\n\nDestinataire : Société Hôtels Cap Bon SARL\nMatricule fiscal : 1198487K/M/M/000\nActivité : Tourisme et hôtellerie\nGouvernorat : Ariana\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 24/10/2024\nDate de début de la vérification : 23/11/2024\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 18 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 282 à 611 émises par le fournisseur Société Djerba SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 102 000,000 DT\nPénalités : 28 961,557 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2023\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 349 570 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 87 000,000 DT\nPénalités : 20 616,631 DT\n\nCHEF N°3 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 105 352 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 32 000,000 DT\nPénalités : 5 734,925 DT\n\nCHEF N°4 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.6 observé sur un échantillon de factures de vente.\nMontant en principal : 64 000,000 DT\nPénalités : 11 420,466 DT\n\nRÉCAPITULATIF\nTotal en principal : 285 000,000 DT\nTotal des pénalités : 66 733,579 DT\nTOTAL EXIGIBLE : 351 733,579 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-014",
+   "centre": "Centre régional de contrôle des impôts de Ariana",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2024-10-24",
+   "date_debut_verification": "2024-11-23",
+   "date_notification": "2025-03-03",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Hôtels Cap Bon SARL",
+    "matricule_fiscal": "1198487K/M/M/000",
+    "secteur": "Tourisme et hôtellerie",
+    "taille": "PME",
+    "gouvernorat": "Ariana",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 102000.0,
+     "penalites": 28961.557,
+     "article_invoque": "article 18 du Code de la TVA",
+     "motivation": "Les factures n° 282 à 611 émises par le fournisseur Société Djerba SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2023,
+     "montant_principal": 87000.0,
+     "penalites": 20616.631,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 349 570 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    },
+    {
+     "id": "C3",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 32000.0,
+     "penalites": 5734.925,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 105 352 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C4",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 64000.0,
+     "penalites": 11420.466,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.6 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ben Arous\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-015\nDate de notification : 11/07/2025\n\nDestinataire : Société Logistique Cap Bon SA\nMatricule fiscal : 1389762V/A/M/000\nActivité : Transport et logistique\nGouvernorat : Ben Arous\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 02/05/2025\nDate de début de la vérification : 25/05/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 319 133 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 60 000,000 DT\nPénalités : 13 937,465 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.43 observé sur un échantillon de factures de vente.\nMontant en principal : 44 000,000 DT\nPénalités : 12 356,882 DT\n\nRÉCAPITULATIF\nTotal en principal : 104 000,000 DT\nTotal des pénalités : 26 294,347 DT\nTOTAL EXIGIBLE : 130 294,347 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-015",
+   "centre": "Centre régional de contrôle des impôts de Ben Arous",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-05-02",
+   "date_debut_verification": "2025-05-25",
+   "date_notification": "2025-07-11",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Logistique Cap Bon SA",
+    "matricule_fiscal": "1389762V/A/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "PME",
+    "gouvernorat": "Ben Arous",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 60000.0,
+     "penalites": 13937.465,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 319 133 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 44000.0,
+     "penalites": 12356.882,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.43 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Monastir\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-016\nDate de notification : 18/07/2025\n\nDestinataire : Société Confection Méditerranée SARL\nMatricule fiscal : 1075307V/M/M/000\nActivité : Industrie textile\nGouvernorat : Monastir\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 19/02/2025\nDate de début de la vérification : 21/03/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2023\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.67 observé sur un échantillon de factures de vente.\nMontant en principal : 89 000,000 DT\nPénalités : 17 322,047 DT\n\nCHEF N°2 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 18 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Néant.\nMontant en principal : 13 000,000 DT\nPénalités : 2 979,184 DT\n\nCHEF N°3 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Charges non justifiées réintégrées.\nMontant en principal : 49 000,000 DT\nPénalités : 15 991,636 DT\n\nRÉCAPITULATIF\nTotal en principal : 151 000,000 DT\nTotal des pénalités : 36 292,867 DT\nTOTAL EXIGIBLE : 187 292,867 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-016",
+   "centre": "Centre régional de contrôle des impôts de Monastir",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-02-19",
+   "date_debut_verification": "2025-03-21",
+   "date_notification": "2025-07-18",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Confection Méditerranée SARL",
+    "matricule_fiscal": "1075307V/M/M/000",
+    "secteur": "Industrie textile",
+    "taille": "TPE",
+    "gouvernorat": "Monastir",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 89000.0,
+     "penalites": 17322.047,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.67 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 13000.0,
+     "penalites": 2979.184,
+     "article_invoque": "article 18 du Code de la TVA",
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    },
+    {
+     "id": "C3",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 49000.0,
+     "penalites": 15991.636,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "Charges non justifiées réintégrées.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ben Arous\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-017\nDate de notification : 28/05/2025\n\nDestinataire : Société Travaux Kerkennah SA\nMatricule fiscal : 1039893B/M/M/000\nActivité : BTP\nGouvernorat : Ben Arous\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 08/01/2025\nDate de début de la vérification : 03/02/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 18 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 317 à 653 émises par le fournisseur Société Hannibal SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 72 000,000 DT\nPénalités : 21 428,040 DT\n\nRÉCAPITULATIF\nTotal en principal : 72 000,000 DT\nTotal des pénalités : 21 428,040 DT\nTOTAL EXIGIBLE : 93 428,040 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-017",
+   "centre": "Centre régional de contrôle des impôts de Ben Arous",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-01-08",
+   "date_debut_verification": "2025-02-03",
+   "date_notification": "2025-05-28",
+   "exercices_verifies": [
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Travaux Kerkennah SA",
+    "matricule_fiscal": "1039893B/M/M/000",
+    "secteur": "BTP",
+    "taille": "PME",
+    "gouvernorat": "Ben Arous",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 72000.0,
+     "penalites": 21428.04,
+     "article_invoque": "article 18 du Code de la TVA",
+     "motivation": "Les factures n° 317 à 653 émises par le fournisseur Société Hannibal SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Ben Arous\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-018\nDate de notification : 19/08/2026\n\nDestinataire : Société Trans Ulysse SUARL\nMatricule fiscal : 1256517F/P/M/000\nActivité : Transport et logistique\nGouvernorat : Ben Arous\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 21/03/2026\nDate de début de la vérification : 16/04/2026\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2025\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 270 943 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 74 000,000 DT\nPénalités : 10 546,727 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2025\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.75 observé sur un échantillon de factures de vente.\nMontant en principal : 167 000,000 DT\nPénalités : 46 177,192 DT\n\nCHEF N°3 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2025\nBase légale : article 9 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 252 à 455 émises par le fournisseur Société Cap Bon SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 34 000,000 DT\nPénalités : 3 776,497 DT\n\nRÉCAPITULATIF\nTotal en principal : 275 000,000 DT\nTotal des pénalités : 60 500,416 DT\nTOTAL EXIGIBLE : 335 500,416 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-018",
+   "centre": "Centre régional de contrôle des impôts de Ben Arous",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2026-03-21",
+   "date_debut_verification": "2026-04-16",
+   "date_notification": "2026-08-19",
+   "exercices_verifies": [
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Trans Ulysse SUARL",
+    "matricule_fiscal": "1256517F/P/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "PME",
+    "gouvernorat": "Ben Arous",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 74000.0,
+     "penalites": 10546.727,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 270 943 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2025,
+     "montant_principal": 167000.0,
+     "penalites": 46177.192,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.75 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2025,
+     "montant_principal": 34000.0,
+     "penalites": 3776.497,
+     "article_invoque": "article 9 du Code de la TVA",
+     "motivation": "Les factures n° 252 à 455 émises par le fournisseur Société Cap Bon SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Gabès\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-019\nDate de notification : 04/01/2025\n\nDestinataire : Société Bureau d'études Hannibal SA\nMatricule fiscal : 1881173S/A/M/000\nActivité : Professions libérales\nGouvernorat : Gabès\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 04/08/2024\nDate de début de la vérification : 07/08/2024\nComptabilité : non admise (non probante)\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2023\nBase légale : non précisée\nMéthode : Reconstitution par coefficient de marge\nMotivation : Néant.\nMontant en principal : 13 000,000 DT\nPénalités : 3 350,940 DT\n\nCHEF N°2 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 88 932 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 20 000,000 DT\nPénalités : 3 620,392 DT\n\nCHEF N°3 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2023\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 91 284 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 20 000,000 DT\nPénalités : 4 458,549 DT\n\nRÉCAPITULATIF\nTotal en principal : 53 000,000 DT\nTotal des pénalités : 11 429,881 DT\nTOTAL EXIGIBLE : 64 429,881 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-019",
+   "centre": "Centre régional de contrôle des impôts de Gabès",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2024-08-04",
+   "date_debut_verification": "2024-08-07",
+   "date_notification": "2025-01-04",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Bureau d'études Hannibal SA",
+    "matricule_fiscal": "1881173S/A/M/000",
+    "secteur": "Professions libérales",
+    "taille": "TPE",
+    "gouvernorat": "Gabès",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 13000.0,
+     "penalites": 3350.94,
+     "article_invoque": null,
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 20000.0,
+     "penalites": 3620.392,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 88 932 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C3",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2023,
+     "montant_principal": 20000.0,
+     "penalites": 4458.549,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 91 284 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": [
+   "DELAI_AVIS_15J"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nDirection des grandes entreprises\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-020\nDate de notification : 19/12/2025\n\nDestinataire : Société Hôtels El Manar SARL\nMatricule fiscal : 1547175S/P/M/000\nActivité : Tourisme et hôtellerie\nGouvernorat : Kairouan\nTaille : GE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 26/03/2025\nDate de début de la vérification : 24/04/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.63 observé sur un échantillon de factures de vente.\nMontant en principal : 341 000,000 DT\nPénalités : 112 925,873 DT\n\nRÉCAPITULATIF\nTotal en principal : 341 000,000 DT\nTotal des pénalités : 112 925,873 DT\nTOTAL EXIGIBLE : 453 925,873 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-020",
+   "centre": "Direction des grandes entreprises",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-03-26",
+   "date_debut_verification": "2025-04-24",
+   "date_notification": "2025-12-19",
+   "exercices_verifies": [
+    2023,
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Hôtels El Manar SARL",
+    "matricule_fiscal": "1547175S/P/M/000",
+    "secteur": "Tourisme et hôtellerie",
+    "taille": "GE",
+    "gouvernorat": "Kairouan",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 341000.0,
+     "penalites": 112925.873,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.63 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Sfax\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-021\nDate de notification : 24/01/2026\n\nDestinataire : Société Clinique Djerba SUARL\nMatricule fiscal : 1976292W/M/M/000\nActivité : Professions libérales\nGouvernorat : Sfax\nTaille : TPE\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : Chiffre d'affaires reconstitué par application d'un coefficient de marge.\nMontant en principal : 23 000,000 DT\nPénalités : 3 286,766 DT\n\nCHEF N°2 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2025\nBase légale : article 9 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 384 à 605 émises par le fournisseur Société Sahel SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 8 000,000 DT\nPénalités : 1 034,291 DT\n\nRÉCAPITULATIF\nTotal en principal : 31 000,000 DT\nTotal des pénalités : 4 321,057 DT\nTOTAL EXIGIBLE : 35 321,057 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-021",
+   "centre": "Centre régional de contrôle des impôts de Sfax",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": false,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2026-01-24",
+   "exercices_verifies": [
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Clinique Djerba SUARL",
+    "matricule_fiscal": "1976292W/M/M/000",
+    "secteur": "Professions libérales",
+    "taille": "TPE",
+    "gouvernorat": "Sfax",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 23000.0,
+     "penalites": 3286.766,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Chiffre d'affaires reconstitué par application d'un coefficient de marge.",
+     "motivation_qualite": "sommaire",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2025,
+     "montant_principal": 8000.0,
+     "penalites": 1034.291,
+     "article_invoque": "article 9 du Code de la TVA",
+     "motivation": "Les factures n° 384 à 605 émises par le fournisseur Société Sahel SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-022\nDate de notification : 14/02/2026\n\nDestinataire : Société Trans El Amen SA\nMatricule fiscal : 1448207X/A/M/000\nActivité : Transport et logistique\nGouvernorat : Tunis\nTaille : TPE\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2023, 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : non précisée\nMéthode : Reconstitution par coefficient de marge\nMotivation : Néant.\nMontant en principal : 8 000,000 DT\nPénalités : 2 495,790 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2023\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 77 183 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 14 000,000 DT\nPénalités : 2 453,948 DT\n\nRÉCAPITULATIF\nTotal en principal : 22 000,000 DT\nTotal des pénalités : 4 949,738 DT\nTOTAL EXIGIBLE : 26 949,738 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-022",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": false,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2026-02-14",
+   "exercices_verifies": [
+    2023,
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Trans El Amen SA",
+    "matricule_fiscal": "1448207X/A/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "TPE",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 8000.0,
+     "penalites": 2495.79,
+     "article_invoque": null,
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2023,
+     "montant_principal": 14000.0,
+     "penalites": 2453.948,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 77 183 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Monastir\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-023\nDate de notification : 03/08/2026\n\nDestinataire : Société Distribution Jasmin SA\nMatricule fiscal : 1858132D/M/M/000\nActivité : Commerce de gros\nGouvernorat : Monastir\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 07/02/2026\nDate de début de la vérification : 23/02/2026\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Avantages accordés à des entreprises liées (prix de transfert)\nImpôt : IS — Exercice : 2024\nBase légale : article 48 du Code de l'IRPP et de l'IS\nMéthode : Comparaison avec les prix de marché (méthode du prix comparable)\nMotivation : Les ventes à la société liée Société El Amen SARL ont été facturées à des prix inférieurs de 40 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.\nMontant en principal : 63 000,000 DT\nPénalités : selon la législation en vigueur\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2025\nBase légale : non précisée\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Néant.\nMontant en principal : 33 000,000 DT\nPénalités : selon la législation en vigueur\n\nCHEF N°3 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.58 observé sur un échantillon de factures de vente.\nMontant en principal : 48 000,000 DT\nPénalités : selon la législation en vigueur\n\nCHEF N°4 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 9 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Factures non conformes, TVA non déductible.\nMontant en principal : 19 000,000 DT\nPénalités : selon la législation en vigueur\n\nRÉCAPITULATIF\nTotal en principal : 163 000,000 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-023",
+   "centre": "Centre régional de contrôle des impôts de Monastir",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2026-02-07",
+   "date_debut_verification": "2026-02-23",
+   "date_notification": "2026-08-03",
+   "exercices_verifies": [
+    2024,
+    2025
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": false,
+   "entreprise": {
+    "nom": "Société Distribution Jasmin SA",
+    "matricule_fiscal": "1858132D/M/M/000",
+    "secteur": "Commerce de gros",
+    "taille": "PME",
+    "gouvernorat": "Monastir",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "AVANTAGES_ENTREPRISES_LIEES",
+     "libelle": "Avantages accordés à des entreprises liées (prix de transfert)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 63000.0,
+     "penalites": 20317.232,
+     "article_invoque": "article 48 du Code de l'IRPP et de l'IS",
+     "motivation": "Les ventes à la société liée Société El Amen SARL ont été facturées à des prix inférieurs de 40 % aux prix pratiqués avec des clients indépendants pour des produits comparables. L'avantage consenti est réintégré.",
+     "motivation_qualite": "detaillee",
+     "methode": "Comparaison avec les prix de marché (méthode du prix comparable)"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2025,
+     "montant_principal": 33000.0,
+     "penalites": 4245.503,
+     "article_invoque": null,
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Application du taux de retenue aux montants versés"
+    },
+    {
+     "id": "C3",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 48000.0,
+     "penalites": 11541.531,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.58 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C4",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 19000.0,
+     "penalites": 6131.689,
+     "article_invoque": "article 9 du Code de la TVA",
+     "motivation": "Factures non conformes, TVA non déductible.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": [
+   "PENALITES_INDIQUEES"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Manouba\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-024\nDate de notification : 07/09/2025\n\nDestinataire : Société Tourisme Essalem SARL\nMatricule fiscal : 1138170Z/A/M/000\nActivité : Tourisme et hôtellerie\nGouvernorat : Manouba\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 01/04/2025\nDate de début de la vérification : 26/04/2025\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 12 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Charges non justifiées réintégrées.\nMontant en principal : 20 000,000 DT\nPénalités : 6 292,833 DT\n\nRÉCAPITULATIF\nTotal en principal : 20 000,000 DT\nTotal des pénalités : 6 292,833 DT\nTOTAL EXIGIBLE : 26 292,833 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-024",
+   "centre": "Centre régional de contrôle des impôts de Manouba",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2025-04-01",
+   "date_debut_verification": "2025-04-26",
+   "date_notification": "2025-09-07",
+   "exercices_verifies": [
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Tourisme Essalem SARL",
+    "matricule_fiscal": "1138170Z/A/M/000",
+    "secteur": "Tourisme et hôtellerie",
+    "taille": "PME",
+    "gouvernorat": "Manouba",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 20000.0,
+     "penalites": 6292.833,
+     "article_invoque": "article 12 du Code de l'IRPP et de l'IS",
+     "motivation": "Charges non justifiées réintégrées.",
+     "motivation_qualite": "sommaire",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-025\nDate de notification : 14/01/2025\n\nDestinataire : Société Transport Sahel SUARL\nMatricule fiscal : 1229210R/M/M/000\nActivité : Transport et logistique\nGouvernorat : Tunis\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 14/10/2024\nDate de début de la vérification : 21/10/2024\nComptabilité : jugée conforme à la législation fiscale\nExercices vérifiés : 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 18 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Néant.\nMontant en principal : 36 000,000 DT\nPénalités : 8 370,575 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2024\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 196 165 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 46 000,000 DT\nPénalités : 10 164,331 DT\n\nCHEF N°3 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 367 842 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 93 000,000 DT\nPénalités : 13 609,839 DT\n\nRÉCAPITULATIF\nTotal en principal : 175 000,000 DT\nTotal des pénalités : 32 144,745 DT\nTOTAL EXIGIBLE : 207 144,745 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-025",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": true,
+   "date_avis": "2024-10-14",
+   "date_debut_verification": "2024-10-21",
+   "date_notification": "2025-01-14",
+   "exercices_verifies": [
+    2024
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Transport Sahel SUARL",
+    "matricule_fiscal": "1229210R/M/M/000",
+    "secteur": "Transport et logistique",
+    "taille": "PME",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 36000.0,
+     "penalites": 8370.575,
+     "article_invoque": "article 18 du Code de la TVA",
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2024,
+     "montant_principal": 46000.0,
+     "penalites": 10164.331,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 196 165 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    },
+    {
+     "id": "C3",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 93000.0,
+     "penalites": 13609.839,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 367 842 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    }
+   ]
+  },
+  "defects": [
+   "DELAI_AVIS_15J"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Médenine\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-026\nDate de notification : 11/07/2026\n\nDestinataire : Société Négoce Jasmin SARL\nMatricule fiscal : 1621308J/P/M/000\nActivité : Commerce de gros\nGouvernorat : Médenine\nTaille : PME\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 02/01/2026\nDate de début de la vérification : 01/02/2026\nComptabilité : non admise (non probante)\nExercices vérifiés : 2023, 2024, 2025\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\n\nCHEF N°1 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.71 observé sur un échantillon de factures de vente.\nMontant en principal : 129 000,000 DT\nPénalités : 40 695,183 DT\n\nCHEF N°2 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2023\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Les honoraires versés à des prestataires résidents pour 133 021 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.\nMontant en principal : 24 000,000 DT\nPénalités : 3 104,236 DT\n\nCHEF N°3 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2024\nBase légale : article 18 du Code de la TVA\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Les factures n° 243 à 464 émises par le fournisseur Société Cap Bon SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.\nMontant en principal : 32 000,000 DT\nPénalités : 9 478,244 DT\n\nRÉCAPITULATIF\nTotal en principal : 185 000,000 DT\nTotal des pénalités : 53 277,663 DT\nTOTAL EXIGIBLE : 238 277,663 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-026",
+   "centre": "Centre régional de contrôle des impôts de Médenine",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2026-01-02",
+   "date_debut_verification": "2026-02-01",
+   "date_notification": "2026-07-11",
+   "exercices_verifies": [
+    2023,
+    2024,
+    2025
+   ],
+   "mention_assistance": false,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Négoce Jasmin SARL",
+    "matricule_fiscal": "1621308J/P/M/000",
+    "secteur": "Commerce de gros",
+    "taille": "PME",
+    "gouvernorat": "Médenine",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 129000.0,
+     "penalites": 40695.183,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.71 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C2",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2023,
+     "montant_principal": 24000.0,
+     "penalites": 3104.236,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Les honoraires versés à des prestataires résidents pour 133 021 DT n'ont pas fait l'objet de la retenue à la source prévue par l'article 52 du code de l'IRPP et de l'IS.",
+     "motivation_qualite": "detaillee",
+     "methode": "Application du taux de retenue aux montants versés"
+    },
+    {
+     "id": "C3",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2024,
+     "montant_principal": 32000.0,
+     "penalites": 9478.244,
+     "article_invoque": "article 18 du Code de la TVA",
+     "motivation": "Les factures n° 243 à 464 émises par le fournisseur Société Cap Bon SARL ne comportent pas l'identifiant fiscal du fournisseur et ne sont appuyées d'aucune preuve de paiement ni de livraison. Le fournisseur n'a déposé aucune déclaration sur la période. La TVA correspondante est réintégrée.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    }
+   ]
+  },
+  "defects": [
+   "MENTION_ASSISTANCE"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Gabès\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-027\nDate de notification : 25/10/2025\n\nDestinataire : Société Conserverie Tabarka SUARL\nMatricule fiscal : 1875237B/M/M/000\nActivité : Agroalimentaire\nGouvernorat : Gabès\nTaille : PME\n\nNature de la vérification : vérification préliminaire\nExercices vérifiés : 2022, 2023, 2024\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\n\nCHEF N°1 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2024\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 681 856 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 197 000,000 DT\nPénalités : 65 986,830 DT\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : Chiffre d'affaires reconstitué par application d'un coefficient de marge.\nMontant en principal : 65 000,000 DT\nPénalités : 8 984,444 DT\n\nCHEF N°3 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2024\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 64 551 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 15 000,000 DT\nPénalités : 4 659,475 DT\n\nRÉCAPITULATIF\nTotal en principal : 277 000,000 DT\nTotal des pénalités : 79 630,749 DT\nTOTAL EXIGIBLE : 356 630,749 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-027",
+   "centre": "Centre régional de contrôle des impôts de Gabès",
+   "type_verification": "preliminaire",
+   "comptabilite_conforme": true,
+   "date_avis": null,
+   "date_debut_verification": null,
+   "date_notification": "2025-10-25",
+   "exercices_verifies": [
+    2022,
+    2023,
+    2024
+   ],
+   "mention_assistance": false,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Conserverie Tabarka SUARL",
+    "matricule_fiscal": "1875237B/M/M/000",
+    "secteur": "Agroalimentaire",
+    "taille": "PME",
+    "gouvernorat": "Gabès",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 197000.0,
+     "penalites": 65986.83,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 681 856 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 65000.0,
+     "penalites": 8984.444,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Chiffre d'affaires reconstitué par application d'un coefficient de marge.",
+     "motivation_qualite": "sommaire",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2024,
+     "montant_principal": 15000.0,
+     "penalites": 4659.475,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 64 551 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    }
+   ]
+  },
+  "defects": []
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-028\nDate de notification : 29/08/2025\n\nDestinataire : Société Voyages Nour SUARL\nMatricule fiscal : 1697949Y/A/M/000\nActivité : Tourisme et hôtellerie\nGouvernorat : Tunis\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 25/01/2025\nDate de début de la vérification : 21/02/2025\nComptabilité : non admise (non probante)\nExercices vérifiés : 2020, 2021\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : Minoration du chiffre d'affaires (recettes non déclarées)\nImpôt : IS — Exercice : 2021\nBase légale : article 38 du CDPF\nMéthode : Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)\nMotivation : Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 85 718 DT non justifié, considéré comme des recettes non déclarées.\nMontant en principal : 17 000,000 DT\nPénalités : 1 861,613 DT\n\nCHEF N°2 : Charges non déductibles réintégrées au résultat\nImpôt : IS — Exercice : 2021\nBase légale : article 11 du Code de l'IRPP et de l'IS\nMéthode : Réintégration des charges au résultat imposable\nMotivation : Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 47 227 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.\nMontant en principal : 8 000,000 DT\nPénalités : 1 660,395 DT\n\nRÉCAPITULATIF\nTotal en principal : 25 000,000 DT\nTotal des pénalités : 3 522,008 DT\nTOTAL EXIGIBLE : 28 522,008 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-028",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2025-01-25",
+   "date_debut_verification": "2025-02-21",
+   "date_notification": "2025-08-29",
+   "exercices_verifies": [
+    2020,
+    2021
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": true,
+   "entreprise": {
+    "nom": "Société Voyages Nour SUARL",
+    "matricule_fiscal": "1697949Y/A/M/000",
+    "secteur": "Tourisme et hôtellerie",
+    "taille": "TPE",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "MINORATION_CA",
+     "libelle": "Minoration du chiffre d'affaires (recettes non déclarées)",
+     "impot": "IS",
+     "exercice": 2021,
+     "montant_principal": 17000.0,
+     "penalites": 1861.613,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "Le rapprochement entre les encaissements figurant sur les relevés bancaires et le chiffre d'affaires déclaré fait apparaître un écart de 85 718 DT non justifié, considéré comme des recettes non déclarées.",
+     "motivation_qualite": "detaillee",
+     "methode": "Rapprochement bancaire (encaissements / chiffre d'affaires déclaré)"
+    },
+    {
+     "id": "C2",
+     "type": "CHARGES_NON_DEDUCTIBLES",
+     "libelle": "Charges non déductibles réintégrées au résultat",
+     "impot": "IS",
+     "exercice": 2021,
+     "montant_principal": 8000.0,
+     "penalites": 1660.395,
+     "article_invoque": "article 11 du Code de l'IRPP et de l'IS",
+     "motivation": "Les charges comptabilisées au compte 62 (honoraires et commissions) pour un total de 47 227 DT ne sont pas justifiées par des pièces probantes et ne présentent pas de lien établi avec l'activité de l'entreprise. Elles sont réintégrées au résultat fiscal.",
+     "motivation_qualite": "detaillee",
+     "methode": "Réintégration des charges au résultat imposable"
+    }
+   ]
+  },
+  "defects": [
+   "DROIT_REPRISE"
+  ]
+ },
+ {
+  "text": "RÉPUBLIQUE TUNISIENNE\nMINISTÈRE DES FINANCES\nDirection Générale des Impôts\nCentre régional de contrôle des impôts de Tunis\n\nNOTIFICATION DES RÉSULTATS DE LA VÉRIFICATION FISCALE\nRéférence : NR-EVAL-029\nDate de notification : 24/07/2025\n\nDestinataire : Société Textile Jasmin SARL\nMatricule fiscal : 1629811H/M/M/000\nActivité : Industrie textile\nGouvernorat : Tunis\nTaille : TPE\n\nNature de la vérification : vérification approfondie\nAvis de vérification notifié le : 26/11/2024\nDate de début de la vérification : 24/12/2024\nComptabilité : non admise (non probante)\nExercices vérifiés : 2020, 2021\n\nMadame, Monsieur,\nÀ l'issue de la vérification de votre situation fiscale, nous avons l'honneur de vous notifier, conformément à l'article 43 du Code des droits et procédures fiscaux, les redressements suivants.\nVous pouvez vous faire assister, pour la discussion de ces résultats, par une personne de votre choix ou vous faire représenter par un mandataire (article 42 du CDPF).\n\nCHEF N°1 : TVA déduite sur des factures non conformes ou fictives\nImpôt : TVA — Exercice : 2020\nBase légale : non précisée\nMéthode : Réintégration de la TVA déduite sur les factures concernées\nMotivation : Néant.\nMontant en principal : 19 000,000 DT\nPénalités : selon la législation en vigueur\n\nCHEF N°2 : Reconstitution du chiffre d'affaires par présomptions\nImpôt : IS — Exercice : 2021\nBase légale : article 38 du CDPF\nMéthode : Reconstitution par coefficient de marge\nMotivation : La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.36 observé sur un échantillon de factures de vente.\nMontant en principal : 15 000,000 DT\nPénalités : selon la législation en vigueur\n\nCHEF N°3 : Retenue à la source non effectuée ou non reversée\nImpôt : RS — Exercice : 2020\nBase légale : article 52 du Code de l'IRPP et de l'IS\nMéthode : Application du taux de retenue aux montants versés\nMotivation : Retenue à la source non effectuée.\nMontant en principal : 12 000,000 DT\nPénalités : selon la législation en vigueur\n\nRÉCAPITULATIF\nTotal en principal : 46 000,000 DT\n\nVous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un délai de trente (30) jours à compter de la date de la présente notification (articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).\n\nLe Chef de centre\n(document synthétique généré pour le prototype JISER)",
+  "truth": {
+   "reference": "NR-EVAL-029",
+   "centre": "Centre régional de contrôle des impôts de Tunis",
+   "type_verification": "approfondie",
+   "comptabilite_conforme": false,
+   "date_avis": "2024-11-26",
+   "date_debut_verification": "2024-12-24",
+   "date_notification": "2025-07-24",
+   "exercices_verifies": [
+    2020,
+    2021
+   ],
+   "mention_assistance": true,
+   "mention_delai_30j": true,
+   "penalites_indiquees": false,
+   "entreprise": {
+    "nom": "Société Textile Jasmin SARL",
+    "matricule_fiscal": "1629811H/M/M/000",
+    "secteur": "Industrie textile",
+    "taille": "TPE",
+    "gouvernorat": "Tunis",
+    "regime": "Réel"
+   },
+   "chefs": [
+    {
+     "id": "C1",
+     "type": "TVA_FACTURES_NON_CONFORMES",
+     "libelle": "TVA déduite sur des factures non conformes ou fictives",
+     "impot": "TVA",
+     "exercice": 2020,
+     "montant_principal": 19000.0,
+     "penalites": 5968.86,
+     "article_invoque": null,
+     "motivation": "",
+     "motivation_qualite": "absente",
+     "methode": "Réintégration de la TVA déduite sur les factures concernées"
+    },
+    {
+     "id": "C2",
+     "type": "RECONSTITUTION_CA",
+     "libelle": "Reconstitution du chiffre d'affaires par présomptions",
+     "impot": "IS",
+     "exercice": 2021,
+     "montant_principal": 15000.0,
+     "penalites": 3288.448,
+     "article_invoque": "article 38 du CDPF",
+     "motivation": "La comptabilité n'ayant pas été admise, le chiffre d'affaires a été reconstitué à partir des achats revendus affectés d'un coefficient de marge de 1.36 observé sur un échantillon de factures de vente.",
+     "motivation_qualite": "detaillee",
+     "methode": "Reconstitution par coefficient de marge"
+    },
+    {
+     "id": "C3",
+     "type": "RETENUE_SOURCE_NON_EFFECTUEE",
+     "libelle": "Retenue à la source non effectuée ou non reversée",
+     "impot": "RS",
+     "exercice": 2020,
+     "montant_principal": 12000.0,
+     "penalites": 2198.739,
+     "article_invoque": "article 52 du Code de l'IRPP et de l'IS",
+     "motivation": "Retenue à la source non effectuée.",
+     "motivation_qualite": "sommaire",
+     "methode": "Application du taux de retenue aux montants versés"
+    }
+   ]
+  },
+  "defects": [
+   "PENALITES_INDIQUEES",
+   "DROIT_REPRISE"
+  ]
+ }
+]
