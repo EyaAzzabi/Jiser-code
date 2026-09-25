@@ -36,6 +36,23 @@ EXPLICATIONS = {
 }
 
 
+EXPLICATIONS_DERJA = {
+    "TVA_FACTURES_NON_CONFORMES": "El idara rafdhet el TVA elli na7itha 3la chwaya factures d'achat. T9oul elli el factures hedhom "
+                                  "mouch conformes walla ma yet9ablouch m3a 3amaliyat 7a9i9iya. Donc lazmek trajja3 el TVA hedhi, "
+                                  "w zeda pénalités.",
+    "CHARGES_NON_DEDUCTIBLES": "El idara t9oul elli fama masarif ma tnajjemch tna7iha mel bénéfice mte3ek (ma fammech wra9, walla "
+                               "ma 3andhomch 3ala9a bel activité). Zedethom 3al bénéfice imposable.",
+    "MINORATION_CA": "El idara t9arren bin déclarations mte3ek w relevés bancaires, w t9oul elli déclarit chiffre d'affaires "
+                     "a9al men elli dkhal belfa3l fel compte.",
+    "RECONSTITUTION_CA": "El comptabilité mte3ek ma t9ablitch, donc el idara 3awdet 7asbet el chiffre d'affaires wa7dha b "
+                         "méthode d'estimation (par exemple coefficient de marge).",
+    "RETENUE_SOURCE_NON_EFFECTUEE": "Kan lazmek t9ass pourcentage men chwaya flous khallasthom (honoraires, commissions…) w "
+                                    "trajja3ou lel dawla. El idara t9oul elli hedha ma sarech.",
+    "AVANTAGES_ENTREPRISES_LIEES": "El idara t9oul elli bi3t walla chrit m3a chrika 9riba menek b soum mouch normal, w hedha "
+                                   "na99as el bénéfice mte3ek. Zedet el far9.",
+}
+
+
 def _contestabilite(p_maintenu: float, chef: ChefRedressement, notif: Notification) -> str:
     if notif.date_notification.year > chef.exercice + DROIT_REPRISE_ANS or chef.motivation_qualite == "absente":
         return "contestable"
@@ -98,10 +115,13 @@ class _LLMAnalyse(BaseModel):
     chefs: list[_LLMChef]
 
 
-def _llm_rewrite(analyse: AnalyseNotification) -> _LLMAnalyse | None:
+def _llm_rewrite(analyse: AnalyseNotification, langue: str = "fr") -> _LLMAnalyse | None:
     if not llm.available():
         return None
-    parts = [
+    langue_txt = ("Écris tout en derja tunisienne (caractères latins, chiffres 3/7/9 comme à l'écrit tunisien), "
+                  "en gardant les noms d'articles et termes juridiques en français." if langue == "derja"
+                  else "Écris en français simple.")
+    parts = [langue_txt,
         "Voici l'analyse automatique d'une notification de redressement fiscal (JSON), avec les articles de loi "
         "retrouvés pour chaque chef. Réécris pour le chef d'entreprise : (1) un résumé de 3 phrases maximum de sa "
         "situation et de ce qu'il doit faire avant la date limite ; (2) pour chaque chef, une explication simple de ce "
@@ -115,7 +135,8 @@ def _llm_rewrite(analyse: AnalyseNotification) -> _LLMAnalyse | None:
         return None
 
 
-def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, today: date | None = None) -> AnalyseNotification:
+def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, today: date | None = None,
+            langue: str = "fr") -> AnalyseNotification:
     today = today or date.today()
     procedure = check_procedure(notif)
     vices_dossier = [p for p in procedure if p.statut == "vice" and p.code != "CHEFS_MOTIVES"]
@@ -132,7 +153,8 @@ def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, tod
         meta = CHEF_TYPES.get(chef.type, {})
         chefs.append(ChefAnalyse(
             chef=chef,
-            explication=EXPLICATIONS.get(chef.type, "L'administration a redressé ce point : lisez la motivation ci-dessous."),
+            explication=(EXPLICATIONS_DERJA if langue == "derja" else EXPLICATIONS).get(
+                chef.type, "L'administration a redressé ce point : lisez la motivation ci-dessous."),
             contestabilite=_contestabilite(float(p[0]), chef, notif),
             arguments=_arguments(chef, notif, vices_dossier),
             pieces_a_fournir=meta.get("pieces", ["Toute pièce justifiant l'opération redressée"]),
@@ -145,12 +167,18 @@ def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, tod
               f"sera établie d'office (article 47). {n_contest} chef(s) sur {len(chefs)} peuvent être contestés"
               + (f", et {len(vices_dossier)} vice(s) de procédure ont été détectés." if vices_dossier else ".")
               + " Faites relire votre réponse par un conseiller fiscal.")
+    if langue == "derja":
+        resume = (f"Lazmek tjeweb bel ktiba 9bal {deadline:%d/%m/%Y} (article 44 du CDPF), sinon el idara ta3mel "
+                  f"taxation d'office (article 47). {n_contest} chef(s) men {len(chefs)} tnajjem tcontestihom"
+                  + (f", w l9ina {len(vices_dossier)} vice(s) de procédure." if vices_dossier else ".")
+                  + " Khalli conseiller fiscal y9ra el réponse 9bal ma tab3athha.")
     result = AnalyseNotification(
         notification=notif, montant_total=notif.montant_total, date_limite_reponse=deadline,
         jours_restants=(deadline - today).days, procedure=procedure, chefs=chefs, resume=resume,
         montant_contestable=round(contestable_amount, 3), mode="hors_ligne")
 
-    rewrite = _llm_rewrite(result)
+    result.langue = langue
+    rewrite = _llm_rewrite(result, langue)
     if rewrite:
         by_id = {c.chef_id: c for c in rewrite.chefs}
         for ca in result.chefs:

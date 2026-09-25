@@ -1,0 +1,145 @@
+"""Generate the three n8n workflows used by JISER (importable JSON files in n8n/).
+
+1. jiser-otp.json        Webhook -> check secret -> send the OTP e-mail -> respond
+2. jiser-bienvenue.json  Webhook -> check secret -> send the welcome e-mail (account activated) -> respond
+3. jiser-rappels.json    Every day 08:00 -> GET /api/n8n/echeances -> reminder e-mail per reply due within 7 days
+
+After import in n8n: set the SMTP credential on the "Envoyer" nodes, replace CHANGE_ME_SECRET with the
+value of N8N_SHARED_SECRET from .env, set the API URL in the reminder workflow, then activate.
+"""
+from __future__ import annotations
+
+import json
+import uuid
+from pathlib import Path
+
+OUT = Path(__file__).resolve().parents[1] / "n8n"
+SECRET = "CHANGE_ME_SECRET"
+FROM = "JISER <no-reply@jiser.tn>"
+API = "http://localhost:8000"
+
+NAVY, GOLD = "#0b2f5b", "#c29a2e"
+
+
+def page(title: str, body: str) -> str:
+    return f"""<div style="font-family:Arial,sans-serif;background:#f6f8fb;padding:24px">
+<div style="max-width:560px;margin:auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
+<div style="background:{NAVY};padding:20px 24px;color:#ffffff;font-size:22px;font-weight:bold">J<span style="color:{GOLD}">i</span>SER <span style="color:{GOLD};font-weight:normal">جسر</span>
+<div style="font-size:12px;font-weight:normal;color:#cbd5e1">Le pont entre le contribuable et l'administration fiscale</div></div>
+<div style="padding:24px;color:#1e293b;font-size:15px;line-height:1.6"><h2 style="color:{NAVY};margin-top:0">{title}</h2>{body}</div>
+<div style="padding:14px 24px;background:#f1f5f9;color:#64748b;font-size:12px">Message automatique de JISER. Ne partagez jamais votre code.</div>
+</div></div>"""
+
+
+def node(name: str, ntype: str, version: float, params: dict, pos: tuple[int, int], creds: dict | None = None) -> dict:
+    n = {"id": str(uuid.uuid4()), "name": name, "type": ntype, "typeVersion": version, "position": list(pos), "parameters": params}
+    if creds:
+        n["credentials"] = creds
+    return n
+
+
+def secret_check(name: str, pos) -> dict:
+    return node(name, "n8n-nodes-base.if", 2, {
+        "conditions": {
+            "options": {"caseSensitive": True, "leftValue": "", "typeValidation": "strict"},
+            "conditions": [{"id": str(uuid.uuid4()), "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
+                            "rightValue": SECRET, "operator": {"type": "string", "operation": "equals"}}],
+            "combinator": "and"},
+        "options": {}}, pos)
+
+
+def respond(name: str, code: int, pos) -> dict:
+    return node(name, "n8n-nodes-base.respondToWebhook", 1.1, {
+        "respondWith": "json", "responseBody": json.dumps({"ok": code == 200}),
+        "options": {"responseCode": code}}, pos)
+
+
+def email(name: str, to: str, subject: str, html: str, pos) -> dict:
+    return node(name, "n8n-nodes-base.emailSend", 2.1, {
+        "fromEmail": FROM, "toEmail": to, "subject": subject, "emailFormat": "html", "html": html, "options": {}},
+        pos, {"smtp": {"id": "", "name": "SMTP JISER"}})
+
+
+def webhook_flow(wf_name: str, path: str, send: dict) -> dict:
+    wh = node("Webhook", "n8n-nodes-base.webhook", 2, {"httpMethod": "POST", "path": path, "responseMode": "responseNode", "options": {}}, (0, 0))
+    wh["webhookId"] = str(uuid.uuid4())
+    chk = secret_check("Secret valide ?", (240, 0))
+    ok = respond("Réponse OK", 200, (720, -100))
+    ko = respond("Refusé", 401, (480, 120))
+    send["position"] = [480, -100]
+    return {
+        "name": wf_name, "nodes": [wh, chk, send, ok, ko],
+        "connections": {
+            "Webhook": {"main": [[{"node": chk["name"], "type": "main", "index": 0}]]},
+            chk["name"]: {"main": [[{"node": send["name"], "type": "main", "index": 0}], [{"node": ko["name"], "type": "main", "index": 0}]]},
+            send["name"]: {"main": [[{"node": ok["name"], "type": "main", "index": 0}]]},
+        },
+        "settings": {"executionOrder": "v1"}, "active": False,
+    }
+
+
+def otp_workflow() -> dict:
+    html = page("Votre code de vérification",
+                "<p>Voici votre code à usage unique pour accéder à JISER :</p>"
+                f"<p style=\"font-size:34px;letter-spacing:10px;font-weight:bold;color:{NAVY};text-align:center;"
+                f"background:#f6edd4;border-radius:12px;padding:14px\">{{{{ $('Webhook').item.json.body.code }}}}</p>"
+                "<p>Il est valable <b>{{ $('Webhook').item.json.body.expire_minutes }} minutes</b> et ne peut servir qu'une fois.</p>"
+                "<p style=\"color:#64748b\">Si vous n'êtes pas à l'origine de cette demande, ignorez ce message : votre compte reste protégé.</p>")
+    send = email("Envoyer le code", "={{ $('Webhook').item.json.body.email }}",
+                 "={{ $('Webhook').item.json.body.code }} est votre code JISER", "=" + html, (0, 0))
+    return webhook_flow("JISER · Code OTP par e-mail", "jiser-otp", send)
+
+
+def welcome_workflow() -> dict:
+    html = page("Bienvenue sur JISER, {{ $('Webhook').item.json.body.prenom }} !",
+                "<p>Votre espace <b>{{ $('Webhook').item.json.body.role_label }}</b> est activé. Votre identité a été vérifiée par code à usage unique.</p>"
+                "<p><b>Vos prochaines étapes :</b></p>"
+                "{{ ({"
+                "entreprise: '<ol><li>Déposez votre notification de redressement</li><li>Lisez l\\'analyse chef par chef</li><li>Générez votre brouillon de réponse avant la date limite</li></ol>',"
+                "conseil: '<ol><li>Analysez la notification de votre client</li><li>Vérifiez les vices de procédure</li><li>Complétez le brouillon de réponse</li></ol>',"
+                "verificateur: '<ol><li>Déposez votre projet de notification</li><li>Corrigez les points de procédure signalés</li><li>Renforcez les chefs mal motivés</li></ol>',"
+                "contentieux: '<ol><li>Consultez le stock trié par priorité</li><li>Ouvrez un dossier : score et explication</li><li>Validez les propositions de conciliation</li></ol>'"
+                "})[$('Webhook').item.json.body.role] || '' }}"
+                f"<p style=\"text-align:center;margin-top:24px\"><a href=\"{{{{ $('Webhook').item.json.body.lien }}}}\" "
+                f"style=\"background:{GOLD};color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Accéder à mon espace</a></p>"
+                "<p style=\"color:#64748b;font-size:13px\">L'IA de JISER recommande et explique ; la décision reste toujours humaine.</p>")
+    send = email("Envoyer la bienvenue", "={{ $('Webhook').item.json.body.email }}",
+                 "Votre espace JISER est activé", "=" + html, (0, 0))
+    return webhook_flow("JISER · E-mail de bienvenue (activation)", "jiser-bienvenue", send)
+
+
+def reminders_workflow() -> dict:
+    trigger = node("Chaque jour à 8h", "n8n-nodes-base.scheduleTrigger", 1.2,
+                   {"rule": {"interval": [{"field": "cronExpression", "expression": "0 8 * * *"}]}}, (0, 0))
+    fetch = node("Échéances à 7 jours", "n8n-nodes-base.httpRequest", 4.2, {
+        "url": f"{API}/api/n8n/echeances?jours=7", "sendHeaders": True,
+        "headerParameters": {"parameters": [{"name": "X-Jiser-Secret", "value": SECRET}]}, "options": {}}, (240, 0))
+    html = page("Rappel : répondez avant le {{ $json.date_limite }}",
+                "<p>Bonjour {{ $json.prenom }},</p>"
+                "<p>Il vous reste <b>{{ $json.jours_restants }} jour(s)</b> pour répondre à la notification "
+                "<b>{{ $json.reference }}</b> ({{ $json.entreprise }}). Passé ce délai, la taxation peut être établie d'office "
+                "(articles 44 et 47 du CDPF).</p>"
+                f"<p style=\"text-align:center\"><a href=\"http://localhost:5173/entreprise\" style=\"background:{NAVY};color:#fff;"
+                "padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p>")
+    send = email("Envoyer le rappel", "={{ $json.email }}",
+                 "=⏰ Plus que {{ $json.jours_restants }} jour(s) pour répondre à {{ $json.reference }}", "=" + html, (480, 0))
+    return {
+        "name": "JISER · Rappels des délais de réponse", "nodes": [trigger, fetch, send],
+        "connections": {
+            trigger["name"]: {"main": [[{"node": fetch["name"], "type": "main", "index": 0}]]},
+            fetch["name"]: {"main": [[{"node": send["name"], "type": "main", "index": 0}]]},
+        },
+        "settings": {"executionOrder": "v1"}, "active": False,
+    }
+
+
+def main() -> None:
+    OUT.mkdir(exist_ok=True)
+    for fname, wf in (("jiser-otp.json", otp_workflow()), ("jiser-bienvenue.json", welcome_workflow()),
+                      ("jiser-rappels.json", reminders_workflow())):
+        (OUT / fname).write_text(json.dumps(wf, ensure_ascii=False, indent=2), encoding="utf-8")
+        print("written", OUT / fname)
+
+
+if __name__ == "__main__":
+    main()

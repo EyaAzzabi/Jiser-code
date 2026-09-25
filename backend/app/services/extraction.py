@@ -84,7 +84,7 @@ def from_upload(data: bytes, filename: str, content_type: str | None) -> tuple[N
             raise ExtractionError("La lecture d'une photo nécessite l'IA (mode hors ligne actif).")
         media = "image/png" if name.endswith(".png") else "image/webp" if name.endswith(".webp") else "image/jpeg"
         content = [
-            {"type": "image", "source": {"type": "base64", "media_type": media, "data": base64.b64encode(data).decode()}},
+            {"type": "image", "media_type": media, "data": base64.b64encode(data).decode()},
             {"type": "text", "text": EXTRACTION_PROMPT},
         ]
         try:

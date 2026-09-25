@@ -20,21 +20,34 @@ Prérequis : Python 3.11+, Node 20+.
 # 1. Backend
 python -m venv .venv
 .venv/Scripts/python -m pip install -r backend/requirements.txt     # Windows
-# source .venv/bin/activate && pip install -r backend/requirements.txt   # macOS / Linux
-cp .env.example .env            # ajouter ANTHROPIC_API_KEY (facultatif)
+cp .env.example .env            # puis remplir les clés (voir ci-dessous)
 .venv/Scripts/python -m uvicorn app.main:app --app-dir backend --port 8000
 
 # 2. Frontend (autre terminal)
-cd frontend
-npm install
-npm run dev                      # http://localhost:5173
+cd frontend && npm install && npm run dev      # http://localhost:5173
 ```
 
 Documentation de l'API (Swagger) : http://localhost:8000/docs
 
-Sans clé API ou sans crédit, l'application fonctionne en **mode hors ligne** : lecture structurée des notifications, règles du CDPF et modèle ML ; seules la reformulation par l'IA et la lecture de photos sont désactivées.
+### Configuration (`.env`)
 
-Ajouter `?noguide` à l'URL pour ouvrir l'application sans l'onboarding (utile en démo).
+| Service | Rôle | Mise en place |
+|---|---|---|
+| **Gemini** (gratuit) | Lecture des photos, explications en français et en tounsi, assistant, rédaction, avis juridique | Créer une clé sur https://aistudio.google.com/apikey → `GEMINI_API_KEY` |
+| **Supabase** | Base de données : comptes, sessions, codes OTP (hachés), analyses, réponses, journal, dossiers | Créer un projet → SQL Editor → exécuter `supabase/schema.sql` → `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (Project Settings › API) → `python scripts/seed_supabase.py` |
+| **n8n** | E-mails : code OTP, bienvenue à l'activation du compte, rappels quotidiens des délais | Importer les 3 fichiers de `n8n/`, choisir un identifiant SMTP (ex. Gmail + mot de passe d'application), remplacer `CHANGE_ME_SECRET` par `N8N_SHARED_SECRET`, activer, puis copier les URL de production des webhooks dans `N8N_OTP_WEBHOOK_URL` et `N8N_WELCOME_WEBHOOK_URL` |
+| **Admin plateforme** | Espace privé `/plateforme` | Mettre les e-mails autorisés dans `ADMIN_EMAILS` |
+
+Sans ces services, l'application reste utilisable : IA remplacée par les règles et le modèle ML, base en mémoire, et codes OTP écrits uniquement dans le journal du serveur (jamais affichés à l'écran).
+
+### Sécurité
+
+- Accès par **code à usage unique envoyé par e-mail** : 6 chiffres, 5 minutes, 5 essais, usage unique, renvoi limité à un code toutes les 30 secondes ; seul un hachage salé est stocké.
+- Jeton de session aléatoire (256 bits), stocké haché, valable 8 heures.
+- Contrôle d'accès par rôle sur chaque route de l'API (entreprise / administration / administrateur).
+- L'espace administrateur n'apparaît nulle part dans l'interface : accessible uniquement par son lien et pour les e-mails autorisés.
+- Supabase : Row Level Security activée sans politique publique ; seule l'API (clé service) accède aux données.
+- Chaque recommandation de l'IA et chaque décision humaine est inscrite au journal.
 
 ## Reproduire les données et le modèle
 
@@ -71,13 +84,13 @@ Voir `models/metrics.json`. Sur 625 dossiers de test : AUC 0,71 par chef ; avec 
 ## Sources, modèles et bibliothèques
 
 - Textes de loi : [Jurisite Tunisie](https://www.jurisitetunisie.com) (CDPF, Code de la TVA, Code de l'IRPP et de l'IS), version publiée sur le site ; à vérifier avec les dernières lois de finances.
-- LLM : Claude (Anthropic), modèle configurable (`JISER_LLM_MODEL`, par défaut `claude-sonnet-5`).
+- LLM : Gemini (Google AI Studio, niveau gratuit) par défaut ; Claude (Anthropic) en option.
+- Automatisation : n8n (e-mails). Base de données : Supabase (PostgreSQL).
 - Bibliothèques : FastAPI, Pydantic, XGBoost, SHAP, scikit-learn, rank-bm25, pypdf, ReportLab, React, Tailwind CSS, Recharts, lucide-react.
 - Données : entièrement synthétiques (aucune donnée réelle de contribuable).
 
 ## Limites
 
 - Modèle entraîné sur données synthétiques (règles métier + bruit).
-- OTP en mode démonstration : le code est affiché à l'écran ; en production il serait envoyé par SMS ou e-mail.
-- Sessions et journal en mémoire (PostgreSQL en production).
+- Les comptes de l'administration (vérificateurs, contentieux) devraient être validés par un administrateur avant activation.
 - L'IA recommande et explique ; la décision reste humaine.

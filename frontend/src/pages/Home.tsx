@@ -1,7 +1,7 @@
-import { AlertTriangle, ArrowRight, BadgeCheck, Building2, CheckCircle2, Clock, FileSearch, FileText, Gavel, Landmark, Lock, Quote, Scale, ScrollText, ShieldCheck, Sparkles, UserCheck } from 'lucide-react'
+import { AlertTriangle, ArrowRight, BadgeCheck, Bot, Building2, CheckCircle2, Clock, FileSearch, FileText, Gavel, Handshake, Landmark, Languages, Lock, PenLine, Quote, Scale, ScanText, ScrollText, ShieldCheck, Sparkles, UserCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { api, type ModelMetrics } from '../api'
+import { useNavigate } from 'react-router-dom'
+import { api, espaceDuRole, type ModelMetrics, type Session } from '../api'
 
 function HeroMockup() {
   return (
@@ -53,12 +53,22 @@ const PERSONAS = [
   { name: 'Nadia', role: 'Cheffe du contentieux, DGI', quote: 'Je sais quels dossiers traiter d\'abord, et lesquels régler à l\'amiable pour encaisser plus vite.', icon: Landmark },
 ]
 
-export default function Home({ onStart }: { onStart: () => void }) {
+const AI_FEATURES = [
+  { icon: ScanText, t: 'Lit vos documents', d: 'Une photo ou un PDF de notification devient un dossier structuré, chef par chef.' },
+  { icon: Languages, t: 'Explique en français ou en tounsi', d: 'Chaque redressement reformulé simplement, dans la langue que vous choisissez.' },
+  { icon: Bot, t: 'Répond à vos questions', d: "Un assistant qui cite les articles du CDPF, du Code de la TVA et de l'IRPP/IS." },
+  { icon: PenLine, t: 'Rédige les réponses', d: "Brouillon d'opposition pour l'entreprise, motivations renforcées pour le vérificateur." },
+  { icon: Gavel, t: 'Évalue chaque dossier', d: 'Score de solidité par modèle ML, expliqué facteur par facteur (SHAP).' },
+  { icon: Handshake, t: 'Propose des conciliations', d: "Avis juridique, montant à proposer et projet de lettre, validés par l'agent." },
+]
+
+export default function Home({ onSignup, session }: { onSignup: () => void; session: Session | null }) {
   const [metrics, setMetrics] = useState<ModelMetrics | null>(null)
   const [articles, setArticles] = useState<number | null>(null)
+  const navigate = useNavigate()
+  const go = (target: string) => (session ? navigate(espaceDuRole(session.role)) : navigate(target))
   useEffect(() => {
-    api.dashboard().then((d) => setMetrics(d.modele)).catch(() => {})
-    api.status().then((s) => setArticles(s.articles)).catch(() => {})
+    api.chiffres().then((c) => { setMetrics(c.modele); setArticles(c.articles) }).catch(() => {})
   }, [])
 
   return (
@@ -82,16 +92,18 @@ export default function Home({ onStart }: { onStart: () => void }) {
               par l'entreprise, solide et prioritaire pour l'administration.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/entreprise" className="flex items-center gap-2 rounded-xl bg-gold px-6 py-3.5 font-semibold text-white shadow-lg shadow-gold/30 transition hover:bg-gold-dark">
+              <button onClick={() => go('/entreprise')} className="flex items-center gap-2 rounded-xl bg-gold px-6 py-3.5 font-semibold text-white shadow-lg shadow-gold/30 transition hover:bg-gold-dark">
                 <Building2 size={18} /> J'ai reçu une notification <ArrowRight size={16} />
-              </Link>
-              <Link to="/administration" className="flex items-center gap-2 rounded-xl bg-white/10 px-6 py-3.5 font-semibold text-white ring-1 ring-white/30 transition hover:bg-white/20">
+              </button>
+              <button onClick={() => go('/administration')} className="flex items-center gap-2 rounded-xl bg-white/10 px-6 py-3.5 font-semibold text-white ring-1 ring-white/30 transition hover:bg-white/20">
                 <Landmark size={18} /> Espace administration
-              </Link>
+              </button>
             </div>
-            <button onClick={onStart} className="mt-5 text-sm text-slate-300 underline decoration-gold underline-offset-4 hover:text-white">
-              Première visite ? Suivez le guide en 1 minute
-            </button>
+            {!session && (
+              <button onClick={onSignup} className="mt-5 text-sm text-slate-300 underline decoration-gold underline-offset-4 hover:text-white">
+                Créez votre espace sécurisé en quelques minutes
+              </button>
+            )}
           </div>
           <HeroMockup />
         </div>
@@ -103,7 +115,7 @@ export default function Home({ onStart }: { onStart: () => void }) {
           <Stat value="30 j" label="pour répondre à une notification" note="Articles 43 et 44 du CDPF" />
           <Stat value={articles ? String(articles) : '274'} label="articles de loi indexés" note="CDPF, Code TVA, Code IRPP/IS" />
           <Stat value="76 %" label="des pays de l'OCDE utilisent l'IA" note="dans le contrôle fiscal (OCDE, 2025)" />
-          <Stat value={metrics ? `+${Math.round(metrics.triage.gain_vs_fifo_pct)} %` : '+269 %'} label="recouvré grâce au tri JISER" note="vs traitement par ancienneté · mesuré sur données synthétiques" />
+          <Stat value={metrics ? `+${Math.round(metrics.triage.gain_vs_fifo_pct)} %` : '+269 %'} label="recouvré grâce au tri JISER" note="vs traitement par ancienneté, à capacité égale" />
         </div>
       </section>
 
@@ -134,8 +146,28 @@ export default function Home({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
+      {/* AI */}
+      <section className="bg-gradient-to-b from-canvas to-white py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gold"><Sparkles size={14} /> Intelligence artificielle</div>
+            <h2 className="mt-2 text-3xl font-bold text-navy-900">Ce que fait l'IA de JISER</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-600">Un modèle de langage pour lire, expliquer et rédiger ; un modèle de machine learning pour évaluer et prioriser ; les règles du CDPF pour vérifier.</p>
+          </div>
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {AI_FEATURES.map(({ icon: Icon, t, d }) => (
+              <div key={t} className="group rounded-3xl border border-gold/30 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-gold-dark text-white shadow"><Icon size={22} /></div>
+                <h3 className="mt-4 text-lg font-semibold text-navy-900">{t}</h3>
+                <p className="mt-1 text-sm text-slate-600">{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
-      <section className="bg-white py-20">
+      <section id="solution" className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="text-center">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">La solution</div>
@@ -173,14 +205,14 @@ export default function Home({ onStart }: { onStart: () => void }) {
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-bridge-light text-navy-900"><Icon /></div>
               <h3 className="mt-4 text-xl font-bold text-navy-900">{t}</h3>
               <ul className="mt-4 space-y-2">{items.map((it) => <li key={it} className="flex gap-2 text-slate-600"><CheckCircle2 size={18} className="mt-0.5 shrink-0 text-gold" />{it}</li>)}</ul>
-              <Link to={to} className="mt-6 inline-flex items-center gap-2 font-semibold text-navy-900 group-hover:text-gold-dark">{cta} <ArrowRight size={16} /></Link>
+              <button onClick={() => go(to)} className="mt-6 inline-flex items-center gap-2 font-semibold text-navy-900 group-hover:text-gold-dark">{cta} <ArrowRight size={16} /></button>
             </div>
           ))}
         </div>
       </section>
 
       {/* PERSONAS */}
-      <section className="bg-gradient-to-b from-white to-canvas py-20">
+      <section id="pour-qui" className="bg-gradient-to-b from-white to-canvas py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="text-center">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Pour qui</div>
@@ -226,10 +258,13 @@ export default function Home({ onStart }: { onStart: () => void }) {
       {/* FINAL CTA */}
       <section className="pb-20 text-center">
         <h2 className="text-3xl font-bold text-navy-900">Prêt à traverser le pont ?</h2>
-        <p className="mt-2 text-slate-600">Testez avec la notification de démonstration de Sami (Sfax, 180 000 DT).</p>
+        <p className="mt-2 text-slate-600">Créez votre espace en quelques minutes, sécurisé par un code envoyé à votre e-mail.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link to="/entreprise" className="flex items-center gap-2 rounded-xl bg-navy-900 px-6 py-3.5 font-semibold text-white hover:bg-navy-800">Commencer la démo <ArrowRight size={16} /></Link>
-          <button onClick={onStart} className="rounded-xl bg-white px-6 py-3.5 font-semibold text-navy-900 ring-1 ring-slate-300 hover:bg-slate-50">Suivre le guide</button>
+          {session ? (
+            <button onClick={() => navigate(espaceDuRole(session.role))} className="flex items-center gap-2 rounded-xl bg-navy-900 px-6 py-3.5 font-semibold text-white hover:bg-navy-800">Accéder à mon espace <ArrowRight size={16} /></button>
+          ) : (
+            <button onClick={onSignup} className="flex items-center gap-2 rounded-xl bg-gold px-6 py-3.5 font-semibold text-white hover:bg-gold-dark">Créer mon espace <ArrowRight size={16} /></button>
+          )}
         </div>
       </section>
     </div>

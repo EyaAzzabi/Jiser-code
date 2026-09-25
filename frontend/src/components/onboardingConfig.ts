@@ -1,6 +1,7 @@
-import { Briefcase, Building2, Landmark, Settings, UserCheck, type LucideIcon } from 'lucide-react'
+import { Briefcase, Building2, Landmark, UserCheck, type LucideIcon } from 'lucide-react'
 
-export type Role = 'entreprise' | 'conseil' | 'verificateur' | 'contentieux' | 'admin'
+// The platform administrator is not self-service: that account is reached only through its private link.
+export type Role = 'entreprise' | 'conseil' | 'verificateur' | 'contentieux'
 
 export type FieldType = 'text' | 'select' | 'number' | 'date' | 'multi' | 'toggle'
 
@@ -151,29 +152,6 @@ export const ROLES: RoleConfig[] = [
             options: ['Accélérer le recouvrement', 'Réduire les annulations', 'Développer la conciliation', 'Réduire la durée des dossiers'] },
           { key: 'seuil_alerte', label: "Seuil d'alerte (montant en DT)", type: 'number', placeholder: '500000', help: 'Les dossiers au-dessus de ce montant vous sont signalés.' },
           { key: 'rapport', label: 'Rapport de pilotage', type: 'select', options: ['Hebdomadaire', 'Mensuel', 'Trimestriel'] },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'admin', label: 'Administrateur', who: 'Je gère la plateforme', icon: Settings, to: '/plateforme',
-    parcours: ['Gérez les utilisateurs et les rôles', 'Mettez à jour la base juridique', 'Contrôlez le journal des recommandations IA'],
-    sections: [
-      {
-        title: 'Votre organisation', subtitle: 'Structure et périmètre d\'administration.',
-        fields: [
-          { key: 'structure', label: 'Structure', type: 'text', required: true, placeholder: 'DSI, Ministère des Finances', full: true },
-          { key: 'perimetre', label: 'Périmètre', type: 'select', required: true, options: ['National', 'Régional', 'Pilote'] },
-          { key: 'nb_utilisateurs', label: "Nombre d'utilisateurs prévus", type: 'select', options: ['< 50', '50 à 500', '500 à 5 000', '> 5 000'] },
-        ],
-      },
-      {
-        title: 'Sécurité et conformité', subtitle: 'Règles appliquées à tous les utilisateurs.',
-        fields: [
-          { key: 'otp_obligatoire', label: 'Vérification OTP obligatoire à chaque connexion', type: 'toggle', full: true },
-          { key: 'duree_session', label: 'Durée maximale de session', type: 'select', options: ['1 heure', '4 heures', '8 heures'] },
-          { key: 'retention_journal', label: 'Conservation du journal IA', type: 'select', options: ['1 an', '5 ans', '10 ans'] },
-          { key: 'revue_modele', label: 'Revue du modèle', type: 'select', options: ['Mensuelle', 'Trimestrielle', 'À chaque loi de finances'] },
         ],
       },
     ],

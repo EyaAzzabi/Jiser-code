@@ -110,6 +110,8 @@ class AnalyseNotification(BaseModel):
     resume: str
     montant_contestable: float
     mode: Literal["ia", "hors_ligne"]
+    langue: Literal["fr", "derja"] = "fr"
+    analyse_id: Optional[str] = None
 
 
 class ScoreExplication(BaseModel):

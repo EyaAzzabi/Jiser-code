@@ -72,6 +72,8 @@ export interface Analyse {
   resume: string
   montant_contestable: number
   mode: 'ia' | 'hors_ligne'
+  langue: 'fr' | 'derja'
+  analyse_id: string | null
 }
 
 export interface DossierRow {
@@ -144,13 +146,22 @@ export interface Dashboard {
     taux_recouvrement_historique: number
     taux_chefs_annules: number
     duree_moyenne_mois: number
+    taux_conciliation: number
   }
   par_gouvernorat: { gouvernorat: string; nb: number; montant: number; recouvrable: number }[]
   par_etape: { etape: string; nb: number; montant: number }[]
   par_type: { type: string; montant: number }[]
   causes_annulation: { cause: string; nb: number }[]
+  motifs: { motif: string; nb: number }[]
+  serie_mensuelle: { mois: string; notifies: number; clotures: number }[]
   modele: ModelMetrics | null
 }
+
+export interface AiMode { mode: 'ia' | 'hors_ligne' }
+export interface Synthese extends AiMode { synthese: string; actions: { titre: string; detail: string }[] }
+export interface AvisDossier extends AiMode { avis: string; points_forts: string[]; points_faibles: string[]; lettre_conciliation: string }
+export interface Ameliorations extends AiMode { ameliorations: { chef_id: string; probleme: string; motivation_proposee: string }[] }
+export type ConciliationRow = DossierRow & { montant_propose: number; montant_attendu_contentieux: number; gain_immediat: number }
 
 export interface ModelMetrics {
   n_dossiers_train: number
@@ -171,14 +182,105 @@ export interface ModelMetrics {
 
 export interface Status {
   ok: boolean
-  llm: { ia: boolean; modele?: string; raison?: string }
+  llm: { ia: boolean; fournisseur?: string; modele?: string; raison?: string }
   articles: number
-  dossiers: number
-  date_demo: string
+  base: string
+  date: string
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, init)
+export interface Utilisateur {
+  id: string
+  email: string
+  role: Role
+  nom: string
+  prenom: string
+  fonction: string
+  langue: string
+  details: Record<string, unknown>
+}
+
+export type Role = 'entreprise' | 'conseil' | 'verificateur' | 'contentieux' | 'admin'
+
+export interface Session {
+  token: string
+  role: Role | null
+  utilisateur: Utilisateur | null
+}
+
+export interface OtpDemande {
+  destination_masquee: string
+  expire_dans_s: number
+  renvoi_dans_s: number
+  tentatives_max: number
+  livraison: 'email' | 'journal_serveur'
+}
+
+export interface AnalyseResume {
+  id: string
+  reference: string
+  entreprise: string
+  montant_total: number
+  montant_contestable: number
+  date_limite: string
+  nb_vices: number
+  cree_le: string
+  jours_restants: number
+}
+
+export interface Reponse {
+  id: string
+  analyse_id: string
+  lettre: string
+  mode: string
+  cree_le: string
+}
+
+export interface AssistantAnswer {
+  reponse: string
+  articles: ArticleRef[]
+  suggestions: string[]
+  mode: 'ia' | 'hors_ligne'
+}
+
+// ---- Session (sessionStorage: cleared when the browser tab closes) ---------------------------
+
+let current: Session | null = null
+const listeners = new Set<(s: Session | null) => void>()
+
+export function loadSession(): Session | null {
+  if (current) return current
+  try {
+    const raw = sessionStorage.getItem('jiser-session')
+    current = raw ? (JSON.parse(raw) as Session) : null
+  } catch {
+    current = null
+  }
+  return current
+}
+
+export function saveSession(s: Session | null) {
+  current = s
+  try {
+    if (s) sessionStorage.setItem('jiser-session', JSON.stringify(s))
+    else sessionStorage.removeItem('jiser-session')
+  } catch {
+    /* storage unavailable: session kept in memory */
+  }
+  listeners.forEach((fn) => fn(s))
+}
+
+export function onSessionChange(fn: (s: Session | null) => void) {
+  listeners.add(fn)
+  return () => { listeners.delete(fn) }
+}
+
+// ---- HTTP -----------------------------------------------------------------------------------
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const token = loadSession()?.token
+  const headers = new Headers(init.headers)
+  if (token) headers.set('Authorization', `Bearer ${token}`)
+  const res = await fetch(path, { ...init, headers })
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`
     try {
@@ -187,41 +289,67 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     } catch {
       /* keep status text */
     }
+    if (res.status === 401 && token) saveSession(null)   // expired session: back to login
     throw new Error(detail)
   }
   return res.json() as Promise<T>
 }
 
+const post = (body: unknown): RequestInit => ({
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+})
+
 export const api = {
   status: () => request<Status>('/api/status'),
+  chiffres: () => request<{ articles: number; modele: ModelMetrics | null }>('/api/public/chiffres'),
   exemples: () => request<{ nom: string; fichier: string }[]>('/api/exemples'),
   exempleBlob: async (fichier: string) => {
-    const res = await fetch(`/api/exemples/${fichier}`)
+    const token = loadSession()?.token
+    const res = await fetch(`/api/exemples/${fichier}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
     if (!res.ok) throw new Error('Exemple introuvable')
     return new File([await res.blob()], fichier, { type: 'application/pdf' })
   },
-  analyser: (file: File, endpoint = '/api/contribuable/analyser') => {
+  analyser: (file: File, langue: string, endpoint = '/api/contribuable/analyser') => {
     const form = new FormData()
     form.append('fichier', file)
+    form.append('langue', langue)
     return request<Analyse>(endpoint, { method: 'POST', body: form })
   },
-  brouillon: (analyse: Analyse, signataire: string) =>
-    request<{ lettre: string; mode: string }>('/api/contribuable/brouillon', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ analyse, signataire }),
-    }),
+  analyses: () => request<AnalyseResume[]>('/api/contribuable/analyses'),
+  analyse: (id: string, langue?: string) =>
+    request<Analyse>(`/api/contribuable/analyses/${id}${langue ? `?langue=${langue}` : ''}`),
+  brouillon: (analyse_id: string, signataire: string) =>
+    request<{ lettre: string; mode: string }>('/api/contribuable/brouillon', post({ analyse_id, signataire })),
+  reponses: () => request<Reponse[]>('/api/contribuable/reponses'),
+  assistant: (question: string, langue: string, historique: { role: string; texte: string }[], analyse_id?: string) =>
+    request<AssistantAnswer>('/api/contribuable/assistant', post({ question, langue, historique, analyse_id })),
   dossiers: (params: Record<string, string>) =>
     request<Triage>(`/api/admin/dossiers?${new URLSearchParams(params)}`),
   dossier: (id: string) => request<DossierDetail>(`/api/admin/dossiers/${id}`),
   dashboard: () => request<Dashboard>('/api/admin/tableau-de-bord'),
-  utilisateurs: () => request<{ nom: string; role: string; structure: string }[]>('/api/plateforme/utilisateurs'),
+  syntheseIA: () => request<Synthese>('/api/admin/synthese-ia'),
+  avisIA: (id: string) => request<AvisDossier>(`/api/admin/dossiers/${id}/avis-ia`),
+  ameliorer: (a: Analyse) => request<Ameliorations>('/api/admin/ameliorer-notification', post(a)),
+  conciliations: () => request<ConciliationRow[]>('/api/admin/conciliations'),
+  decision: (id: string, decision: 'validee' | 'refusee') => request<{ ok: boolean }>(`/api/admin/dossiers/${id}/decision`, post({ decision })),
+  utilisateurs: () => request<(Utilisateur & { cree_le: string; derniere_connexion: string | null })[]>('/api/plateforme/utilisateurs'),
   journal: () =>
-    request<{ horodatage: string; action: string; cible: string; recommandation: string; mode: string; decision_humaine: string }[]>(
+    request<{ horodatage: string; action: string; cible: string; recommandation: string; mode: string; decision_humaine: string; utilisateur?: string }[]>(
       '/api/plateforme/journal',
     ),
+  systeme: () => request<{ llm: Status['llm']; base: string; n8n_otp: boolean; n8n_bienvenue: boolean }>('/api/plateforme/systeme'),
   baseJuridique: () => request<{ code: string; nom: string; articles: number; source: string }[]>('/api/plateforme/base-juridique'),
   recherche: (q: string) => request<ArticleRef[]>(`/api/plateforme/recherche-juridique?q=${encodeURIComponent(q)}`),
+}
+
+export const authApi = {
+  demanderOtp: (email: string, intention: 'inscription' | 'connexion' | 'admin') =>
+    request<OtpDemande>('/api/auth/otp/demander', post({ email, intention })),
+  verifierOtp: (email: string, code: string) =>
+    request<{ token: string; role: Role | null; utilisateur: Utilisateur | null }>('/api/auth/otp/verifier', post({ email, code })),
+  enregistrerProfil: (profil: Record<string, unknown>) =>
+    request<{ ok: boolean; utilisateur: Utilisateur }>('/api/auth/profil', post(profil)),
+  deconnexion: () => request<{ ok: boolean }>('/api/auth/deconnexion', { method: 'POST' }),
 }
 
 export const dt = (n: number) =>
@@ -240,51 +368,5 @@ export const articleLabel = (id: string) => {
   return `Art. ${num.replace(/-/g, ' ')} ${CODE_NAMES[code] ?? code}`
 }
 
-// ---- Authentification (OTP) -----------------------------------------------------------------
-
-export interface OtpDemande {
-  destination_masquee: string
-  expire_dans_s: number
-  renvoi_dans_s: number
-  tentatives_max: number
-  code_demo?: string
-}
-
-export interface SessionInfo {
-  token: string
-  profil: { role: string; nom: string; prenom: string; details: Record<string, unknown>; contact: string }
-}
-
-const json = (body: unknown, token?: string): RequestInit => ({
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-  body: JSON.stringify(body),
-})
-
-export const authApi = {
-  demanderOtp: (canal: 'sms' | 'email', destination: string) =>
-    request<OtpDemande>('/api/auth/otp/demander', json({ canal, destination })),
-  verifierOtp: (canal: 'sms' | 'email', destination: string, code: string) =>
-    request<{ token: string }>('/api/auth/otp/verifier', json({ canal, destination, code })),
-  enregistrerProfil: (token: string, profil: Record<string, unknown>) =>
-    request<{ ok: boolean; profil: SessionInfo['profil'] }>('/api/auth/profil', json(profil, token)),
-  deconnexion: (token: string) => request<{ ok: boolean }>('/api/auth/deconnexion', json({}, token)),
-}
-
-export function loadSession(): SessionInfo | null {
-  try {
-    const raw = sessionStorage.getItem('jiser-session')
-    return raw ? (JSON.parse(raw) as SessionInfo) : null
-  } catch {
-    return null
-  }
-}
-
-export function saveSession(s: SessionInfo | null) {
-  try {
-    if (s) sessionStorage.setItem('jiser-session', JSON.stringify(s))
-    else sessionStorage.removeItem('jiser-session')
-  } catch {
-    /* storage unavailable: session lives in memory only */
-  }
-}
+export const espaceDuRole = (role: Role | null | undefined) =>
+  role === 'entreprise' || role === 'conseil' ? '/entreprise' : role === 'admin' ? '/plateforme' : role ? '/administration' : '/'
