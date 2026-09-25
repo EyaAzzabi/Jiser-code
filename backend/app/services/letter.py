@@ -135,7 +135,7 @@ def parse(text: str) -> Notification | None:
             exercice=int(impot_m.group(2)) if impot_m else notif_date.year - 1,
             montant_principal=parse_dt(_field(block, "Montant en principal") or "0"),
             penalites=0.0 if "selon" in pen else parse_dt(pen),
-            article_invoque=(_field(block, "Base légale") or None),
+            article_invoque=base if (base := _field(block, "Base légale")) and base != "non précisée" else None,
             motivation="" if motivation == "Néant." else motivation,
             motivation_qualite="absente" if motivation in ("", "Néant.") else
             ("sommaire" if len(motivation) < 90 else "detaillee"),
@@ -151,7 +151,7 @@ def parse(text: str) -> Notification | None:
         date_debut_verification=parse_date(_field(text, "Date de début de la vérification") or ""),
         date_notification=notif_date,
         exercices_verifies=exercices,
-        mention_assistance="se faire assister" in text,
+        mention_assistance="faire assister" in text,
         mention_delai_30j="trente (30) jours" in text,
         penalites_indiquees=penalites_indiquees,
         entreprise=Entreprise(
