@@ -16,7 +16,7 @@ from . import scoring
 from .db import repo
 from .procedure import vice_codes
 
-TODAY = date(2026, 9, 25)   # fixed "today" of the demo so ages and deadlines are stable
+TODAY = date.today()   # deadlines and ages are computed against the real date
 
 
 @dataclass

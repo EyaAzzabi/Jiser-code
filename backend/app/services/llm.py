@@ -17,6 +17,7 @@ import hashlib
 import json
 import logging
 import re
+import time
 from typing import TypeVar
 
 from pydantic import BaseModel, ValidationError
@@ -46,6 +47,7 @@ _disabled_reason: str | None = None
 _gemini_client = None
 _gemini_model: str | None = GEMINI_MODEL or None
 _anthropic_client = None
+GEMINI_FALLBACKS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash"]
 
 
 def available() -> bool:
@@ -103,31 +105,53 @@ def _gemini_parse(content: list[dict], schema: type[T], max_tokens: int) -> T:
             parts.append(types.Part.from_bytes(data=base64.b64decode(block["data"]), mime_type=block["media_type"]))
         else:
             parts.append(types.Part.from_text(text=block["text"]))
-    try:
-        if not _gemini_model:
-            _gemini_model = _pick_gemini_model()
-            log.info("Gemini model: %s", _gemini_model)
+    # Flash models "think" before answering and those tokens count against max_output_tokens: add headroom
+    budget = max_tokens + 6000
+    no_afc = types.AutomaticFunctionCallingConfig(disable=True)
+
+    def call(model: str):
         try:
             config = types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT, temperature=0.3,
-                                                 max_output_tokens=max_tokens, response_mime_type="application/json",
-                                                 response_schema=schema)
-            resp = _gemini().models.generate_content(model=_gemini_model, contents=parts, config=config)
+                                                 max_output_tokens=budget, response_mime_type="application/json",
+                                                 response_schema=schema, automatic_function_calling=no_afc)
+            return _gemini().models.generate_content(model=model, contents=parts, config=config)
         except (ValueError, TypeError):
             # schema feature outside Gemini's schema subset: ask for JSON matching the schema instead
             hint = "Réponds uniquement en JSON valide conforme à ce schéma :\n" + json.dumps(schema.model_json_schema(), ensure_ascii=False)
             config = types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT + "\n" + hint, temperature=0.3,
-                                                 max_output_tokens=max_tokens, response_mime_type="application/json")
-            resp = _gemini().models.generate_content(model=_gemini_model, contents=parts, config=config)
-    except errors.APIError as e:
-        if e.code in (401, 403) or (e.code == 400 and "API key" in str(e)):
-            _disable("Clé Gemini refusée")
-        elif e.code == 429:
-            raise LLMUnavailable("quota gratuit Gemini atteint, réessayez dans une minute") from e
-        raise LLMUnavailable(f"erreur Gemini {e.code}") from e
-    except LLMUnavailable:
-        raise
-    except Exception as e:  # network errors, etc.
+                                                 max_output_tokens=budget, response_mime_type="application/json",
+                                                 automatic_function_calling=no_afc)
+            return _gemini().models.generate_content(model=model, contents=parts, config=config)
+
+    try:
+        if not _gemini_model:
+            _gemini_model = _pick_gemini_model()
+            log.info("Gemini model: %s", _gemini_model)
+    except Exception as e:
         raise LLMUnavailable(f"Gemini injoignable : {e}") from e
+
+    # Overloaded (503/500) or rate-limited (429, per-model quota): retry on fallback Flash models
+    resp, last = None, None
+    attempts = [_gemini_model, _gemini_model, *GEMINI_FALLBACKS]   # the main model gets one retry
+    for i, model in enumerate(attempts):
+        if i == 1:
+            time.sleep(2)   # short back-off: 503 "overloaded" is usually transient
+        try:
+            resp = call(model)
+            break
+        except errors.APIError as e:
+            last = e
+            if e.code in (401, 403) or (e.code == 400 and "API key" in str(e)):
+                _disable("Clé Gemini refusée")
+                raise LLMUnavailable("clé Gemini refusée") from e
+            if e.code not in (429, 500, 503, 404):
+                raise LLMUnavailable(f"erreur Gemini {e.code}") from e
+            log.warning("Gemini %s on %s, trying next model", e.code, model)
+        except Exception as e:  # network errors, etc.
+            raise LLMUnavailable(f"Gemini injoignable : {e}") from e
+    if resp is None:
+        raise LLMUnavailable("quota gratuit Gemini atteint, réessayez dans une minute"
+                             if last is not None and last.code == 429 else "Gemini surchargé, réessayez dans un instant")
     if isinstance(getattr(resp, "parsed", None), schema):
         return resp.parsed
     try:

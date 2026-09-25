@@ -38,14 +38,14 @@ class _SyntheseLLM(BaseModel):
 
 def synthese_stock(dash: dict) -> Synthese:
     k = dash["kpi"]
-    top_gouv = dash["par_gouvernorat"][:3]
+    top_gouv = [{"gouvernorat": g["gouvernorat"], "montant": fmt_dt(g["montant"])} for g in dash["par_gouvernorat"][:3]]
     causes = dash["causes_annulation"][:3]
     facts = {
-        "montant_bloque": k["montant_bloque"], "dossiers_en_cours": k["dossiers_en_cours"],
-        "recouvrable_estime": k["montant_recouvrable_estime"], "dossiers_avec_vice": k["dossiers_avec_vice"],
+        "montant_bloque": fmt_dt(k["montant_bloque"]), "dossiers_en_cours": k["dossiers_en_cours"],
+        "recouvrable_estime": fmt_dt(k["montant_recouvrable_estime"]), "dossiers_avec_vice": k["dossiers_avec_vice"],
         "taux_recouvrement_historique": k["taux_recouvrement_historique"], "taux_conciliation": k["taux_conciliation"],
         "duree_moyenne_mois": k["duree_moyenne_mois"], "gouvernorats_principaux": top_gouv,
-        "causes_annulation": causes, "gain_tri_vs_fifo_pct": (dash.get("modele") or {}).get("triage", {}).get("gain_vs_fifo_pct"),
+        "causes_annulation": causes, "gain_tri_vs_fifo_pct_arrondi": round((dash.get("modele") or {}).get("triage", {}).get("gain_vs_fifo_pct") or 0),
     }
     if llm.available():
         try:
@@ -56,7 +56,7 @@ def synthese_stock(dash: dict) -> Synthese:
             return Synthese(synthese=out.synthese, actions=out.actions[:3])
         except llm.LLMUnavailable:
             pass
-    g = top_gouv[0] if top_gouv else {"gouvernorat": "—", "montant": 0}
+    g = top_gouv[0] if top_gouv else {"gouvernorat": "—"}
     c = causes[0] if causes else {"cause": "—", "nb": 0}
     return Synthese(mode="hors_ligne", synthese=(
         f"{k['dossiers_en_cours']} dossiers sont en cours pour {fmt_dt(k['montant_bloque'])} bloqués, dont environ "
@@ -89,7 +89,9 @@ def avis_dossier(detail: dict) -> AvisDossier:
     n = detail["dossier"]["notification"]
     score = detail["score"]
     conc = detail["conciliation"]
-    vices = [p["detail"] for p in detail["procedure"] if p["statut"] == "vice"]
+    # each defect carries its exact article so the model never has to guess a number
+    vices = [f"{p['detail']} (article {p['article'].split('-art-')[1].replace('-', ' ')} du CDPF)"
+             for p in detail["procedure"] if p["statut"] == "vice"]
     facts = {"entreprise": n["entreprise"]["nom"], "reference": n["reference"], "score_solidite": score["score_solidite"],
              "facteurs": score["explications"], "vices": vices,
              "chefs": [{"libelle": i["libelle"], "montant": i["montant"], "p_maintenu": i["p_maintenu"], "action": i["action"],
@@ -101,7 +103,8 @@ def avis_dossier(detail: dict) -> AvisDossier:
                             "Tu es le juriste IA de l'unité du contentieux fiscal tunisien. À partir de ce dossier (JSON), rédige : "
                             "(1) un avis de 4 phrases sur la solidité du redressement devant le juge ; (2) 2 à 4 points forts et points "
                             "faibles ; (3) un projet de lettre proposant une conciliation au contribuable avec les montants proposés, "
-                            "en citant le CDPF quand c'est pertinent. N'invente aucun fait ni montant.\n\n" + str(facts),
+                            "Ne cite QUE les articles qui figurent dans les données (champ vices) ; n'invente aucun article, "
+                            "fait ni montant.\n\n" + str(facts),
                             _AvisLLM, max_tokens=3000)
             return AvisDossier(**out.model_dump())
         except llm.LLMUnavailable:

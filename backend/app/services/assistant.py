@@ -27,6 +27,8 @@ class AssistantAnswer(BaseModel):
     mode: str
 
 
+CODE_NAMES = {"cdpf": "CDPF", "ctva": "Code de la TVA", "cirppis": "Code de l'IRPP et de l'IS"}
+
 SUGGESTIONS = {
     "fr": ["Quel est mon délai pour répondre ?", "Que se passe-t-il si je ne réponds pas ?", "Qu'est-ce qu'un vice de procédure ?"],
     "derja": ["9addeh 3andi wa9t bech njeweb ?", "Chnowa yosa2 ken ma njewbech ?", "Chnowa ma3neha vice de procédure ?"],
@@ -67,9 +69,10 @@ def answer(question: str, langue: str = "fr", historique: list[Echange] | None =
     parts = [
         lang,
         "Réponds à la question d'un contribuable tunisien en 3 à 8 phrases, en t'appuyant uniquement sur les articles "
-        "ci-dessous et sur son dossier s'il est fourni. Cite les articles utilisés (id exacts dans `articles_cites`). "
+        "ci-dessous et sur son dossier s'il est fourni. Dans le texte, cite les articles sous la forme « article 44 du CDPF » "
+        "(jamais les identifiants techniques) ; mets leurs identifiants exacts dans `articles_cites`. "
         "Propose 3 questions de suivi courtes dans `suggestions`. Si la réponse dépend d'éléments absents, dis-le.",
-        "ARTICLES :\n" + "\n".join(f"[{a.id}] {a.extrait}" for a in articles),
+        "ARTICLES :\n" + "\n".join(f"[{a.id}] (article {a.article} du {CODE_NAMES.get(a.code, a.code)}) {a.extrait}" for a in articles),
     ]
     if contexte:
         parts.append("DOSSIER DE L'UTILISATEUR (résumé) :\n" + str(contexte)[:6000])
