@@ -88,7 +88,7 @@ def render(n: Notification) -> str:
     lines.append("")
     if n.mention_delai_30j:
         lines.append("Vous êtes invité(e) à formuler par écrit vos observations, oppositions et réserves dans un "
-                     "délai de trente (30) jours à compter de la date de la présente notification "
+                     "délai de quarante-cinq (45) jours à compter de la date de la présente notification "
                      "(articles 43 et 44 du CDPF). À défaut, la taxation sera établie d'office (article 47).")
     else:
         lines.append("Nous vous prions de nous faire part de vos observations.")
@@ -152,7 +152,7 @@ def parse(text: str) -> Notification | None:
         date_notification=notif_date,
         exercices_verifies=exercices,
         mention_assistance="faire assister" in text,
-        mention_delai_30j="trente (30) jours" in text,
+        mention_delai_30j=("quarante-cinq (45) jours" in text or "trente (30) jours" in text),
         penalites_indiquees=penalites_indiquees,
         entreprise=Entreprise(
             nom=_field(text, "Destinataire") or "",

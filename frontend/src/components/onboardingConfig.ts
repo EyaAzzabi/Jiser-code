@@ -70,7 +70,7 @@ export const ROLES: RoleConfig[] = [
           { key: 'centre', label: 'Centre de rattachement', type: 'select', options: ['Centre régional de contrôle des impôts', 'Direction des grandes entreprises', 'Je ne sais pas'] },
           { key: 'situation', label: 'Où en êtes-vous ?', type: 'select', options: ["J'ai reçu une notification de redressement", 'Une vérification est en cours', "J'ai reçu un arrêté de taxation d'office", 'Je me renseigne'], full: true },
           { key: 'date_notification', label: 'Date de réception de la notification', type: 'date',
-            help: 'Vous avez 30 jours à compter de cette date pour répondre (art. 44 CDPF).',
+            help: 'Vous avez 45 jours à compter de cette date pour répondre (art. 44 CDPF, édition 2024).',
             showIf: (v) => String(v.situation ?? '').startsWith("J'ai reçu") },
           { key: 'montant_notifie', label: 'Montant réclamé (DT)', type: 'number', placeholder: '180000',
             showIf: (v) => String(v.situation ?? '').startsWith("J'ai reçu") },

@@ -37,7 +37,7 @@ function Stat({ value, label, note }: { value: string; label: string; note: stri
 
 const RIVE_CONTRIBUABLE = [
   'Notification incompréhensible, pleine d\'articles de loi',
-  'Délai de 30 jours souvent manqué → taxation d\'office',
+  'Délai de 45 jours souvent manqué → taxation d\'office',
   'Un avocat coûte cher, un comptable est débordé',
 ]
 const RIVE_ADMIN = [
@@ -112,7 +112,7 @@ export default function Home({ onSignup, session }: { onSignup: () => void; sess
       {/* STATS */}
       <section className="bg-navy-950 py-10">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 md:grid-cols-4">
-          <Stat value="30 j" label="pour répondre à une notification" note="Articles 43 et 44 du CDPF" />
+          <Stat value="45 j" label="pour répondre à une notification" note="Art. 43 et 44 du CDPF, édition officielle 2024" />
           <Stat value={articles ? String(articles) : '274'} label="articles de loi indexés" note="CDPF, Code TVA, Code IRPP/IS" />
           <Stat value="76 %" label="des pays de l'OCDE utilisent l'IA" note="dans le contrôle fiscal (OCDE, 2025)" />
           <Stat value={metrics ? `+${Math.round(metrics.triage.gain_vs_fifo_pct)} %` : '+269 %'} label="recouvré grâce au tri JISER" note="vs traitement par ancienneté, à capacité égale" />

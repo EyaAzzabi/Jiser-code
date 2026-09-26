@@ -264,7 +264,7 @@ def sami_notification() -> Notification:
         reference="NR-2026-SF-004127", centre="Centre régional de contrôle des impôts de Sfax",
         type_verification="approfondie", comptabilite_conforme=True,
         date_avis=date(2025, 12, 1), date_debut_verification=date(2025, 12, 22),
-        date_notification=date(2026, 9, 10),   # 8.6 months > 6 months (art. 40) -> procedure defect
+        date_notification=date(2026, 8, 20),   # 8 months > 6 months (art. 40) -> procedure defect; reply due 04/10 (45 days)
         exercices_verifies=[2023, 2024], mention_assistance=True, mention_delai_30j=True,
         penalites_indiquees=True, entreprise=ent, chefs=chefs)
 

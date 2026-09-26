@@ -68,7 +68,7 @@ VICE_TEXT = {
     "DELAI_AVIS_15J": "la vérification a commencé moins de 15 jours après l'avis",
     "MENTION_ASSISTANCE": "l'avis ne mentionne pas le droit de se faire assister",
     "DUREE_MAX": "la vérification a dépassé la durée maximale légale",
-    "MENTION_DELAI_30J": "la notification n'indique pas le délai de réponse de 30 jours",
+    "MENTION_DELAI_30J": "la notification n'indique pas le délai de réponse de 45 jours",
     "PENALITES_INDIQUEES": "les pénalités ne sont pas chiffrées",
     "DROIT_REPRISE": "un exercice est hors du délai de reprise",
 }

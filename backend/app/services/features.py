@@ -25,7 +25,7 @@ FEATURE_LABELS: dict[str, str] = {
     "vice_DELAI_AVIS_15J": "Vice : vérification commencée moins de 15 jours après l'avis",
     "vice_MENTION_ASSISTANCE": "Vice : droit à l'assistance non mentionné",
     "vice_DUREE_MAX": "Vice : durée maximale de vérification dépassée",
-    "vice_MENTION_DELAI_30J": "Vice : délai de réponse de 30 jours non indiqué",
+    "vice_MENTION_DELAI_30J": "Vice : délai de réponse de 45 jours non indiqué",
     "vice_PENALITES_INDIQUEES": "Vice : pénalités non chiffrées",
     "vice_DROIT_REPRISE": "Vice : exercice hors délai de reprise",
     "nb_vices": "Nombre de vices de procédure",

@@ -151,7 +151,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
   const deadline = (() => {
     const d = details.date_notification as string | undefined
     if (!d) return null
-    const dt = new Date(d); dt.setDate(dt.getDate() + 30)
+    const dt = new Date(d); dt.setDate(dt.getDate() + 45)
     const left = Math.ceil((dt.getTime() - Date.now()) / 86400000)
     return { date: dt.toLocaleDateString('fr-FR'), left }
   })()

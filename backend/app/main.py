@@ -19,6 +19,7 @@ from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
+from .domain import DELAI_REPONSE_JOURS
 from .schemas import AnalyseNotification
 from .services import (administration, ai_admin, analysis, assistant, auth, drafting, export_pdf, extraction, llm, rappels,
                        voix)
@@ -364,7 +365,7 @@ def notifications(session: dict = Depends(current_session)):
         for f in get_store().open_files.values():
             if f.dossier.etape != "Notification":
                 continue
-            fin = f.dossier.notification.date_notification.toordinal() + 30 - TODAY.toordinal()
+            fin = f.dossier.notification.date_notification.toordinal() + DELAI_REPONSE_JOURS - TODAY.toordinal()
             if 0 <= fin <= 7:
                 items.append({"id": f.dossier.id, "niveau": "urgent" if fin <= 2 else "bientot",
                               "titre": f"J-{fin} · fin du délai de réponse du contribuable",

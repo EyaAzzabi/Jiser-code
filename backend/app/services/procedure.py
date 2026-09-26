@@ -44,8 +44,8 @@ def check_procedure(n: Notification) -> list[ProcedureCheck]:
                       "Tous les chefs de redressement sont motivés." if not motives else
                       f"{len(motives)} chef(s) sans motivation : " + ", ".join(c.id for c in motives) + "."))
     out.append(_check("MENTION_DELAI_30J", "ok" if n.mention_delai_30j else "vice",
-                      "Le délai de réponse de 30 jours est indiqué." if n.mention_delai_30j else
-                      "La notification n'invite pas à répondre dans le délai légal de 30 jours."))
+                      "Le délai de réponse de 45 jours est indiqué." if n.mention_delai_30j else
+                      "La notification n'invite pas à répondre dans le délai légal de 45 jours (art. 43 et 44, édition 2024)."))
     out.append(_check("PENALITES_INDIQUEES", "ok" if n.penalites_indiquees else "vice",
                       "Les pénalités sont chiffrées." if n.penalites_indiquees else
                       "Les pénalités ne sont pas chiffrées dans la notification."))

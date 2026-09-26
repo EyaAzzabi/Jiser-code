@@ -31,7 +31,7 @@ def _template(a: AnalyseNotification, signataire: str) -> str:
         "Monsieur le Chef de centre,",
         "",
         "Conformément à l'article 44 du Code des droits et procédures fiscaux (CDPF), nous avons l'honneur de "
-        "formuler, dans le délai légal de trente jours, nos observations, oppositions et réserves sur les résultats "
+        "formuler, dans le délai légal de quarante-cinq jours, nos observations, oppositions et réserves sur les résultats "
         "de la vérification qui nous ont été notifiés.",
     ]
     if vices:

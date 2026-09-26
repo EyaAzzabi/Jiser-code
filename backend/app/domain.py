@@ -61,7 +61,10 @@ CHEF_TYPES: dict[str, dict] = {
 }
 
 # --- CDPF procedure rules -------------------------------------------------------------------
-DELAI_REPONSE_JOURS = 30          # art. 43 et 44 : réponse du contribuable dans les 30 jours
+# CDPF, édition officielle 2024 : 45 jours depuis la loi de finances 2015 (l'ancienne version disait 30)
+DELAI_REPONSE_JOURS = 45          # art. 43 et 44 : vérification préliminaire ou approfondie
+DELAI_REPONSE_PONCTUELLE_JOURS = 10   # art. 43 : vérification ponctuelle
+DELAI_REPONSE_ADMIN_JOURS = 90    # art. 44 bis : l'administration répond à l'opposition sous 90 jours
 DELAI_REPLIQUE_JOURS = 15         # art. 44 bis : 15 jours pour répliquer à la réponse de l'administration
 DELAI_AVIS_MIN_JOURS = 15         # art. 39 : début de vérification >= 15 jours après l'avis
 DUREE_MAX_COMPTA_MOIS = 6         # art. 40 : 6 mois si comptabilité conforme
@@ -82,7 +85,7 @@ PROCEDURE_RULES: list[dict] = [
     {"code": "CHEFS_MOTIVES", "article": "cdpf-art-43",
      "label": "Chefs de redressement et méthode de calcul indiqués"},
     {"code": "MENTION_DELAI_30J", "article": "cdpf-art-43",
-     "label": "Invitation à répondre dans un délai de 30 jours"},
+     "label": "Invitation à répondre dans le délai légal de 45 jours"},
     {"code": "PENALITES_INDIQUEES", "article": "cdpf-art-43",
      "label": "Montant de l'impôt et des pénalités indiqués"},
     {"code": "DROIT_REPRISE", "article": "cdpf-art-19",
