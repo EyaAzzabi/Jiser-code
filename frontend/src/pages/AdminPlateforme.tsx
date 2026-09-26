@@ -1,11 +1,11 @@
 import clsx from 'clsx'
-import { BookOpen, CheckCircle2, Database, Mail, ScrollText, Search, Server, Sparkles, Users, XCircle } from 'lucide-react'
+import { BellRing, BookOpen, CheckCircle2, Database, Mail, ScrollText, Search, Server, Sparkles, Users, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { api, articleLabel, frDate, type ArticleRef, type Session } from '../api'
 import AppShell, { type NavItem } from '../components/AppShell'
 import { LoginForm } from '../components/Login'
-import { Badge, Card, SectionTitle, Spinner } from '../components/ui'
+import { Badge, Button, Card, SectionTitle, Spinner } from '../components/ui'
 
 const NAV: NavItem[] = [
   { to: '/plateforme', label: 'Vue d\'ensemble', icon: Server, end: true },
@@ -25,6 +25,14 @@ function Title({ title, sub }: { title: string; sub: string }) {
 function Overview() {
   const [s, setS] = useState<Awaited<ReturnType<typeof api.systeme>> | null>(null)
   const [users, setUsers] = useState<number | null>(null)
+  const [run, setRun] = useState<string>('')
+  const sendReminders = async () => {
+    setRun('Envoi en cours…')
+    try {
+      const r = await api.rappels()
+      setRun(r.webhook ? `${r.envoyes} rappel(s) envoyé(s), ${r.deja_envoyes} déjà envoyé(s) auparavant.` : 'Workflow de rappel non configuré.')
+    } catch (e) { setRun((e as Error).message) }
+  }
   useEffect(() => {
     api.systeme().then(setS).catch(() => {})
     api.utilisateurs().then((u) => setUsers(u.length)).catch(() => {})
@@ -35,6 +43,7 @@ function Overview() {
     { icon: Database, label: 'Base de données', ok: s.base === 'supabase', detail: s.base === 'supabase' ? 'Supabase (PostgreSQL)' : 'Mémoire locale (Supabase non configuré)' },
     { icon: Mail, label: 'E-mail OTP (n8n)', ok: s.n8n_otp, detail: s.n8n_otp ? 'Webhook configuré' : 'Non configuré : codes dans le journal serveur' },
     { icon: Mail, label: 'E-mail de bienvenue (n8n)', ok: s.n8n_bienvenue, detail: s.n8n_bienvenue ? 'Webhook configuré' : 'Non configuré' },
+    { icon: BellRing, label: 'Rappels d\'échéance (n8n)', ok: s.n8n_rappels, detail: s.n8n_rappels ? 'J-15, J-7, J-3, J-1 · vérifié toutes les 6 h' : 'Non configuré' },
   ]
   return (
     <div className="space-y-6">
@@ -48,7 +57,14 @@ function Overview() {
           </Card>
         ))}
       </div>
-      <Card><SectionTitle>Comptes créés</SectionTitle><div className="font-display text-3xl font-bold text-navy-900">{users ?? '—'}</div></Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card><SectionTitle>Comptes créés</SectionTitle><div className="font-display text-3xl font-bold text-navy-900">{users ?? '—'}</div></Card>
+        <Card>
+          <SectionTitle sub="Les rappels partent aussi automatiquement toutes les 6 heures.">Rappels d'échéance par e-mail</SectionTitle>
+          <Button variant="gold" onClick={sendReminders}><BellRing size={16} /> Envoyer les rappels dus maintenant</Button>
+          {run && <p className="mt-3 text-sm text-slate-600">{run}</p>}
+        </Card>
+      </div>
     </div>
   )
 }

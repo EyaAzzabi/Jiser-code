@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, dt, frDate, type AvisDossier, type DossierDetail } from '../../api'
 import AiPanel from '../../components/AiPanel'
+import ListenButton from '../../components/ListenButton'
 import { Badge, Button, Card, ErrorBox, Kpi, ScoreGauge, SectionTitle, Spinner } from '../../components/ui'
 
 export default function DossierPage() {
@@ -69,6 +70,7 @@ export default function DossierPage() {
         {avis && (
           <div className="space-y-4">
             <p className="text-sm leading-relaxed text-slate-700">{avis.avis}</p>
+            <ListenButton text={avis.avis} />
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-xl bg-emerald-50 p-3"><div className="text-sm font-semibold text-emerald-800">Points forts</div>
                 <ul className="mt-1 list-disc pl-5 text-sm text-emerald-900">{avis.points_forts.map((p) => <li key={p}>{p}</li>)}</ul></div>

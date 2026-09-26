@@ -8,6 +8,8 @@ JISER est une plateforme d'IA pour le **contentieux fiscal tunisien**. Elle a tr
 - **Administration** : contrôle qualité d'une notification avant envoi, stock de dossiers trié par montant recouvrable, score de solidité expliqué (SHAP), proposition de conciliation, tableau de bord.
 - **Admin plateforme** : utilisateurs et rôles, base juridique, journal de chaque recommandation de l'IA.
 
+Chaque explication peut être **écoutée à voix haute en français, en anglais ou en tounsi** (synthèse vocale OpenAI).
+
 L'accès passe par un **onboarding sécurisé par code OTP**, avec des étapes propres à chaque profil (entreprise, conseil, vérificateur, chef du contentieux, administrateur).
 
 Défis traités : **T3** (principal), T9, T14, T20.
@@ -36,7 +38,7 @@ Documentation de l'API (Swagger) : http://localhost:8000/docs
 | **OpenAI** | IA principale : lecture des photos, explications en français et en tounsi, assistant, rédaction, avis juridique | `OPENAI_API_KEY` (modèle par défaut `gpt-5.4-mini`, réglable par `OPENAI_MODEL`) |
 | **Gemini** (gratuit) | IA de secours automatique si OpenAI ne répond pas | Clé sur https://aistudio.google.com/apikey → `GEMINI_API_KEY` |
 | **Supabase** | Base de données : comptes, sessions, codes OTP (hachés), analyses, réponses, journal, dossiers | Créer un projet → SQL Editor → exécuter `supabase/schema.sql` → `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (Project Settings › API) → `python scripts/seed_supabase.py` |
-| **n8n** | E-mails : code OTP, bienvenue à l'activation du compte, rappels quotidiens des délais | Importer les 3 fichiers de `n8n/`, choisir un identifiant SMTP (ex. Gmail + mot de passe d'application), remplacer `CHANGE_ME_SECRET` par `N8N_SHARED_SECRET`, activer, puis copier les URL de production des webhooks dans `N8N_OTP_WEBHOOK_URL` et `N8N_WELCOME_WEBHOOK_URL` |
+| **n8n** | E-mails : code OTP, bienvenue à l'activation du compte, échéance enregistrée puis rappels à J-15, J-7, J-3 et J-1 (envoyés par l'API toutes les 6 heures) | Importer les fichiers de `n8n/` (OTP, bienvenue, rappel poussé par l'API), choisir un identifiant SMTP (ex. Gmail + mot de passe d'application), remplacer `CHANGE_ME_SECRET` par `N8N_SHARED_SECRET`, activer, puis copier les URL de production des webhooks dans `N8N_OTP_WEBHOOK_URL` et `N8N_WELCOME_WEBHOOK_URL` |
 | **Admin plateforme** | Espace privé `/plateforme` | Mettre les e-mails autorisés dans `ADMIN_EMAILS` |
 
 Sans ces services, l'application reste utilisable : IA remplacée par les règles et le modèle ML, base en mémoire, et codes OTP écrits uniquement dans le journal du serveur (jamais affichés à l'écran).

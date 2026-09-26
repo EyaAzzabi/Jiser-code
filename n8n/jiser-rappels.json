@@ -2,7 +2,7 @@
   "name": "JISER · Rappels des délais de réponse",
   "nodes": [
     {
-      "id": "e9666138-4a56-449d-8056-93c6eb9a5048",
+      "id": "a2aadc2b-624c-4790-b00e-1b4cef807884",
       "name": "Chaque jour à 8h",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "6f387883-044b-44a8-96c8-3bb59bcffc93",
+      "id": "2941218d-baaf-429f-9bf8-67ec6ff14671",
       "name": "Échéances à 7 jours",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -45,7 +45,7 @@
       }
     },
     {
-      "id": "31de934f-45e9-4eb3-9c4f-6b5721842e68",
+      "id": "3dcc6e52-d9c1-4b51-bd10-9dc8de4c9fd8",
       "name": "Envoyer le rappel",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,

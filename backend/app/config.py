@@ -39,6 +39,7 @@ SUPABASE_SERVICE_KEY = _env("SUPABASE_SERVICE_KEY")   # server-side only, never 
 # --- n8n (e-mail automation) ----------------------------------------------------------------
 N8N_OTP_WEBHOOK_URL = _env("N8N_OTP_WEBHOOK_URL")
 N8N_WELCOME_WEBHOOK_URL = _env("N8N_WELCOME_WEBHOOK_URL")
+N8N_RAPPEL_WEBHOOK_URL = _env("N8N_RAPPEL_WEBHOOK_URL")
 N8N_SHARED_SECRET = _env("N8N_SHARED_SECRET")        # sent as X-Jiser-Secret, checked by n8n and by /api/n8n/*
 
 # --- Access control -------------------------------------------------------------------------

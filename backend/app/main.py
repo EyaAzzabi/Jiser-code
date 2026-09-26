@@ -15,12 +15,12 @@ from datetime import date
 
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
 from .schemas import AnalyseNotification
-from .services import administration, ai_admin, analysis, assistant, auth, drafting, extraction, llm
+from .services import administration, ai_admin, analysis, assistant, auth, drafting, extraction, llm, rappels, voix
 from .services.db import repo
 from .services.legal_rag import get_index
 from .services.store import TODAY, get_store
@@ -40,6 +40,7 @@ def warm_up() -> None:
     get_store()
     repo()
     threading.Thread(target=llm.probe, daemon=True).start()
+    rappels.demarrer_planificateur()
 
 
 # ---- Access control -------------------------------------------------------------------------
@@ -173,6 +174,9 @@ def _save_analysis(result: AnalyseNotification, session: dict) -> AnalyseNotific
         "montant_contestable": result.montant_contestable, "date_limite": result.date_limite_reponse.isoformat(),
         "nb_vices": sum(p.statut == "vice" for p in result.procedure), "resultat": result.model_dump(mode="json")})
     result.analyse_id = row["id"]
+    user = repo().get_user(session["email"])
+    if user:
+        rappels.echeance_enregistree(row, user)
     return result
 
 
@@ -266,6 +270,24 @@ def exemple(nom: str, _: dict = Depends(current_session)):
     if path.parent != (SYNTHETIC_DIR / "samples").resolve() or not path.exists():
         raise HTTPException(404, "Exemple introuvable")
     return FileResponse(path, media_type="application/pdf", filename=nom)
+
+
+class VoixRequest(BaseModel):
+    texte: str
+    source: str = "fr"     # language of the text: fr | derja
+    langue: str = "fr"     # language to listen in: fr | en | derja
+
+
+@app.post("/api/voix", tags=["contribuable"], response_class=Response)
+def lire_a_voix_haute(req: VoixRequest, _: dict = Depends(current_session)):
+    """Text-to-speech of an explanation, in French, English or Tunisian derja (MP3)."""
+    if not req.texte.strip():
+        raise HTTPException(422, "Texte vide.")
+    try:
+        audio = voix.synthese(req.texte, req.source, req.langue)
+    except voix.VoixIndisponible as e:
+        raise HTTPException(503, str(e)) from e
+    return Response(content=audio, media_type="audio/mpeg", headers={"Cache-Control": "private, max-age=86400"})
 
 
 # ---- Espace administration fiscale ------------------------------------------------------------
@@ -388,11 +410,18 @@ def recherche(q: str, k: int = 5, _: dict = Depends(require("admin"))):
     return get_index().search(q, k=k)
 
 
+@app.post("/api/plateforme/rappels", tags=["admin plateforme"])
+def lancer_rappels(_: dict = Depends(require("admin"))):
+    """Send now every deadline reminder that is due (they also run automatically every 6 hours)."""
+    return rappels.envoyer_rappels()
+
+
 @app.get("/api/plateforme/systeme", tags=["admin plateforme"])
 def systeme(_: dict = Depends(require("admin"))):
-    from .config import N8N_OTP_WEBHOOK_URL, N8N_WELCOME_WEBHOOK_URL
+    from .config import N8N_OTP_WEBHOOK_URL, N8N_RAPPEL_WEBHOOK_URL, N8N_WELCOME_WEBHOOK_URL
     return {"llm": llm.status(), "base": repo().kind, "n8n_otp": bool(N8N_OTP_WEBHOOK_URL),
-            "n8n_bienvenue": bool(N8N_WELCOME_WEBHOOK_URL), "modele": administration.dashboard().get("modele")}
+            "n8n_bienvenue": bool(N8N_WELCOME_WEBHOOK_URL), "n8n_rappels": bool(N8N_RAPPEL_WEBHOOK_URL),
+            "modele": administration.dashboard().get("modele")}
 
 
 # ---- Intégration n8n (rappels d'échéances) ----------------------------------------------------

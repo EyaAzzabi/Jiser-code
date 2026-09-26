@@ -119,6 +119,24 @@ def welcome_workflow() -> dict:
     return webhook_flow("JISER · E-mail de bienvenue (activation)", "jiser-bienvenue", send)
 
 
+def reminder_push_workflow() -> dict:
+    """Deadline e-mail pushed by the JISER API (works with n8n Cloud: no call back to the API needed)."""
+    b = "$('Webhook').item.json.body"
+    html = page("{{ " + b + ".palier === 'enregistrement' ? 'Votre échéance est enregistrée' : 'Rappel : plus que ' + " + b + ".jours_restants + ' jour(s)' }}",
+                "<p>Bonjour {{ " + b + ".prenom }},</p>"
+                "<p>Notification <b>{{ " + b + ".reference }}</b> ({{ " + b + ".entreprise }}) : vous devez répondre par écrit "
+                "<b>avant le {{ " + b + ".date_limite }}</b>, soit dans <b>{{ " + b + ".jours_restants }} jour(s)</b>.</p>"
+                "<p>Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF). "
+                "JISER vous a préparé l'analyse de chaque chef et un brouillon de réponse.</p>"
+                f"<p style=\"text-align:center;margin-top:24px\"><a href=\"{{{{ {b}.lien }}}}\" style=\"background:{GOLD};color:#ffffff;"
+                "padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p>"
+                "<p style=\"color:#64748b;font-size:13px\">Vous recevrez un rappel à J-15, J-7, J-3 et J-1.</p>")
+    send = email("Envoyer le rappel", "={{ " + b + ".email }}",
+                 "={{ " + b + ".palier === 'enregistrement' ? '📌 Échéance enregistrée : ' : '⏰ J-' + " + b + ".jours_restants + ' : ' }}"
+                 "répondre à {{ " + b + ".reference }} avant le {{ " + b + ".date_limite }}", "=" + html, (0, 0))
+    return webhook_flow("JISER · Rappel d'échéance (envoyé par l'API)", "jiser-rappel", send)
+
+
 def reminders_workflow() -> dict:
     trigger = node("Chaque jour à 8h", "n8n-nodes-base.scheduleTrigger", 1.2,
                    {"rule": {"interval": [{"field": "cronExpression", "expression": "0 8 * * *"}]}}, (0, 0))
@@ -157,7 +175,7 @@ def main() -> None:
         OUT = ROOT / "n8n" / "local"
     OUT.mkdir(parents=True, exist_ok=True)
     for fname, wf in (("jiser-otp.json", otp_workflow()), ("jiser-bienvenue.json", welcome_workflow()),
-                      ("jiser-rappels.json", reminders_workflow())):
+                      ("jiser-rappels.json", reminders_workflow()), ("jiser-rappel-push.json", reminder_push_workflow())):
         (OUT / fname).write_text(json.dumps(wf, ensure_ascii=False, indent=2), encoding="utf-8")
         print("written", OUT / fname)
 

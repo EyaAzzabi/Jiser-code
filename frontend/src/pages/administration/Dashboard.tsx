@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { api, mdt, type Dashboard as DashboardData, type Synthese } from '../../api'
 import AiPanel from '../../components/AiPanel'
+import ListenButton from '../../components/ListenButton'
 import { Card, ErrorBox, SectionTitle, Spinner } from '../../components/ui'
 
 export const CHART_COLORS = ['#2f74c0', '#c29a2e', '#10b981', '#e11d48', '#8b5cf6', '#0b2f5b', '#f59e0b']
@@ -55,7 +56,10 @@ export default function Dashboard() {
       <AiPanel title="Synthèse du stock et actions recommandées" mode={ai?.mode} loading={aiLoading} onRefresh={loadAi}>
         {ai && (
           <div className="grid gap-5 lg:grid-cols-5">
-            <p className="text-sm leading-relaxed text-slate-700 lg:col-span-2">{ai.synthese}</p>
+            <div className="flex flex-col gap-3 lg:col-span-2">
+              <p className="text-sm leading-relaxed text-slate-700">{ai.synthese}</p>
+              <div><ListenButton text={ai.synthese} /></div>
+            </div>
             <ol className="grid gap-3 sm:grid-cols-3 lg:col-span-3">
               {ai.actions.map((a, i) => (
                 <li key={a.titre} className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-100">

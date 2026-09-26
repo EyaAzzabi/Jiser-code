@@ -337,7 +337,8 @@ export const api = {
     request<{ horodatage: string; action: string; cible: string; recommandation: string; mode: string; decision_humaine: string; utilisateur?: string }[]>(
       '/api/plateforme/journal',
     ),
-  systeme: () => request<{ llm: Status['llm']; base: string; n8n_otp: boolean; n8n_bienvenue: boolean }>('/api/plateforme/systeme'),
+  systeme: () => request<{ llm: Status['llm']; base: string; n8n_otp: boolean; n8n_bienvenue: boolean; n8n_rappels: boolean }>('/api/plateforme/systeme'),
+  rappels: () => request<{ envoyes: number; deja_envoyes: number; webhook: boolean }>('/api/plateforme/rappels', { method: 'POST' }),
   baseJuridique: () => request<{ code: string; nom: string; articles: number; source: string }[]>('/api/plateforme/base-juridique'),
   recherche: (q: string) => request<ArticleRef[]>(`/api/plateforme/recherche-juridique?q=${encodeURIComponent(q)}`),
 }

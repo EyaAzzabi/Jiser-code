@@ -108,7 +108,7 @@ class MemoryRepo:
             d = date.fromisoformat(str(a["date_limite"]))
             if today <= d <= limit and a["utilisateur_id"] in by_id:
                 u = by_id[a["utilisateur_id"]]
-                out.append({**{k: a[k] for k in ("reference", "entreprise", "montant_total", "date_limite")},
+                out.append({**{k: a[k] for k in ("id", "reference", "entreprise", "montant_total", "date_limite")},
                             "email": u["email"], "prenom": u["prenom"], "jours_restants": (d - today).days})
         return out
 
@@ -119,6 +119,9 @@ class MemoryRepo:
 
     def journal_list(self, limit: int) -> list[dict]:
         return self.journal[:limit]
+
+    def journal_has(self, action: str, cible: str) -> bool:
+        return any(j["action"] == action and j["cible"] == cible for j in self.journal)
 
     # dossiers
     def dossiers_all(self) -> list[dict] | None:
@@ -193,9 +196,9 @@ class SupabaseRepo:
 
     def upcoming_deadlines(self, days: int) -> list[dict]:
         today, limit = date.today(), date.today() + timedelta(days=days)
-        rows = self._t("analyses").select("reference,entreprise,montant_total,date_limite,utilisateurs(email,prenom)") \
+        rows = self._t("analyses").select("id,reference,entreprise,montant_total,date_limite,utilisateurs(email,prenom)") \
             .gte("date_limite", today.isoformat()).lte("date_limite", limit.isoformat()).execute().data
-        return [{"reference": r["reference"], "entreprise": r["entreprise"], "montant_total": r["montant_total"],
+        return [{"id": r["id"], "reference": r["reference"], "entreprise": r["entreprise"], "montant_total": r["montant_total"],
                  "date_limite": r["date_limite"], "email": r["utilisateurs"]["email"], "prenom": r["utilisateurs"]["prenom"],
                  "jours_restants": (date.fromisoformat(r["date_limite"]) - today).days}
                 for r in rows if r.get("utilisateurs")]
@@ -208,6 +211,9 @@ class SupabaseRepo:
 
     def journal_list(self, limit: int) -> list[dict]:
         return self._t("journal").select("*").order("horodatage", desc=True).limit(limit).execute().data
+
+    def journal_has(self, action: str, cible: str) -> bool:
+        return bool(self._t("journal").select("id").eq("action", action).eq("cible", cible).limit(1).execute().data)
 
     def dossiers_all(self) -> list[dict] | None:
         out, start, page = [], 0, 1000

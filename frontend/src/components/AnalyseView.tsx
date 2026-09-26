@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { AlertTriangle, CheckCircle2, Clock, HelpCircle, Languages, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { articleLabel, dt, frDate, type Analyse, type ChefAnalyse, type ProcedureCheck } from '../api'
+import ListenButton from './ListenButton'
 import { Card, ContestBadge, Kpi, SectionTitle } from './ui'
 
 export function ProcedureList({ checks }: { checks: ProcedureCheck[] }) {
@@ -22,7 +23,7 @@ export function ProcedureList({ checks }: { checks: ProcedureCheck[] }) {
   )
 }
 
-function ChefCard({ ca, aiMode }: { ca: ChefAnalyse; aiMode: boolean }) {
+function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; langue: 'fr' | 'derja' }) {
   const [open, setOpen] = useState<string | null>(null)
   const c = ca.chef
   const article = ca.articles.find((x) => x.id === open)
@@ -40,7 +41,10 @@ function ChefCard({ ca, aiMode }: { ca: ChefAnalyse; aiMode: boolean }) {
       </div>
       <div className="mt-3"><ContestBadge value={ca.contestabilite} /></div>
       <div className="mt-3 rounded-xl bg-bridge-light p-3 text-sm text-slate-700">
-        <span className="flex items-center gap-1 font-semibold text-navy-900">{aiMode && <Sparkles size={14} className="text-gold" />}En clair :</span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="flex items-center gap-1 font-semibold text-navy-900">{aiMode && <Sparkles size={14} className="text-gold" />}En clair :</span>
+          <ListenButton text={ca.explication} source={langue} />
+        </div>
         <p className="mt-1">{ca.explication}</p>
       </div>
       {c.motivation && <p className="mt-2 text-xs italic text-slate-500">Motivation de l'administration : « {c.motivation} »</p>}
@@ -106,7 +110,10 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
             </span>
           </div>
         </div>
-        <p className={clsx('mt-4 rounded-xl bg-white/10 p-3 text-sm', langueBusy && 'animate-pulse')}>{a.resume}</p>
+        <div className={clsx('mt-4 rounded-xl bg-white/10 p-3 text-sm', langueBusy && 'animate-pulse')}>
+          <p>{a.resume}</p>
+          <div className="mt-3"><ListenButton text={a.resume} source={a.langue} tone="dark" /></div>
+        </div>
       </Card>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -126,7 +133,7 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
 
       <div>
         <SectionTitle sub={mode === 'entreprise' ? "Ce qu'on vous reproche, et ce que vous pouvez répondre." : 'Points faibles à renforcer avant envoi.'}>Chefs de redressement</SectionTitle>
-        <div className={clsx('space-y-4', langueBusy && 'opacity-60')}>{a.chefs.map((ca) => <ChefCard key={ca.chef.id} ca={ca} aiMode={a.mode === 'ia'} />)}</div>
+        <div className={clsx('space-y-4', langueBusy && 'opacity-60')}>{a.chefs.map((ca) => <ChefCard key={ca.chef.id} ca={ca} aiMode={a.mode === 'ia'} langue={a.langue} />)}</div>
       </div>
     </div>
   )

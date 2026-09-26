@@ -2,7 +2,7 @@
   "name": "JISER · E-mail de bienvenue (activation)",
   "nodes": [
     {
-      "id": "b23f2cf4-5c91-410c-a156-26381d3f2507",
+      "id": "c46c134c-11d4-46f8-bc0c-be4e45e3d95c",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "ed72c187-ac20-4f94-bb42-2f1ccb7d08d4"
+      "webhookId": "64efe46c-fffa-4e45-8b52-0c9c982f0f4c"
     },
     {
-      "id": "c4f570a7-e4da-4078-8bb0-68ae992646b0",
+      "id": "884657c1-aae9-4f85-9ca3-9ad4f4a176f8",
       "name": "Secret valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -36,7 +36,7 @@
           },
           "conditions": [
             {
-              "id": "b79fc8f9-2709-465b-9e9f-18a2700f9552",
+              "id": "c790dfb1-bfc8-4700-8834-328d0a2830db",
               "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
               "rightValue": "CHANGE_ME_SECRET",
               "operator": {
@@ -51,7 +51,7 @@
       }
     },
     {
-      "id": "0bcb4a02-be87-459c-856d-822e4764fa4f",
+      "id": "343a2efd-ce23-4304-b7a0-248da2c57e03",
       "name": "Envoyer la bienvenue",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "1b746ab6-96c0-4dd3-a1f2-c518b785c3bf",
+      "id": "28104c72-c8ba-4232-823d-d3d4b35adcda",
       "name": "Réponse OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "d9efc057-9723-4443-8067-fc303b256531",
+      "id": "4d32102b-1486-45db-badf-59bd1d6badd0",
       "name": "Refusé",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
