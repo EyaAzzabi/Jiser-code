@@ -1,7 +1,8 @@
-import { Bot, FileText, FileUp, FolderOpen, LayoutDashboard } from 'lucide-react'
+import { Bot, FileText, FileUp, FolderOpen, LayoutDashboard, Star } from 'lucide-react'
 import { Route, Routes } from 'react-router-dom'
 import type { Session } from '../api'
 import AppShell, { type NavItem } from '../components/AppShell'
+import FavorisPage from './FavorisPage'
 import { Analyser, Assistant, DossierDetail, EntrepriseDashboard, MesDossiers, MesReponses } from './entreprise/Pages'
 
 const NAV: NavItem[] = [
@@ -10,6 +11,7 @@ const NAV: NavItem[] = [
   { to: '/entreprise/dossiers', label: 'Mes dossiers', icon: FolderOpen },
   { to: '/entreprise/assistant', label: 'Assistant fiscal', icon: Bot, ai: true },
   { to: '/entreprise/reponses', label: 'Mes réponses', icon: FileText },
+  { to: '/entreprise/favoris', label: 'Favoris', icon: Star },
 ]
 
 export default function Entreprise({ session }: { session: Session }) {
@@ -22,6 +24,7 @@ export default function Entreprise({ session }: { session: Session }) {
         <Route path="dossiers/:id" element={<DossierDetail />} />
         <Route path="assistant" element={<Assistant session={session} />} />
         <Route path="reponses" element={<MesReponses />} />
+        <Route path="favoris" element={<FavorisPage />} />
       </Routes>
     </AppShell>
   )

@@ -1,11 +1,14 @@
 import clsx from 'clsx'
-import { AlertTriangle, ArrowRight, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, MessageCircle, PenLine, Sparkles, Wallet } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, MessageCircle, PenLine, Sparkles, Wallet } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, dt, frDate, type Analyse, type AnalyseResume, type Reponse, type Session } from '../../api'
 import AiPanel from '../../components/AiPanel'
 import AnalyseView from '../../components/AnalyseView'
 import AssistantChat from '../../components/AssistantChat'
+import CameraScanner from '../../components/CameraScanner'
+import ExportMenu from '../../components/ExportMenu'
+import { StarButton } from '../../components/Favoris'
 import { Badge, Button, Card, ErrorBox, SectionTitle, Spinner, TipBanner } from '../../components/ui'
 
 export const langueOf = (s: Session): 'fr' | 'derja' => (s.utilisateur?.langue === 'derja' ? 'derja' : 'fr')
@@ -125,6 +128,7 @@ export function Analyser({ session }: { session: Session }) {
   const [step, setStep] = useState(-1)
   const [error, setError] = useState('')
   const [samples, setSamples] = useState<{ nom: string; fichier: string }[]>([])
+  const [camera, setCamera] = useState(false)
   const navigate = useNavigate()
   useEffect(() => { api.exemples().then(setSamples).catch(() => setSamples([])) }, [])
 
@@ -151,6 +155,10 @@ export function Analyser({ session }: { session: Session }) {
             <p className="text-sm text-slate-500">ou cliquez pour choisir un fichier · PDF, JPG, PNG, TXT</p>
             <p className="mt-3 inline-flex items-center gap-1 rounded-full bg-gold-light px-3 py-1 text-xs text-gold-dark"><Sparkles size={12} /> Les photos de notifications sont lues par l'IA</p>
             <input ref={input} type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+          </div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <span className="text-sm text-slate-500">Vous avez la notification sur papier ?</span>
+            <Button onClick={() => setCamera(true)}><Camera size={16} /> Scanner avec la caméra</Button>
           </div>
           {samples.length > 0 && (
             <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
@@ -180,6 +188,7 @@ export function Analyser({ session }: { session: Session }) {
         </Card>
       )}
       {error && <ErrorBox message={error} />}
+      {camera && <CameraScanner onClose={() => setCamera(false)} onCapture={(f) => { setCamera(false); void run(f) }} />}
     </div>
   )
 }
@@ -218,7 +227,13 @@ export function DossierDetail() {
     <div className="grid gap-6 2xl:grid-cols-3">
       <div className="space-y-6 2xl:col-span-2">
         <Link to="/entreprise/dossiers" className="text-sm text-slate-500 hover:text-navy-900">← Mes dossiers</Link>
-        <AnalyseView a={a} onLangue={switchLang} langueBusy={langBusy} />
+        <AnalyseView a={a} onLangue={switchLang} langueBusy={langBusy} actions={id && <>
+          <StarButton type="dossier" refId={id} tone="dark" titre={`Notification ${a.notification.reference}`}
+            extrait={`${a.notification.entreprise.nom} · ${dt(a.montant_total)} · réponse avant le ${frDate(a.date_limite_reponse)}`} lien={`/entreprise/dossiers/${id}`} />
+          <ExportMenu tone="dark" url={`/api/contribuable/analyses/${id}/pdf`} filename={`JISER_${a.notification.reference}.pdf`}
+            subject={`Analyse de la notification ${a.notification.reference}`}
+            body={`Bonjour,\n\nVoici l'analyse JISER de la notification ${a.notification.reference} (${a.notification.entreprise.nom}), à répondre avant le ${frDate(a.date_limite_reponse)}.`} />
+        </>} />
         <AiPanel title="Brouillon de réponse (article 44 du CDPF)" mode={lettre ? (a.mode) : undefined} loading={draftBusy}>
           {!lettre ? (
             <div className="flex flex-wrap items-center gap-3">
@@ -294,6 +309,7 @@ export function MesReponses() {
             <div className="flex gap-2">
               <Button variant="light" onClick={() => setOpen(open === r.id ? null : r.id)}>{open === r.id ? 'Masquer' : 'Afficher'}</Button>
               <Button variant="light" onClick={() => navigator.clipboard.writeText(r.lettre)}><Copy size={14} /> Copier</Button>
+              <StarButton type="reponse" refId={r.id} titre={`Brouillon de réponse du ${frDate(r.cree_le)}`} extrait={r.lettre} lien={`/entreprise/dossiers/${r.analyse_id}`} />
               <Link to={`/entreprise/dossiers/${r.analyse_id}`}><Button variant="ghost">Dossier</Button></Link>
             </div>
           </div>

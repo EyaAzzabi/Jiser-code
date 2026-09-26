@@ -1,7 +1,8 @@
 import clsx from 'clsx'
 import { AlertTriangle, CheckCircle2, Clock, HelpCircle, Languages, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { articleLabel, dt, frDate, type Analyse, type ChefAnalyse, type ProcedureCheck } from '../api'
+import { StarButton } from './Favoris'
 import ListenButton from './ListenButton'
 import { Card, ContestBadge, Kpi, SectionTitle } from './ui'
 
@@ -69,18 +70,22 @@ function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; la
       {article && (
         <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-700">
           {article.extrait}
-          <a href={article.source_url} target="_blank" rel="noreferrer" className="mt-1 block text-navy-800 underline decoration-gold">Source : Jurisite Tunisie</a>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <a href={article.source_url} target="_blank" rel="noreferrer" className="text-navy-800 underline decoration-gold">Source : Jurisite Tunisie</a>
+            <StarButton type="article" refId={article.id} titre={articleLabel(article.id)} extrait={article.extrait} label />
+          </div>
         </div>
       )}
     </Card>
   )
 }
 
-export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBusy }: {
+export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBusy, actions }: {
   a: Analyse
   mode?: 'entreprise' | 'controle'
   onLangue?: (l: 'fr' | 'derja') => void
   langueBusy?: boolean
+  actions?: ReactNode
 }) {
   const n = a.notification
   const vices = a.procedure.filter((p) => p.statut === 'vice').length
@@ -93,7 +98,8 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
             <div className="text-xl font-semibold">{n.entreprise.nom}</div>
             <div className="text-sm text-slate-300">Notification {n.reference} du {frDate(n.date_notification)} · vérification {n.type_verification} · exercices {n.exercices_verifies.join(', ')}</div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {actions}
             {onLangue && (
               <div className="flex rounded-xl bg-white/10 p-1 text-sm">
                 <Languages size={16} className="mx-1.5 self-center text-gold" />

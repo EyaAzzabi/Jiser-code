@@ -33,6 +33,7 @@ class MemoryRepo:
         self.analyses: dict[str, dict] = {}
         self.reponses: list[dict] = []
         self.journal: list[dict] = []
+        self.favoris: dict[str, dict] = {}
 
     # users
     def get_user(self, email: str) -> dict | None:
@@ -122,6 +123,22 @@ class MemoryRepo:
 
     def journal_has(self, action: str, cible: str) -> bool:
         return any(j["action"] == action and j["cible"] == cible for j in self.journal)
+
+    # favourites
+    def favoris_list(self, user_id: str) -> list[dict]:
+        return sorted((f for f in self.favoris.values() if f["utilisateur_id"] == user_id), key=lambda f: f["cree_le"], reverse=True)
+
+    def favoris_add(self, row: dict) -> dict:
+        for f in self.favoris.values():
+            if (f["utilisateur_id"], f["type"], f["ref"]) == (row["utilisateur_id"], row["type"], row["ref"]):
+                return f
+        row = {"id": str(uuid.uuid4()), "cree_le": _iso(_now()), **row}
+        self.favoris[row["id"]] = row
+        return row
+
+    def favoris_delete(self, fav_id: str, user_id: str) -> None:
+        if self.favoris.get(fav_id, {}).get("utilisateur_id") == user_id:
+            del self.favoris[fav_id]
 
     # dossiers
     def dossiers_all(self) -> list[dict] | None:
@@ -214,6 +231,15 @@ class SupabaseRepo:
 
     def journal_has(self, action: str, cible: str) -> bool:
         return bool(self._t("journal").select("id").eq("action", action).eq("cible", cible).limit(1).execute().data)
+
+    def favoris_list(self, user_id: str) -> list[dict]:
+        return self._t("favoris").select("*").eq("utilisateur_id", user_id).order("cree_le", desc=True).limit(200).execute().data
+
+    def favoris_add(self, row: dict) -> dict:
+        return self._t("favoris").upsert(row, on_conflict="utilisateur_id,type,ref").execute().data[0]
+
+    def favoris_delete(self, fav_id: str, user_id: str) -> None:
+        self._t("favoris").delete().eq("id", fav_id).eq("utilisateur_id", user_id).execute()
 
     def dossiers_all(self) -> list[dict] | None:
         out, start, page = [], 0, 1000

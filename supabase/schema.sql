@@ -100,3 +100,17 @@ alter table analyses     enable row level security;
 alter table reponses     enable row level security;
 alter table journal      enable row level security;
 alter table dossiers     enable row level security;
+
+-- Favourites: items a user pinned (analysis, law article, reply draft, assistant answer, admin file)
+create table if not exists favoris (
+  id              uuid primary key default gen_random_uuid(),
+  utilisateur_id  uuid not null references utilisateurs(id) on delete cascade,
+  type            text not null check (type in ('dossier', 'article', 'reponse', 'assistant', 'dossier_admin')),
+  ref             text not null,
+  titre           text not null,
+  extrait         text not null default '',
+  lien            text not null default '',
+  cree_le         timestamptz not null default now(),
+  unique (utilisateur_id, type, ref)
+);
+alter table favoris enable row level security;

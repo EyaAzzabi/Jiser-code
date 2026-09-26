@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, dt, frDate, type AvisDossier, type DossierDetail } from '../../api'
 import AiPanel from '../../components/AiPanel'
+import ExportMenu from '../../components/ExportMenu'
+import { StarButton } from '../../components/Favoris'
 import ListenButton from '../../components/ListenButton'
 import { Badge, Button, Card, ErrorBox, Kpi, ScoreGauge, SectionTitle, Spinner } from '../../components/ui'
 
@@ -42,7 +44,16 @@ export default function DossierPage() {
       <button onClick={() => navigate('/administration/dossiers')} className="flex items-center gap-1 text-sm text-slate-500 hover:text-navy-900"><ArrowLeft size={14} /> Retour au stock</button>
       <Card tone="dark">
         <div className="text-xs uppercase tracking-wide text-gold">{n.centre} · {d.dossier.etape}</div>
-        <div className="text-2xl font-semibold">{n.entreprise.nom}</div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="text-2xl font-semibold">{n.entreprise.nom}</div>
+          <div className="flex flex-wrap gap-2">
+            <StarButton type="dossier_admin" refId={d.dossier.id} tone="dark" titre={`Dossier ${n.reference} · ${n.entreprise.nom}`}
+              extrait={`Score ${d.score.score_solidite}/100 · ${dt(total)} notifiés · conciliation proposée ${dt(d.conciliation.montant_propose)}`} lien={`/administration/dossier/${d.dossier.id}`} />
+            <ExportMenu tone="dark" url={`/api/admin/dossiers/${d.dossier.id}/pdf`} filename={`JISER_dossier_${n.reference}.pdf`}
+              subject={`Dossier ${n.reference} · ${n.entreprise.nom}`}
+              body={`Bonjour,\n\nCi-joint la fiche JISER du dossier ${n.reference} (score de solidité ${d.score.score_solidite}/100), avec l'avis juridique et la proposition de conciliation.`} />
+          </div>
+        </div>
         <div className="text-sm text-slate-300">{n.reference} · notifiée le {frDate(n.date_notification)} · {n.entreprise.secteur} · {n.entreprise.gouvernorat} · {n.chefs.length} chef(s) · {dt(total)}</div>
       </Card>
 

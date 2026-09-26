@@ -1,8 +1,9 @@
-import { BarChart3, Bot, FileCheck2, FolderKanban, Handshake } from 'lucide-react'
+import { BarChart3, Bot, FileCheck2, FolderKanban, Handshake, Star } from 'lucide-react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import type { Session } from '../api'
 import AppShell, { type NavItem } from '../components/AppShell'
 import AssistantChat from '../components/AssistantChat'
+import FavorisPage from './FavorisPage'
 import Conciliations from './administration/Conciliations'
 import Controle from './administration/Controle'
 import Dashboard from './administration/Dashboard'
@@ -15,6 +16,7 @@ const NAV: NavItem[] = [
   { to: '/administration/conciliations', label: 'Conciliations', icon: Handshake, ai: true },
   { to: '/administration/controle-qualite', label: 'Contrôle qualité', icon: FileCheck2, ai: true },
   { to: '/administration/copilote', label: 'Copilote juridique', icon: Bot, ai: true },
+  { to: '/administration/favoris', label: 'Favoris', icon: Star },
 ]
 
 function Copilote() {
@@ -39,6 +41,7 @@ export default function Administration({ session }: { session: Session }) {
         <Route path="conciliations" element={<Conciliations />} />
         <Route path="controle-qualite" element={<Controle />} />
         <Route path="copilote" element={<Copilote />} />
+        <Route path="favoris" element={<FavorisPage />} />
         <Route path="tableau-de-bord" element={<Navigate to="/administration" replace />} />
       </Routes>
     </AppShell>

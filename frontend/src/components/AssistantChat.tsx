@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { Send, Sparkles, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { api, articleLabel, type ArticleRef } from '../api'
+import { StarButton } from './Favoris'
 import ListenButton from './ListenButton'
 
 interface Message {
@@ -70,7 +71,13 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
                 </div>
               )}
               {m.mode === 'hors_ligne' && <p className="mt-2 text-[11px] text-slate-400">Réponse sans IA générative (recherche dans les textes).</p>}
-              {m.role === 'assistant' && m.mode === 'ia' && <div className="mt-3"><ListenButton text={m.texte} source={langue} /></div>}
+              {m.role === 'assistant' && m.mode === 'ia' && (
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <ListenButton text={m.texte} source={langue} />
+                  <StarButton type="assistant" refId={`${m.texte.length}-${m.texte.slice(0, 60)}`}
+                    titre={messages[i - 1]?.texte ? `Question : ${messages[i - 1].texte.slice(0, 120)}` : 'Réponse de l\'assistant'} extrait={m.texte} />
+                </div>
+              )}
             </div>
           </div>
         ))}

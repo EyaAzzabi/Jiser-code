@@ -20,7 +20,8 @@ from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
 from .schemas import AnalyseNotification
-from .services import administration, ai_admin, analysis, assistant, auth, drafting, extraction, llm, rappels, voix
+from .services import (administration, ai_admin, analysis, assistant, auth, drafting, export_pdf, extraction, llm, rappels,
+                       voix)
 from .services.db import repo
 from .services.legal_rag import get_index
 from .services.store import TODAY, get_store
@@ -288,6 +289,97 @@ def lire_a_voix_haute(req: VoixRequest, _: dict = Depends(current_session)):
     except voix.VoixIndisponible as e:
         raise HTTPException(503, str(e)) from e
     return Response(content=audio, media_type="audio/mpeg", headers={"Cache-Control": "private, max-age=86400"})
+
+
+# ---- Favoris, notifications et exports (tous les espaces) ----------------------------------------
+
+class FavoriRequest(BaseModel):
+    type: str      # dossier | article | reponse | assistant | dossier_admin
+    ref: str
+    titre: str
+    extrait: str = ""
+    lien: str = ""
+
+
+def _user_id(session: dict) -> str:
+    if not session.get("utilisateur_id"):
+        raise HTTPException(403, "Les favoris sont réservés aux comptes utilisateurs.")
+    return session["utilisateur_id"]
+
+
+@app.get("/api/favoris", tags=["favoris"])
+def mes_favoris(session: dict = Depends(current_session)):
+    try:
+        return repo().favoris_list(_user_id(session))
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(503, "Favoris indisponibles : la table « favoris » n'existe pas encore dans la base.") from e
+
+
+@app.post("/api/favoris", tags=["favoris"])
+def ajouter_favori(req: FavoriRequest, session: dict = Depends(current_session)):
+    if req.type not in {"dossier", "article", "reponse", "assistant", "dossier_admin"}:
+        raise HTTPException(422, "Type de favori inconnu.")
+    return repo().favoris_add({"utilisateur_id": _user_id(session), "type": req.type, "ref": req.ref[:200],
+                               "titre": req.titre[:200], "extrait": req.extrait[:1000], "lien": req.lien[:300]})
+
+
+@app.delete("/api/favoris/{fav_id}", tags=["favoris"])
+def retirer_favori(fav_id: str, session: dict = Depends(current_session)):
+    repo().favoris_delete(fav_id, _user_id(session))
+    return {"ok": True}
+
+
+@app.get("/api/notifications", tags=["notifications"])
+def notifications(session: dict = Depends(current_session)):
+    """In-app bell: reply deadlines for taxpayers, expiring reply windows for the administration."""
+    items = []
+    if session.get("role") in CONTRIBUABLE and session.get("utilisateur_id"):
+        for r in repo().analyses_for(session["utilisateur_id"]):
+            d = date.fromisoformat(str(r["date_limite"]))
+            jours = (d - TODAY).days
+            if jours > 15:
+                continue
+            items.append({"id": r["id"], "niveau": "urgent" if jours <= 3 else "bientot" if jours <= 7 else "info",
+                          "titre": ("Délai dépassé" if jours < 0 else f"J-{jours} · répondre à {r['reference']}"),
+                          "detail": f"{r['entreprise']} · date limite {d:%d/%m/%Y}", "lien": f"/entreprise/dossiers/{r['id']}",
+                          "jours": jours})
+    elif session.get("role") in ADMINISTRATION:
+        for f in get_store().open_files.values():
+            if f.dossier.etape != "Notification":
+                continue
+            fin = f.dossier.notification.date_notification.toordinal() + 30 - TODAY.toordinal()
+            if 0 <= fin <= 7:
+                items.append({"id": f.dossier.id, "niveau": "urgent" if fin <= 2 else "bientot",
+                              "titre": f"J-{fin} · fin du délai de réponse du contribuable",
+                              "detail": f"{f.dossier.notification.entreprise.nom} · taxation d'office possible ensuite (art. 47)",
+                              "lien": f"/administration/dossier/{f.dossier.id}", "jours": fin})
+    items.sort(key=lambda x: x["jours"])
+    return {"total": len(items), "urgents": sum(i["niveau"] == "urgent" for i in items), "items": items[:15]}
+
+
+@app.get("/api/contribuable/analyses/{analyse_id}/pdf", tags=["contribuable"])
+def analyse_pdf(analyse_id: str, session: dict = Depends(require(*CONTRIBUABLE))):
+    row = repo().analysis_get(analyse_id, session["utilisateur_id"])
+    if row is None:
+        raise HTTPException(404, "Analyse introuvable")
+    a = AnalyseNotification.model_validate(row["resultat"])
+    lettre = next((r["lettre"] for r in repo().reponses_for(session["utilisateur_id"]) if r["analyse_id"] == analyse_id), None)
+    pdf = export_pdf.rapport_analyse(a, lettre)
+    return Response(pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="JISER_{a.notification.reference}.pdf"'})
+
+
+@app.get("/api/admin/dossiers/{dossier_id}/pdf", tags=["administration"])
+def dossier_pdf(dossier_id: str, avec_avis: bool = True, session: dict = Depends(require(*ADMINISTRATION))):
+    detail = administration.dossier_detail(dossier_id, session["email"])
+    if detail is None:
+        raise HTTPException(404, "Dossier introuvable")
+    avis = ai_admin.avis_dossier(detail).model_dump() if avec_avis else None
+    pdf = export_pdf.fiche_dossier(detail, avis)
+    ref = detail["dossier"]["notification"]["reference"]
+    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="JISER_dossier_{ref}.pdf"'})
 
 
 # ---- Espace administration fiscale ------------------------------------------------------------

@@ -3,6 +3,7 @@ import { Home, LogOut, Menu, Sparkles, X, type LucideIcon } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { authApi, saveSession, type Session } from '../api'
+import NotificationBell from './NotificationBell'
 
 export interface NavItem {
   to: string
@@ -82,7 +83,10 @@ export default function AppShell({ session, espace, nav, children }: {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white lg:block">{sidebar}</aside>
       <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
         <Link to="/" className="flex items-center gap-2"><img src="/logo-icon.png" alt="" className="h-8 w-8" /><span className="font-display font-bold text-navy-900">JISER</span></Link>
-        <button onClick={() => setOpen(true)} aria-label="Ouvrir le menu" className="rounded-lg p-2 hover:bg-slate-100"><Menu /></button>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button onClick={() => setOpen(true)} aria-label="Ouvrir le menu" className="rounded-lg p-2 hover:bg-slate-100"><Menu /></button>
+        </div>
       </div>
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
@@ -93,7 +97,10 @@ export default function AppShell({ session, espace, nav, children }: {
           </aside>
         </div>
       )}
-      <main className="px-4 py-8 lg:ml-64 lg:px-10">{children}</main>
+      <main className="px-4 py-6 lg:ml-64 lg:px-10">
+        <div className="mb-2 hidden justify-end lg:flex"><NotificationBell /></div>
+        {children}
+      </main>
     </div>
   )
 }
