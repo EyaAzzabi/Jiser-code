@@ -1,8 +1,8 @@
 import clsx from 'clsx'
-import { ArrowLeft, Copy, ThumbsDown, ThumbsUp } from 'lucide-react'
+import { ArrowLeft, Copy, MessagesSquare, ThumbsDown, ThumbsUp, UserCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, dt, frDate, type AvisDossier, type DossierDetail } from '../../api'
+import { api, dt, frDate, messagerieApi, type AvisDossier, type DossierDetail } from '../../api'
 import AiPanel from '../../components/AiPanel'
 import ExportMenu from '../../components/ExportMenu'
 import { StarButton } from '../../components/Favoris'
@@ -15,10 +15,11 @@ export default function DossierPage() {
   const [avis, setAvis] = useState<AvisDossier | null>(null)
   const [avisLoading, setAvisLoading] = useState(true)
   const [error, setError] = useState('')
-  const [decision, setDecision] = useState<'validee' | 'refusee' | null>(null)
+  const [decision, setDecision] = useState<{ statut: string; message: string } | null>(null)
+  const [conv, setConv] = useState<string | null>(null)
   const decide = async (v: 'validee' | 'refusee') => {
     if (!id) return
-    try { await api.decision(id, v); setDecision(v) } catch (e) { setError((e as Error).message) }
+    try { setDecision(await api.decision(id, v)) } catch (e) { setError((e as Error).message) }
   }
   const navigate = useNavigate()
 
@@ -30,6 +31,7 @@ export default function DossierPage() {
   useEffect(() => {
     if (!id) return
     api.dossier(id).then(setD).catch((e) => setError(e.message))
+    messagerieApi.duDossier(id).then((r) => setConv(r.conversation?.id ?? null)).catch(() => {})
     loadAvis()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
@@ -55,6 +57,13 @@ export default function DossierPage() {
           </div>
         </div>
         <div className="text-sm text-slate-300">{n.reference} · notifiée le {frDate(n.date_notification)} · {n.entreprise.secteur} · {n.entreprise.gouvernorat} · {n.chefs.length} chef(s) · {dt(total)}</div>
+        <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+          <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1"><UserCheck size={14} className="text-gold" />
+            {d.affectation ? `Affecté à ${d.affectation.agent_nom}` : 'Non affecté'}</span>
+          {conv
+            ? <button onClick={() => navigate(`/administration/messagerie/${conv}`)} className="flex items-center gap-1.5 rounded-full bg-gold px-3 py-1 font-semibold text-white hover:bg-gold-dark"><MessagesSquare size={14} /> Conversation avec l'entreprise</button>
+            : <span className="text-xs text-slate-300">L'entreprise n'a pas encore ouvert d'échange sur JISER.</span>}
+        </div>
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -124,9 +133,9 @@ export default function DossierPage() {
             <Button variant="light" onClick={() => navigator.clipboard.writeText(avis.lettre_conciliation)}><Copy size={14} /> Copier</Button>
             <span className="mx-2 h-6 w-px bg-slate-200" />
             <span className="text-sm text-slate-600">Décision de l'agent :</span>
-            <Button variant={decision === 'validee' ? 'primary' : 'ghost'} onClick={() => decide('validee')}><ThumbsUp size={14} /> Valider</Button>
-            <Button variant={decision === 'refusee' ? 'primary' : 'ghost'} onClick={() => decide('refusee')}><ThumbsDown size={14} /> Refuser</Button>
-            {decision && <span className="text-sm font-medium text-emerald-700">Décision inscrite au journal : {decision === 'validee' ? 'proposition validée' : 'proposition refusée'}</span>}
+            <Button variant={decision?.statut && decision.statut !== 'refusee' ? 'primary' : 'ghost'} onClick={() => decide('validee')}><ThumbsUp size={14} /> Valider</Button>
+            <Button variant={decision?.statut === 'refusee' ? 'primary' : 'ghost'} onClick={() => decide('refusee')}><ThumbsDown size={14} /> Refuser</Button>
+            {decision && <span className={clsx('text-sm font-medium', decision.statut === 'en_attente_validation' ? 'text-gold-dark' : 'text-emerald-700')}>{decision.message} Inscrit au journal.</span>}
           </div>
         </AiPanel>
       )}

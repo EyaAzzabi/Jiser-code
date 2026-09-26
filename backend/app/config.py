@@ -41,9 +41,19 @@ N8N_OTP_WEBHOOK_URL = _env("N8N_OTP_WEBHOOK_URL")
 N8N_WELCOME_WEBHOOK_URL = _env("N8N_WELCOME_WEBHOOK_URL")
 N8N_RAPPEL_WEBHOOK_URL = _env("N8N_RAPPEL_WEBHOOK_URL")
 N8N_SHARED_SECRET = _env("N8N_SHARED_SECRET")        # sent as X-Jiser-Secret, checked by n8n and by /api/n8n/*
+# generic notification e-mail (account decisions, legal watch report, unread messages)
+N8N_NOTIF_WEBHOOK_URL = _env("N8N_NOTIF_WEBHOOK_URL")
 
 # --- Access control -------------------------------------------------------------------------
 ADMIN_EMAILS = {e.strip().lower() for e in _env("ADMIN_EMAILS").split(",") if e.strip()}
 APP_URL = _env("APP_URL", "http://localhost:5173")
+# administration accounts are expected to use an official address; others are flagged to the validator
+OFFICIAL_EMAIL_DOMAINS = {d.strip().lower() for d in _env("OFFICIAL_EMAIL_DOMAINS", "finances.gov.tn").split(",") if d.strip()}
+# above this settlement amount, a case officer's proposal must be approved by the head of centre
+SEUIL_VALIDATION_CONCILIATION = float(_env("SEUIL_VALIDATION_CONCILIATION", "100000"))
+
+# --- Confidentiality ------------------------------------------------------------------------
+# key for encryption at rest (Fernet). If empty, a key is derived from the server secrets.
+DATA_KEY = _env("JISER_DATA_KEY")
 
 CORS_ORIGINS = [APP_URL, "http://localhost:5173", "http://127.0.0.1:5173"]

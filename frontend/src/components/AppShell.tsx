@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { Home, LogOut, Menu, Sparkles, X, type LucideIcon } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { authApi, saveSession, type Session } from '../api'
+import { authApi, ROLE_LABELS, saveSession, type Session } from '../api'
 import NotificationBell from './NotificationBell'
 
 export interface NavItem {
@@ -13,13 +13,9 @@ export interface NavItem {
   ai?: boolean
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  entreprise: "Chef d'entreprise", conseil: 'Conseil fiscal', verificateur: 'Vérificateur',
-  contentieux: 'Chef(fe) du contentieux', admin: 'Administrateur plateforme',
-}
-
 function structureOf(session: Session): string {
   const d = session.utilisateur?.details ?? {}
+  if (d.centre) return `CRCI ${String(d.centre)}`
   return String(d.raison_sociale ?? d.cabinet ?? d.structure ?? '') + (d.gouvernorat ? ` · ${String(d.gouvernorat)}` : '')
 }
 
@@ -55,7 +51,7 @@ export default function AppShell({ session, espace, nav, children }: {
       <div className="mx-4 rounded-2xl border border-gold/30 bg-gold-light/50 p-3">
         <div className="text-[11px] uppercase tracking-wide text-slate-500">Connecté</div>
         <div className="font-semibold text-navy-900">{name}</div>
-        <div className="text-xs font-medium text-gold-dark">{ROLE_LABEL[session.role ?? ''] ?? ''}</div>
+        <div className="text-xs font-medium text-gold-dark">{ROLE_LABELS[session.role ?? ''] ?? ''}</div>
         {structureOf(session) && <div className="mt-0.5 truncate text-xs text-slate-500">{structureOf(session)}</div>}
       </div>
 

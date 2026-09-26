@@ -3,10 +3,13 @@
 Run from the repo root:
     .venv/Scripts/python -m uvicorn app.main:app --reload --app-dir backend
 Docs (Swagger): http://127.0.0.1:8000/docs
+
+Access control (deps.py): every private route declares a permission; the role is re-read from the
+database on each request; pending accounts see nothing; administration users only see the files of
+their centre; the minister only sees anonymous aggregates.
 """
 from __future__ import annotations
 
-import hmac
 import json
 import logging
 import re
@@ -18,22 +21,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
+from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, SYNTHETIC_DIR
+from .deps import compte, current_session, journaliser_acces, n8n_auth, permission
 from .domain import DELAI_REPONSE_JOURS
+from .routers import comptes as comptes_router
+from .routers import confidentialite, messagerie as messagerie_router, pilotage as pilotage_router, veille as veille_router
 from .schemas import AnalyseNotification
-from .services import (administration, ai_admin, analysis, assistant, auth, drafting, export_pdf, extraction, llm, rappels,
-                       voix)
+from .services import (administration, ai_admin, analysis, assistant, auth, drafting, export_pdf, extraction, llm, pilotage, rappels,
+                       securite, veille, voix)
 from .services.db import repo
 from .services.legal_rag import get_index
+from .services.permissions import CENTRES, CENTRES_A, ROLE_LABELS, peut_voir_dossier, perimetre
 from .services.store import TODAY, get_store
 
 logging.basicConfig(level=logging.INFO)
-app = FastAPI(title="JISER API", version="0.2.0",
+app = FastAPI(title="JISER API", version="0.3.0",
               description="Plateforme IA pour le contentieux fiscal tunisien.")
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"])
-
-CONTRIBUABLE = {"entreprise", "conseil"}
-ADMINISTRATION = {"verificateur", "contentieux", "admin"}
+for r in (comptes_router, pilotage_router, messagerie_router, confidentialite, veille_router):
+    app.include_router(r.router)
 
 
 @app.on_event("startup")
@@ -43,27 +49,7 @@ def warm_up() -> None:
     repo()
     threading.Thread(target=llm.probe, daemon=True).start()
     rappels.demarrer_planificateur()
-
-
-# ---- Access control -------------------------------------------------------------------------
-
-def current_session(authorization: str | None = Header(default=None)) -> dict:
-    try:
-        return auth.get_session((authorization or "").removeprefix("Bearer ").strip())
-    except auth.AuthError as e:
-        raise HTTPException(e.status, str(e)) from e
-
-
-def require(*roles: str):
-    def dep(session: dict = Depends(current_session)) -> dict:
-        if session.get("role") not in roles:
-            raise HTTPException(403, "Accès non autorisé pour votre profil.")
-        return session
-    return dep
-
-
-def _raise(e: auth.AuthError):
-    raise HTTPException(e.status, str(e)) from e
+    veille.demarrer_planificateur()
 
 
 # ---- Public ---------------------------------------------------------------------------------
@@ -71,13 +57,25 @@ def _raise(e: auth.AuthError):
 @app.get("/api/status", tags=["public"])
 def status() -> dict:
     return {"ok": True, "llm": llm.status(), "articles": len(get_index().articles), "base": repo().kind,
-            "date": TODAY.isoformat()}
+            "date": TODAY.isoformat(), "recherche_hybride": get_index().hybride}
 
 
 @app.get("/api/public/chiffres", tags=["public"])
 def chiffres() -> dict:
     metrics = administration.dashboard().get("modele")
     return {"articles": len(get_index().articles), "modele": metrics}
+
+
+@app.get("/api/public/referentiel", tags=["public"])
+def referentiel() -> dict:
+    """Roles and regional centres used by the onboarding."""
+    return {"centres": CENTRES, "centres_a": CENTRES_A, "roles": ROLE_LABELS}
+
+
+@app.get("/api/donnees-officielles", tags=["public"])
+def donnees_officielles():
+    """Real public figures on tax control and litigation (ministère des Finances), used by the dashboards."""
+    return json.loads((DATA_DIR / "real" / "indicateurs_officiels.json").read_text(encoding="utf-8"))
 
 
 # ---- Authentification (OTP par e-mail) --------------------------------------------------------
@@ -94,9 +92,9 @@ class OtpVerify(BaseModel):
 
 REQUIRED_FIELDS = {
     "entreprise": ["raison_sociale", "matricule_fiscal", "forme_juridique", "secteur", "gouvernorat", "effectif", "regime"],
-    "conseil": ["cabinet", "profession", "numero_inscription", "gouvernorat"],
-    "verificateur": ["matricule_agent", "grade", "structure", "gouvernorat"],
-    "contentieux": ["structure", "perimetre", "objectifs"],
+    "contentieux": ["centre", "matricule_agent", "grade"],
+    "chef_centre": ["centre", "matricule_agent"],
+    "ministre": ["cabinet"],
 }
 MATRICULE_RE = re.compile(r"^\d{7}[A-Z]/[A-Z]/[A-Z]/\d{3}$")
 
@@ -116,7 +114,7 @@ def otp_demander(req: OtpRequest):
     try:
         return auth.request_otp(req.email, req.intention)
     except auth.AuthError as e:
-        _raise(e)
+        raise HTTPException(e.status, str(e)) from e
 
 
 @app.post("/api/auth/otp/verifier", tags=["authentification"])
@@ -124,7 +122,7 @@ def otp_verifier(req: OtpVerify):
     try:
         out = auth.verify_otp(req.email, req.code)
     except auth.AuthError as e:
-        _raise(e)
+        raise HTTPException(e.status, str(e)) from e
     get_store().log("otp_verifie", auth.mask(req.email.strip().lower()), "Identité vérifiée par code à usage unique",
                     "securite", req.email.strip().lower())
     return out
@@ -144,21 +142,24 @@ def enregistrer_profil(req: ProfilRequest, session: dict = Depends(current_sessi
         if not MATRICULE_RE.match(mf):
             raise HTTPException(422, "Matricule fiscal invalide (format : 1234567A/A/M/000).")
         req.details["matricule_fiscal"] = mf
+    if req.role in {"contentieux", "chef_centre"} and req.details.get("centre") not in CENTRES:
+        raise HTTPException(422, "Centre régional inconnu.")
     if not (req.consentements.get("cgu") and req.consentements.get("donnees_personnelles")):
         raise HTTPException(422, "Les conditions d'utilisation et le traitement des données (loi 2004-63) doivent être acceptés.")
     try:
         user = auth.complete_signup(session, req.model_dump())
     except auth.AuthError as e:
-        _raise(e)
-    get_store().log("inscription", f"{req.prenom} {req.nom} ({req.role})", "Compte créé après vérification OTP", "securite", user["email"])
+        raise HTTPException(e.status, str(e)) from e
+    get_store().log("inscription", f"{req.prenom} {req.nom} ({req.role})", "Demande d'accès créée après vérification OTP",
+                    "securite", user["email"])
     return {"ok": True, "utilisateur": user}
 
 
 @app.get("/api/auth/moi", tags=["authentification"])
 def moi(session: dict = Depends(current_session)):
     user = repo().get_user(session["email"])
-    return {"role": session.get("role"), "email": auth.mask(session["email"]),
-            "utilisateur": auth.public_user(user) if user else None}
+    role = session.get("role") if session.get("role") == "admin" else (user["role"] if user else session.get("role"))
+    return {"role": role, "email": auth.mask(session["email"]), "utilisateur": auth.public_user(user) if user else None}
 
 
 @app.post("/api/auth/deconnexion", tags=["authentification"])
@@ -167,7 +168,10 @@ def deconnexion(authorization: str | None = Header(default=None)):
     return {"ok": True}
 
 
-# ---- Espace entreprise (contribuable et conseil) -----------------------------------------------
+# ---- Espace entreprise --------------------------------------------------------------------------
+
+ENTREPRISE = permission("analyses:propres")
+
 
 def _save_analysis(result: AnalyseNotification, session: dict) -> AnalyseNotification:
     row = repo().analysis_add({
@@ -176,30 +180,32 @@ def _save_analysis(result: AnalyseNotification, session: dict) -> AnalyseNotific
         "montant_contestable": result.montant_contestable, "date_limite": result.date_limite_reponse.isoformat(),
         "nb_vices": sum(p.statut == "vice" for p in result.procedure), "resultat": result.model_dump(mode="json")})
     result.analyse_id = row["id"]
-    user = repo().get_user(session["email"])
-    if user:
-        rappels.echeance_enregistree(row, user)
+    rappels.echeance_enregistree(row, session["user"])
     return result
 
 
 @app.post("/api/contribuable/analyser", response_model=AnalyseNotification, tags=["contribuable"])
 async def analyser_fichier(fichier: UploadFile = File(...), pieces_ratio: float = Form(analysis.DEFAULT_PIECES_RATIO),
-                           langue: str = Form("fr"), session: dict = Depends(require(*CONTRIBUABLE))):
-    """Upload a notification (PDF, image or text), get the full analysis, saved to the user's space."""
+                           langue: str = Form("fr"), session: dict = Depends(ENTREPRISE)):
+    """Upload a notification (PDF, image or text), get the full analysis, saved (encrypted) to the user's space."""
+    from starlette.concurrency import run_in_threadpool
     data = await fichier.read()
-    try:
-        notif, _mode = extraction.from_upload(data, fichier.filename or "", fichier.content_type)
-    except extraction.ExtractionError as e:
-        raise HTTPException(status_code=422, detail=str(e)) from e
-    result = analysis.analyse(notif, pieces_ratio, today=TODAY, langue="derja" if langue == "derja" else "fr")
-    _save_analysis(result, session)
-    get_store().log("analyse_notification", notif.reference,
-                    f"{sum(c.contestabilite != 'solide' for c in result.chefs)} chef(s) contestable(s)", result.mode, session["email"])
-    return result
+
+    def run() -> AnalyseNotification:
+        try:
+            notif, _mode = extraction.from_upload(data, fichier.filename or "", fichier.content_type)
+        except extraction.ExtractionError as e:
+            raise HTTPException(status_code=422, detail=str(e)) from e
+        result = analysis.analyse(notif, pieces_ratio, today=TODAY, langue="derja" if langue == "derja" else "fr")
+        _save_analysis(result, session)
+        get_store().log("analyse_notification", notif.reference,
+                        f"{sum(c.contestabilite != 'solide' for c in result.chefs)} chef(s) contestable(s)", result.mode, session["email"])
+        return result
+    return await run_in_threadpool(run)
 
 
 @app.get("/api/contribuable/analyses", tags=["contribuable"])
-def mes_analyses(session: dict = Depends(require(*CONTRIBUABLE))):
+def mes_analyses(session: dict = Depends(ENTREPRISE)):
     rows = repo().analyses_for(session["utilisateur_id"])
     return [{k: r[k] for k in ("id", "reference", "entreprise", "montant_total", "montant_contestable", "date_limite",
                                "nb_vices", "cree_le")} | {"jours_restants": (date.fromisoformat(str(r["date_limite"])) - TODAY).days}
@@ -207,7 +213,7 @@ def mes_analyses(session: dict = Depends(require(*CONTRIBUABLE))):
 
 
 @app.get("/api/contribuable/analyses/{analyse_id}", response_model=AnalyseNotification, tags=["contribuable"])
-def une_analyse(analyse_id: str, langue: str | None = None, session: dict = Depends(require(*CONTRIBUABLE))):
+def une_analyse(analyse_id: str, langue: str | None = None, session: dict = Depends(ENTREPRISE)):
     row = repo().analysis_get(analyse_id, session["utilisateur_id"])
     if row is None:
         raise HTTPException(404, "Analyse introuvable")
@@ -224,7 +230,7 @@ class ReponseRequest(BaseModel):
 
 
 @app.post("/api/contribuable/brouillon", tags=["contribuable"])
-def brouillon(req: ReponseRequest, session: dict = Depends(require(*CONTRIBUABLE))):
+def brouillon(req: ReponseRequest, session: dict = Depends(ENTREPRISE)):
     row = repo().analysis_get(req.analyse_id, session["utilisateur_id"])
     if row is None:
         raise HTTPException(404, "Analyse introuvable")
@@ -236,7 +242,7 @@ def brouillon(req: ReponseRequest, session: dict = Depends(require(*CONTRIBUABLE
 
 
 @app.get("/api/contribuable/reponses", tags=["contribuable"])
-def mes_reponses(session: dict = Depends(require(*CONTRIBUABLE))):
+def mes_reponses(session: dict = Depends(ENTREPRISE)):
     return repo().reponses_for(session["utilisateur_id"])
 
 
@@ -247,14 +253,19 @@ class QuestionRequest(BaseModel):
     analyse_id: str | None = None
 
 
+COPILOTE = permission("copilote")
+
+
 @app.post("/api/contribuable/assistant", response_model=assistant.AssistantAnswer, tags=["contribuable"])
-def assistant_ia(req: QuestionRequest, session: dict = Depends(require(*CONTRIBUABLE, *ADMINISTRATION))):
-    return assistant.answer(req.question, req.langue, req.historique, _assistant_context(req, session))
+def assistant_ia(req: QuestionRequest, session: dict = Depends(COPILOTE)):
+    out = assistant.answer(req.question, req.langue, req.historique, _assistant_context(req, session))
+    get_store().log("assistant", "Question à l'assistant", "Réponse avec articles cités", out.mode, session["email"])
+    return out
 
 
 def _assistant_context(req: QuestionRequest, session: dict) -> dict | None:
     contexte = None
-    if req.analyse_id and session.get("utilisateur_id"):
+    if req.analyse_id and session.get("role") == "entreprise":
         row = repo().analysis_get(req.analyse_id, session["utilisateur_id"])
         if row:
             r = row["resultat"]
@@ -266,23 +277,28 @@ def _assistant_context(req: QuestionRequest, session: dict) -> dict | None:
 
 
 @app.post("/api/contribuable/assistant/stream", tags=["contribuable"])
-def assistant_stream(req: QuestionRequest, session: dict = Depends(require(*CONTRIBUABLE, *ADMINISTRATION))):
+def assistant_stream(req: QuestionRequest, session: dict = Depends(COPILOTE)):
     """Streamed answer (NDJSON events: articles, delta…, fin)."""
     contexte = _assistant_context(req, session)
+    get_store().log("assistant", "Question à l'assistant", "Réponse en direct avec articles cités", "ia", session["email"])
+    ids = securite.identifiants_de(session.get("user"))
+    consent = ((session.get("user") or {}).get("consentements") or {}).get("analyse_ia", True)
 
     def events():
-        for ev in assistant.answer_stream(req.question, req.langue, req.historique, contexte):
-            yield json.dumps(ev, ensure_ascii=False) + "\n"
+        # the response is produced after the request context: set the confidentiality context again
+        with securite.contexte(ids, bool(consent)):
+            for ev in assistant.answer_stream(req.question, req.langue, req.historique, contexte):
+                yield json.dumps(ev, ensure_ascii=False) + "\n"
     return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @app.get("/api/exemples", tags=["contribuable"])
-def exemples(_: dict = Depends(current_session)) -> list[dict]:
+def exemples(_: dict = Depends(compte)) -> list[dict]:
     return [{"nom": p.stem, "fichier": p.name} for p in sorted((SYNTHETIC_DIR / "samples").glob("*.pdf"))]
 
 
 @app.get("/api/exemples/{nom}", tags=["contribuable"])
-def exemple(nom: str, _: dict = Depends(current_session)):
+def exemple(nom: str, _: dict = Depends(compte)):
     path = (SYNTHETIC_DIR / "samples" / nom).resolve()
     if path.parent != (SYNTHETIC_DIR / "samples").resolve() or not path.exists():
         raise HTTPException(404, "Exemple introuvable")
@@ -296,8 +312,8 @@ class VoixRequest(BaseModel):
 
 
 @app.post("/api/voix", tags=["contribuable"], response_class=Response)
-def lire_a_voix_haute(req: VoixRequest, _: dict = Depends(current_session)):
-    """Text-to-speech of an explanation, in French, English or Tunisian derja (MP3)."""
+def lire_a_voix_haute(req: VoixRequest, _: dict = Depends(compte)):
+    """Text-to-speech of an explanation, in French, English or Tunisian derja (MP3). Names are never sent."""
     if not req.texte.strip():
         raise HTTPException(422, "Texte vide.")
     try:
@@ -317,6 +333,9 @@ class FavoriRequest(BaseModel):
     lien: str = ""
 
 
+FAVORIS = permission("favoris")
+
+
 def _user_id(session: dict) -> str:
     if not session.get("utilisateur_id"):
         raise HTTPException(403, "Les favoris sont réservés aux comptes utilisateurs.")
@@ -324,7 +343,7 @@ def _user_id(session: dict) -> str:
 
 
 @app.get("/api/favoris", tags=["favoris"])
-def mes_favoris(session: dict = Depends(current_session)):
+def mes_favoris(session: dict = Depends(FAVORIS)):
     try:
         return repo().favoris_list(_user_id(session))
     except HTTPException:
@@ -334,7 +353,7 @@ def mes_favoris(session: dict = Depends(current_session)):
 
 
 @app.post("/api/favoris", tags=["favoris"])
-def ajouter_favori(req: FavoriRequest, session: dict = Depends(current_session)):
+def ajouter_favori(req: FavoriRequest, session: dict = Depends(FAVORIS)):
     if req.type not in {"dossier", "article", "reponse", "assistant", "dossier_admin"}:
         raise HTTPException(422, "Type de favori inconnu.")
     return repo().favoris_add({"utilisateur_id": _user_id(session), "type": req.type, "ref": req.ref[:200],
@@ -342,16 +361,17 @@ def ajouter_favori(req: FavoriRequest, session: dict = Depends(current_session))
 
 
 @app.delete("/api/favoris/{fav_id}", tags=["favoris"])
-def retirer_favori(fav_id: str, session: dict = Depends(current_session)):
+def retirer_favori(fav_id: str, session: dict = Depends(FAVORIS)):
     repo().favoris_delete(fav_id, _user_id(session))
     return {"ok": True}
 
 
 @app.get("/api/notifications", tags=["notifications"])
-def notifications(session: dict = Depends(current_session)):
-    """In-app bell: reply deadlines for taxpayers, expiring reply windows for the administration."""
+def notifications(session: dict = Depends(compte)):
+    """In-app bell: reply deadlines for taxpayers, expiring reply windows and approvals for the administration."""
     items = []
-    if session.get("role") in CONTRIBUABLE and session.get("utilisateur_id"):
+    role, user = session.get("role"), session.get("user")
+    if role == "entreprise":
         for r in repo().analyses_for(session["utilisateur_id"]):
             d = date.fromisoformat(str(r["date_limite"]))
             jours = (d - TODAY).days
@@ -361,9 +381,9 @@ def notifications(session: dict = Depends(current_session)):
                           "titre": ("Délai dépassé" if jours < 0 else f"J-{jours} · répondre à {r['reference']}"),
                           "detail": f"{r['entreprise']} · date limite {d:%d/%m/%Y}", "lien": f"/entreprise/dossiers/{r['id']}",
                           "jours": jours})
-    elif session.get("role") in ADMINISTRATION:
+    elif role in {"contentieux", "chef_centre"}:
         for f in get_store().open_files.values():
-            if f.dossier.etape != "Notification":
+            if f.dossier.etape != "Notification" or not peut_voir_dossier(user, role, f.dossier.notification.entreprise.gouvernorat):
                 continue
             fin = f.dossier.notification.date_notification.toordinal() + DELAI_REPONSE_JOURS - TODAY.toordinal()
             if 0 <= fin <= 7:
@@ -371,12 +391,17 @@ def notifications(session: dict = Depends(current_session)):
                               "titre": f"J-{fin} · fin du délai de réponse du contribuable",
                               "detail": f"{f.dossier.notification.entreprise.nom} · taxation d'office possible ensuite (art. 47)",
                               "lien": f"/administration/dossier/{f.dossier.id}", "jours": fin})
+        if role == "chef_centre":
+            for c in pilotage.conciliations_a_valider(user):
+                items.append({"id": c["id"], "niveau": "urgent", "titre": f"Conciliation à valider · {c['reference']}",
+                              "detail": f"Proposée par un agent de votre centre : {c['montant_propose']:,.0f} DT".replace(",", " "),
+                              "lien": "/administration/equipe", "jours": -1})
     items.sort(key=lambda x: x["jours"])
     return {"total": len(items), "urgents": sum(i["niveau"] == "urgent" for i in items), "items": items[:15]}
 
 
 @app.get("/api/contribuable/analyses/{analyse_id}/pdf", tags=["contribuable"])
-def analyse_pdf(analyse_id: str, session: dict = Depends(require(*CONTRIBUABLE))):
+def analyse_pdf(analyse_id: str, session: dict = Depends(ENTREPRISE)):
     row = repo().analysis_get(analyse_id, session["utilisateur_id"])
     if row is None:
         raise HTTPException(404, "Analyse introuvable")
@@ -387,35 +412,57 @@ def analyse_pdf(analyse_id: str, session: dict = Depends(require(*CONTRIBUABLE))
                     headers={"Content-Disposition": f'attachment; filename="JISER_{a.notification.reference}.pdf"'})
 
 
-@app.get("/api/admin/dossiers/{dossier_id}/pdf", tags=["administration"])
-def dossier_pdf(dossier_id: str, avec_avis: bool = True, session: dict = Depends(require(*ADMINISTRATION))):
-    detail = administration.dossier_detail(dossier_id, session["email"])
-    if detail is None:
-        raise HTTPException(404, "Dossier introuvable")
-    avis = ai_admin.avis_dossier(detail).model_dump() if avec_avis else None
-    pdf = export_pdf.fiche_dossier(detail, avis)
-    ref = detail["dossier"]["notification"]["reference"]
-    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="JISER_dossier_{ref}.pdf"'})
+# ---- Espace administration fiscale (périmètre du centre) ------------------------------------------
+
+AGENT = permission("dossiers:lire")
 
 
-# ---- Espace administration fiscale ------------------------------------------------------------
+def _dossier_autorise(dossier_id: str, session: dict):
+    d = get_store().dossiers.get(dossier_id)
+    if d is None or not peut_voir_dossier(session.get("user"), session["role"], d.notification.entreprise.gouvernorat):
+        raise HTTPException(404, "Dossier introuvable")   # same answer whether it exists elsewhere or not
+    # the company's identity never reaches an external AI in clear
+    securite.ajouter_identifiants({d.notification.entreprise.nom: "ENTREPRISE", d.notification.entreprise.matricule_fiscal: "MATRICULE"})
+    return d
+
 
 @app.get("/api/admin/dossiers", tags=["administration"])
 def dossiers(limit: int = 100, gouvernorat: str | None = None, etape: str | None = None, groupe: str | None = None,
-             _: dict = Depends(require(*ADMINISTRATION))):
-    return administration.triage(limit, gouvernorat, etape, groupe)
+             mes: bool = False, session: dict = Depends(AGENT)):
+    zone = perimetre(session.get("user"))
+    out = administration.triage(5000 if mes else limit, zone or gouvernorat, etape, groupe)
+    affect = repo().affectations_all()
+    for row in out["dossiers"]:
+        a = affect.get(row["id"])
+        row["affecte_a"] = a["agent_nom"] if a else None
+        row["affecte_a_moi"] = bool(a and a.get("agent_id") == session.get("utilisateur_id"))
+    if mes:
+        out["dossiers"] = [r for r in out["dossiers"] if r["affecte_a_moi"]][:limit]
+    out["perimetre"] = zone or "National"
+    return out
 
 
 @app.get("/api/admin/dossiers/{dossier_id}", tags=["administration"])
-def dossier(dossier_id: str, session: dict = Depends(require(*ADMINISTRATION))):
+def dossier(dossier_id: str, session: dict = Depends(AGENT)):
+    d = _dossier_autorise(dossier_id, session)
     detail = administration.dossier_detail(dossier_id, session["email"])
-    if detail is None:
-        raise HTTPException(404, "Dossier introuvable")
-    return detail
+    journaliser_acces(d.notification.reference, session, "Consultation du dossier")
+    a = repo().affectations_all().get(dossier_id)
+    return {**detail, "affectation": a}
+
+
+@app.get("/api/admin/dossiers/{dossier_id}/pdf", tags=["administration"])
+def dossier_pdf(dossier_id: str, avec_avis: bool = True, session: dict = Depends(AGENT)):
+    d = _dossier_autorise(dossier_id, session)
+    detail = administration.dossier_detail(dossier_id, session["email"])
+    avis = ai_admin.avis_dossier(detail).model_dump() if avec_avis else None
+    journaliser_acces(d.notification.reference, session, "Export PDF du dossier")
+    pdf = export_pdf.fiche_dossier(detail, avis)
+    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="JISER_dossier_{d.notification.reference}.pdf"'})
 
 
 @app.post("/api/admin/controle-qualite", response_model=AnalyseNotification, tags=["administration"])
-async def controle_qualite(fichier: UploadFile = File(...), session: dict = Depends(require(*ADMINISTRATION))):
+async def controle_qualite(fichier: UploadFile = File(...), session: dict = Depends(permission("controle_qualite"))):
     """Auditor uploads a draft notification before sending it: same checks, to fix weaknesses first."""
     data = await fichier.read()
     try:
@@ -429,30 +476,23 @@ async def controle_qualite(fichier: UploadFile = File(...), session: dict = Depe
 
 
 @app.get("/api/admin/tableau-de-bord", tags=["administration"])
-def tableau_de_bord(_: dict = Depends(require(*ADMINISTRATION))):
-    return administration.dashboard()
-
-
-@app.get("/api/donnees-officielles", tags=["public"])
-def donnees_officielles():
-    """Real public figures on tax control and litigation (ministère des Finances), used by the dashboards."""
-    return json.loads((DATA_DIR / "real" / "indicateurs_officiels.json").read_text(encoding="utf-8"))
+def tableau_de_bord(session: dict = Depends(permission("stats:centre"))):
+    return administration.dashboard(perimetre(session.get("user")))
 
 
 @app.get("/api/admin/synthese-ia", response_model=ai_admin.Synthese, tags=["administration"])
-def synthese_ia(session: dict = Depends(require(*ADMINISTRATION))):
-    out = ai_admin.synthese_stock(administration.dashboard())
+def synthese_ia(session: dict = Depends(permission("stats:centre"))):
+    out = ai_admin.synthese_stock(administration.dashboard(perimetre(session.get("user"))))
     get_store().log("synthese_stock", "Stock de dossiers", out.actions[0].titre if out.actions else "Synthèse", out.mode, session["email"])
     return out
 
 
 @app.get("/api/admin/dossiers/{dossier_id}/avis-ia", response_model=ai_admin.AvisDossier, tags=["administration"])
-def avis_ia(dossier_id: str, session: dict = Depends(require(*ADMINISTRATION))):
+def avis_ia(dossier_id: str, session: dict = Depends(permission("dossier:avis"))):
+    d = _dossier_autorise(dossier_id, session)
     detail = administration.dossier_detail(dossier_id, session["email"])
-    if detail is None:
-        raise HTTPException(404, "Dossier introuvable")
     out = ai_admin.avis_dossier(detail)
-    get_store().log("avis_juridique", detail["dossier"]["notification"]["reference"], "Avis et projet de conciliation", out.mode, session["email"])
+    get_store().log("avis_juridique", d.notification.reference, "Avis et projet de conciliation", out.mode, session["email"])
     return out
 
 
@@ -461,32 +501,33 @@ class DecisionRequest(BaseModel):
 
 
 @app.post("/api/admin/dossiers/{dossier_id}/decision", tags=["administration"])
-def decision(dossier_id: str, req: DecisionRequest, session: dict = Depends(require(*ADMINISTRATION))):
-    """The human decision on the AI's settlement proposal, recorded in the audit trail."""
+def decision(dossier_id: str, req: DecisionRequest, session: dict = Depends(permission("conciliation:proposer"))):
+    """The officer's decision on the AI's settlement proposal. Above the threshold, the head of centre must approve."""
     if req.decision not in {"validee", "refusee"}:
         raise HTTPException(422, "Décision invalide.")
-    d = get_store().dossiers.get(dossier_id)
-    if d is None:
-        raise HTTPException(404, "Dossier introuvable")
-    repo().journal_add({"action": "decision_conciliation", "cible": d.notification.reference,
-                        "recommandation": "Proposition de conciliation", "mode": "humain",
-                        "decision_humaine": "validée" if req.decision == "validee" else "refusée", "utilisateur": session["email"]})
-    return {"ok": True}
+    d = _dossier_autorise(dossier_id, session)
+    if req.decision == "refusee":
+        repo().journal_add({"action": "decision_conciliation", "cible": d.notification.reference, "recommandation": "Proposition de conciliation",
+                            "mode": "humain", "decision_humaine": "refusée", "utilisateur": session["email"]})
+        return {"ok": True, "statut": "refusee", "message": "Proposition refusée."}
+    return pilotage.proposer_conciliation(session, dossier_id)
 
 
 @app.post("/api/admin/ameliorer-notification", response_model=ai_admin.Ameliorations, tags=["administration"])
-def ameliorer(a: AnalyseNotification, session: dict = Depends(require(*ADMINISTRATION))):
+def ameliorer(a: AnalyseNotification, session: dict = Depends(permission("controle_qualite"))):
     out = ai_admin.ameliorer_notification(a)
     get_store().log("amelioration_motivation", a.notification.reference, f"{len(out.ameliorations)} motivation(s) proposée(s)", out.mode, session["email"])
     return out
 
 
 @app.get("/api/admin/conciliations", tags=["administration"])
-def conciliations(limit: int = 30, _: dict = Depends(require(*ADMINISTRATION))):
-    """Files where an amicable settlement recovers the most compared with litigation."""
+def conciliations(limit: int = 30, session: dict = Depends(AGENT)):
+    """Files where an amicable settlement recovers the most compared with litigation (within the centre)."""
     store = get_store()
+    zone = perimetre(session.get("user"))
     rows = []
-    for f in sorted(store.open_files.values(), key=lambda f: f.priority, reverse=True)[:150]:
+    for f in sorted((f for f in store.open_files.values() if zone is None or f.dossier.notification.entreprise.gouvernorat == zone),
+                    key=lambda f: f.priority, reverse=True)[:150]:
         c = administration.settlement(f.dossier)
         rows.append({**administration.file_summary(f), "montant_propose": c["montant_propose"],
                      "montant_attendu_contentieux": c["montant_attendu_contentieux"],
@@ -497,53 +538,56 @@ def conciliations(limit: int = 30, _: dict = Depends(require(*ADMINISTRATION))):
 
 # ---- Admin plateforme (privé, e-mails autorisés uniquement) --------------------------------------
 
+PLATEFORME = permission("plateforme")
+
+
 @app.get("/api/plateforme/utilisateurs", tags=["admin plateforme"])
-def utilisateurs(_: dict = Depends(require("admin"))):
+def utilisateurs(_: dict = Depends(PLATEFORME)):
     return [auth.public_user(u) | {"cree_le": u.get("cree_le"), "derniere_connexion": u.get("derniere_connexion")}
             for u in repo().list_users()]
 
 
 @app.get("/api/plateforme/journal", tags=["admin plateforme"])
-def journal(limit: int = 500, _: dict = Depends(require("admin"))):
+def journal(limit: int = 500, _: dict = Depends(PLATEFORME)):
     return repo().journal_list(limit)
 
 
+SOURCES_CODES = {"cdpf": "Édition officielle 2024 (jibaya.tn, ministère des Finances)", "ctva": "Jurisite Tunisie",
+                 "cirppis": "Jurisite Tunisie"}
+
+
 @app.get("/api/plateforme/base-juridique", tags=["admin plateforme"])
-def base_juridique(_: dict = Depends(require("admin"))):
+def base_juridique(_: dict = Depends(PLATEFORME)):
     out = []
     for path in sorted(LEGAL_DIR.glob("*.json")):
         arts = json.loads(path.read_text(encoding="utf-8"))
-        if arts:
+        if arts and isinstance(arts, list):
             out.append({"code": arts[0]["code"], "nom": arts[0]["code_name"], "articles": len(arts),
-                        "source": "Jurisite Tunisie (jurisitetunisie.com)"})
+                        "source": SOURCES_CODES.get(arts[0]["code"], "—")})
     return out
 
 
 @app.get("/api/plateforme/recherche-juridique", tags=["admin plateforme"])
-def recherche(q: str, k: int = 5, _: dict = Depends(require("admin"))):
-    return get_index().search(q, k=k)
+def recherche(q: str, k: int = 5, _: dict = Depends(PLATEFORME)):
+    return get_index().search(q, k=k, hybride=True)
 
 
 @app.post("/api/plateforme/rappels", tags=["admin plateforme"])
-def lancer_rappels(_: dict = Depends(require("admin"))):
+def lancer_rappels(_: dict = Depends(PLATEFORME)):
     """Send now every deadline reminder that is due (they also run automatically every 6 hours)."""
     return rappels.envoyer_rappels()
 
 
 @app.get("/api/plateforme/systeme", tags=["admin plateforme"])
-def systeme(_: dict = Depends(require("admin"))):
-    from .config import N8N_OTP_WEBHOOK_URL, N8N_RAPPEL_WEBHOOK_URL, N8N_WELCOME_WEBHOOK_URL
+def systeme(_: dict = Depends(PLATEFORME)):
+    from .config import N8N_NOTIF_WEBHOOK_URL, N8N_OTP_WEBHOOK_URL, N8N_RAPPEL_WEBHOOK_URL, N8N_WELCOME_WEBHOOK_URL
     return {"llm": llm.status(), "base": repo().kind, "n8n_otp": bool(N8N_OTP_WEBHOOK_URL),
             "n8n_bienvenue": bool(N8N_WELCOME_WEBHOOK_URL), "n8n_rappels": bool(N8N_RAPPEL_WEBHOOK_URL),
+            "n8n_notifications": bool(N8N_NOTIF_WEBHOOK_URL), "recherche_hybride": get_index().hybride,
             "modele": administration.dashboard().get("modele")}
 
 
 # ---- Intégration n8n (rappels d'échéances) ----------------------------------------------------
-
-def n8n_auth(x_jiser_secret: str | None = Header(default=None)) -> None:
-    if not N8N_SHARED_SECRET or not hmac.compare_digest(x_jiser_secret or "", N8N_SHARED_SECRET):
-        raise HTTPException(401, "Secret n8n invalide.")
-
 
 @app.get("/api/n8n/echeances", tags=["n8n"])
 def echeances(jours: int = 7, _: None = Depends(n8n_auth)):

@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { ArrowLeft, ArrowRight, BadgeCheck, Check, FileSearch, Gavel, Lock, Scale, ShieldCheck, UserCheck, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BadgeCheck, Check, CheckCircle2, Clock, FileCheck2, FileSearch, FileUp, Gavel, Lock, MailCheck, Scale, ShieldCheck, UserCheck, X } from 'lucide-react'
 import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authApi, espaceDuRole, saveSession, type Session } from '../api'
+import { authApi, comptesApi, saveSession, type Session, type Utilisateur } from '../api'
 import OtpCode from './OtpCode'
-import { roleConfig, ROLES, validateSection, type Field, type Role } from './onboardingConfig'
+import { FAMILLES, roleConfig, ROLES, validateSection, type Famille, type Field, type Role } from './onboardingConfig'
 import { Button } from './ui'
 
 type Values = Record<string, unknown>
@@ -64,40 +64,48 @@ function FieldInput({ f, value, error, onChange }: { f: Field; value: unknown; e
   )
 }
 
+const TAILLE_MAX = 5 * 1024 * 1024
+const ko = (n: number) => (n > 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} Mo` : `${Math.round(n / 1024)} Ko`)
+
 // ---- Wizard --------------------------------------------------------------------------------
 
-type StepId = 'bienvenue' | 'role' | 'identite' | 'otp' | `section-${number}` | 'preferences' | 'recap'
+type StepId = 'bienvenue' | 'famille' | 'role' | 'identite' | 'otp' | `section-${number}` | 'justificatifs' | 'preferences' | 'recap' | 'envoye'
 const LANGUES: Record<string, string> = { Français: 'fr', 'Tounsi (derja)': 'derja' }
 
 export default function Onboarding({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) {
   const navigate = useNavigate()
   const [stepIndex, setStepIndex] = useState(0)
+  const [famille, setFamille] = useState<Famille | null>(null)
   const [role, setRole] = useState<Role | null>(null)
   const [identite, setIdentite] = useState({ prenom: '', nom: '', fonction: '', email: '', telephone: '' })
   const [details, setDetails] = useState<Values>({})
+  const [fichiers, setFichiers] = useState<Record<string, File>>({})
   const [prefs, setPrefs] = useState<Values>({ langue: 'Français', alertes: ['E-mail', "Dans l'application"] })
   const [consents, setConsents] = useState({ cgu: false, donnees_personnelles: false, analyse_ia: false, communications: false })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [verified, setVerified] = useState(false)
   const [busy, setBusy] = useState(false)
   const [apiError, setApiError] = useState('')
+  const [envoye, setEnvoye] = useState<Utilisateur | null>(null)
 
   const cfg = roleConfig(role)
+  const admin = famille === 'administration'
   const steps: StepId[] = useMemo(() => [
-    'bienvenue', 'role', 'identite', 'otp',
+    'bienvenue', 'famille', ...(admin ? ['role' as StepId] : []), 'identite', 'otp',
     ...(cfg?.sections.map((_, i) => `section-${i}` as StepId) ?? []),
-    'preferences', 'recap',
-  ], [cfg])
+    'justificatifs', 'preferences', 'recap', 'envoye',
+  ], [cfg, admin])
   const step = steps[stepIndex]
   const rail = [
-    { id: 'role', label: 'Profil' }, { id: 'identite', label: 'Identité' }, { id: 'otp', label: 'Vérification e-mail' },
+    { id: 'famille', label: 'Profil' }, ...(admin ? [{ id: 'role', label: 'Rôle et droits' }] : []),
+    { id: 'identite', label: 'Identité' }, { id: 'otp', label: 'Vérification e-mail' },
     ...(cfg?.sections.map((s, i) => ({ id: `section-${i}`, label: s.title })) ?? [{ id: 'section-0', label: 'Informations métier' }]),
-    { id: 'preferences', label: 'Préférences' }, { id: 'recap', label: 'Récapitulatif' },
+    { id: 'justificatifs', label: 'Justificatifs' }, { id: 'preferences', label: 'Consentements' }, { id: 'recap', label: 'Récapitulatif' },
   ]
-  const railIndex = rail.findIndex((r) => r.id === step)
+  const railIndex = step === 'envoye' ? rail.length : rail.findIndex((r) => r.id === step)
 
   const close = () => {
-    if (verified) saveSession(null)   // an unfinished signup must not leave a half-open session
+    if (verified && !envoye) saveSession(null)   // an unfinished signup must not leave a half-open session
     onClose()
   }
 
@@ -111,10 +119,11 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
         errs.telephone = 'Numéro tunisien : 8 chiffres (ex. 22 123 456)'
     } else if (step.startsWith('section-') && cfg) {
       errs = validateSection(cfg.sections[Number(step.split('-')[1])], details)
+    } else if (step === 'justificatifs' && cfg) {
+      for (const p of cfg.pieces) if (!fichiers[p.type]) errs[p.type] = 'Pièce obligatoire'
     } else if (step === 'preferences') {
       if (!consents.cgu) errs.cgu = 'Obligatoire'
       if (!consents.donnees_personnelles) errs.donnees_personnelles = 'Obligatoire'
-      if (!consents.analyse_ia) errs.analyse_ia = 'Obligatoire'
     }
     setErrors(errs)
     return Object.keys(errs).length === 0
@@ -122,6 +131,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
 
   const next = () => {
     setApiError('')
+    if (step === 'famille' && famille === 'entreprise') setRole('entreprise')
     if (!validate()) return
     if (step === 'identite' && verified) { setStepIndex(stepIndex + 2); return }   // e-mail already verified
     setStepIndex(Math.min(stepIndex + 1, steps.length - 1))
@@ -141,10 +151,12 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
         langue: LANGUES[String(prefs.langue)] ?? 'fr',
         details: { ...details, telephone: identite.telephone, preferences: prefs }, consentements: consents,
       })
-      const s: Session = { token: (JSON.parse(sessionStorage.getItem('jiser-session') ?? '{}') as Session).token, role: r.utilisateur.role, utilisateur: r.utilisateur }
-      saveSession(s)
-      onClose()
-      navigate(espaceDuRole(r.utilisateur.role))
+      for (const p of cfg.pieces) await comptesApi.deposerPiece(p.type, fichiers[p.type])
+      const u = await comptesApi.soumettre()
+      const token = (JSON.parse(sessionStorage.getItem('jiser-session') ?? '{}') as Session).token
+      saveSession({ token, role: r.utilisateur.role, utilisateur: u })
+      setEnvoye(u)
+      setStepIndex(steps.indexOf('envoye'))
     } catch (e) { setApiError((e as Error).message) } finally { setBusy(false) }
   }
 
@@ -155,6 +167,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
     const left = Math.ceil((dt.getTime() - Date.now()) / 86400000)
     return { date: dt.toLocaleDateString('fr-FR'), left }
   })()
+  const adminRoles = ROLES.filter((r) => r.famille === 'administration')
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/60 p-3 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Créer votre espace JISER">
@@ -162,7 +175,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
         {step !== 'bienvenue' && (
           <aside className="hidden w-64 shrink-0 bg-gradient-to-b from-navy-900 to-navy-700 p-6 text-white md:block">
             <img src="/logo-icon.png" alt="" className="h-12 w-12 rounded-xl bg-white p-1" />
-            <div className="mt-3 font-display text-lg font-bold">Créer votre espace</div>
+            <div className="mt-3 font-display text-lg font-bold">Demande d'accès</div>
             {cfg && <div className="text-xs text-gold">{cfg.label}</div>}
             <ol className="mt-6 space-y-1">
               {rail.map((r, i) => {
@@ -181,7 +194,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
             </ol>
             <div className="mt-8 rounded-xl bg-white/10 p-3 text-xs text-slate-200">
               <Lock size={14} className="mb-1 text-gold" />
-              Vos données sont protégées (loi organique 2004-63) et ne servent qu'à traiter vos dossiers.
+              Vos données et justificatifs sont chiffrés (loi organique 2004-63) et ne servent qu'à vérifier votre identité et traiter vos dossiers.
             </div>
           </aside>
         )}
@@ -194,12 +207,12 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
               <div className="py-4 text-center">
                 <img src="/logo.png" alt="JISER" className="mx-auto w-48" />
                 <h2 className="mt-4 text-3xl font-bold text-navy-900">Bienvenue sur JISER</h2>
-                <p className="mx-auto mt-2 max-w-lg text-slate-600">Le pont entre le contribuable et l'administration fiscale. Créez votre espace en quelques minutes.</p>
+                <p className="mx-auto mt-2 max-w-lg text-slate-600">Le pont entre le contribuable et l'administration fiscale. Chaque compte est vérifié avant d'être activé.</p>
                 <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left sm:grid-cols-3">
                   {[
                     { icon: FileSearch, t: 'Comprendre', d: 'La notification expliquée chef par chef, en français ou en derja.' },
                     { icon: Scale, t: 'Vérifier', d: 'La procédure contrôlée article par article (CDPF).' },
-                    { icon: Gavel, t: 'Résoudre', d: 'Réponse argumentée ou conciliation, plus vite.' },
+                    { icon: Gavel, t: 'Résoudre', d: 'Échange sécurisé avec l\'administration, réponse ou conciliation.' },
                   ].map(({ icon: Icon, t, d }) => (
                     <div key={t} className="rounded-2xl bg-canvas p-4">
                       <Icon className="text-gold" size={22} />
@@ -211,17 +224,42 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
               </div>
             )}
 
-            {step === 'role' && (
+            {step === 'famille' && (
               <div>
                 <h2 className="text-2xl font-bold text-navy-900">Qui êtes-vous ?</h2>
-                <p className="mt-1 text-slate-600">Votre espace, vos étapes et vos droits d'accès dépendent de votre profil.</p>
+                <p className="mt-1 text-slate-600">Votre espace, vos étapes et vos droits d'accès dépendent de votre profil. Chaque espace est cloisonné.</p>
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {ROLES.map(({ id, label, who, icon: Icon }) => (
-                    <button key={id} onClick={() => { setRole(id); setDetails({}) }}
-                      className={clsx('flex items-start gap-3 rounded-2xl p-4 text-left ring-2 transition',
-                        role === id ? 'bg-gold-light/60 ring-gold' : 'bg-white ring-slate-200 hover:ring-bridge')}>
-                      <div className={clsx('rounded-xl p-2', role === id ? 'bg-gold text-white' : 'bg-bridge-light text-navy-800')}><Icon size={20} /></div>
+                  {FAMILLES.map(({ id, label, who, icon: Icon }) => (
+                    <button key={id} onClick={() => { setFamille(id); setRole(id === 'entreprise' ? 'entreprise' : null); setDetails({}); setFichiers({}) }}
+                      className={clsx('flex items-start gap-3 rounded-2xl p-5 text-left ring-2 transition',
+                        famille === id ? 'bg-gold-light/60 ring-gold' : 'bg-white ring-slate-200 hover:ring-bridge')}>
+                      <div className={clsx('rounded-xl p-2.5', famille === id ? 'bg-gold text-white' : 'bg-bridge-light text-navy-800')}><Icon size={22} /></div>
                       <div><div className="font-semibold text-navy-900">{label}</div><div className="text-sm text-slate-500">{who}</div></div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {step === 'role' && (
+              <div>
+                <h2 className="text-2xl font-bold text-navy-900">Votre rôle dans l'administration</h2>
+                <p className="mt-1 text-slate-600">JISER respecte la hiérarchie de l'administration fiscale : chaque rôle a ses droits et ses privilèges.</p>
+                <div className="relative mt-6 space-y-3">
+                  <div className="absolute bottom-8 left-[27px] top-8 w-0.5 bg-gradient-to-b from-gold via-bridge to-navy-700" aria-hidden />
+                  {adminRoles.map(({ id, label, who, niveau, droits, icon: Icon }) => (
+                    <button key={id} onClick={() => { setRole(id); setDetails({}); setFichiers({}) }}
+                      className={clsx('relative flex w-full items-start gap-4 rounded-2xl p-4 text-left ring-2 transition',
+                        role === id ? 'bg-gold-light/60 ring-gold' : 'bg-white ring-slate-200 hover:ring-bridge')}>
+                      <div className={clsx('z-10 rounded-xl p-2.5', role === id ? 'bg-gold text-white' : 'bg-navy-900 text-gold')}><Icon size={22} /></div>
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2"><span className="font-semibold text-navy-900">{label}</span>
+                          <span className="rounded-full bg-canvas px-2 py-0.5 text-[11px] font-medium text-slate-500">{niveau}</span></div>
+                        <div className="text-sm text-slate-500">{who}</div>
+                        <ul className="mt-2 grid gap-1 text-xs text-slate-600 sm:grid-cols-3">
+                          {droits?.map((d) => <li key={d} className="flex gap-1"><Check size={12} className="mt-0.5 shrink-0 text-gold" />{d}</li>)}
+                        </ul>
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -234,10 +272,11 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                 <p className="mt-1 text-slate-600">Un code de vérification sera envoyé à votre adresse e-mail.</p>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   {([['prenom', 'Prénom', 'Sami', true], ['nom', 'Nom', 'Ben Salah', true],
-                    ['fonction', 'Fonction', cfg?.id === 'entreprise' ? 'Gérant' : 'Chef du contentieux', false],
-                    ['email', 'E-mail professionnel', 'sami@elamen.tn', true], ['telephone', 'Téléphone mobile', '22 123 456', false]] as const).map(([k, label, ph, req]) => (
+                    ['fonction', 'Fonction', cfg?.id === 'entreprise' ? 'Gérant' : cfg?.label ?? '', false],
+                    ['email', admin ? 'E-mail professionnel (adresse officielle de l\'administration)' : 'E-mail professionnel', admin ? 'prenom.nom@finances.gov.tn' : 'sami@elamen.tn', true],
+                    ['telephone', 'Téléphone mobile', '22 123 456', false]] as const).map(([k, label, ph, req]) => (
                     <div key={k} className={clsx(k === 'email' && 'sm:col-span-2')}>
-                      <Label f={{ label, required: req }}>
+                      <Label f={{ label, required: req, help: k === 'email' && admin ? 'Une adresse non officielle est signalée au validateur et peut entraîner un refus.' : undefined }}>
                         <input value={identite[k]} placeholder={ph} type={k === 'email' ? 'email' : k === 'telephone' ? 'tel' : 'text'}
                           onChange={(e) => {
                             setIdentite({ ...identite, [k]: e.target.value })
@@ -278,6 +317,40 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
               )
             })()}
 
+            {step === 'justificatifs' && cfg && (
+              <div>
+                <h2 className="text-2xl font-bold text-navy-900">Vos justificatifs</h2>
+                <p className="mt-1 text-slate-600">Ils permettent de vérifier votre identité avant d'ouvrir votre accès. Ils sont chiffrés et ne sont vus que par {cfg.validateur}.</p>
+                <div className="mt-6 space-y-3">
+                  {cfg.pieces.map((p) => {
+                    const f = fichiers[p.type]
+                    return (
+                      <label key={p.type} className={clsx('flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-dashed p-4 transition',
+                        errors[p.type] ? 'border-rose-300 bg-rose-50' : f ? 'border-emerald-300 bg-emerald-50/50' : 'border-slate-300 hover:border-gold hover:bg-canvas')}>
+                        <div className={clsx('rounded-xl p-2.5', f ? 'bg-emerald-600 text-white' : 'bg-navy-900 text-gold')}>{f ? <FileCheck2 size={20} /> : <FileUp size={20} />}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-navy-900">{p.label} <span className="text-gold">*</span></div>
+                          <div className="truncate text-sm text-slate-500">{f ? `${f.name} · ${ko(f.size)}` : p.help}</div>
+                          {errors[p.type] && <div className="text-xs font-medium text-rose-600">{errors[p.type]}</div>}
+                        </div>
+                        <span className="text-sm font-medium text-navy-900 underline decoration-gold underline-offset-4">{f ? 'Changer' : 'Choisir un fichier'}</span>
+                        <input type="file" accept="application/pdf,image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (!file) return
+                          if (file.size > TAILLE_MAX) { setErrors({ ...errors, [p.type]: 'Fichier trop volumineux (5 Mo maximum)' }); return }
+                          setErrors({ ...errors, [p.type]: '' }); setFichiers({ ...fichiers, [p.type]: file })
+                        }} />
+                      </label>
+                    )
+                  })}
+                </div>
+                <div className="mt-4 flex items-start gap-2 rounded-xl bg-canvas p-3 text-xs text-slate-600">
+                  <ShieldCheck size={16} className="shrink-0 text-gold" />
+                  JISER vérifie automatiquement la cohérence de vos pièces avec votre saisie (matricule, raison sociale). Les images ne sont jamais envoyées à une IA externe.
+                </div>
+              </div>
+            )}
+
             {step === 'preferences' && (
               <div>
                 <h2 className="text-2xl font-bold text-navy-900">Préférences et consentements</h2>
@@ -285,14 +358,14 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                   <FieldInput f={{ key: 'langue', label: 'Langue des explications et de l\'assistant', type: 'select', options: Object.keys(LANGUES),
                     help: 'Le brouillon de réponse officiel reste rédigé en français.' }}
                     value={prefs.langue} onChange={(v) => setPrefs({ ...prefs, langue: v })} />
-                  <FieldInput f={{ key: 'alertes', label: 'Recevoir les rappels de délais par', type: 'multi', options: ['E-mail', "Dans l'application"] }}
+                  <FieldInput f={{ key: 'alertes', label: 'Recevoir les alertes par', type: 'multi', options: ['E-mail', "Dans l'application"] }}
                     value={prefs.alertes} onChange={(v) => setPrefs({ ...prefs, alertes: v })} />
                 </div>
                 <div className="mt-6 space-y-3">
                   {([
                     ['cgu', "J'accepte les conditions générales d'utilisation de JISER.", true],
-                    ['donnees_personnelles', "J'accepte le traitement de mes données personnelles pour le traitement de mes dossiers, conformément à la loi organique n° 2004-63 (INPDP).", true],
-                    ['analyse_ia', "J'ai compris que les analyses de l'IA sont des recommandations expliquées, et qu'une personne décide toujours.", true],
+                    ['donnees_personnelles', "J'accepte le traitement de mes données pour le traitement de mes dossiers, conformément à la loi organique n° 2004-63 (INPDP). Je peux exporter ou supprimer mes données à tout moment.", true],
+                    ['analyse_ia', "J'accepte que des textes pseudonymisés (sans nom, matricule ni coordonnées) soient traités par une IA générative pour m'expliquer mes dossiers. Sans ce consentement, JISER fonctionne avec ses règles et son modèle interne.", false],
                     ['communications', "J'accepte de recevoir des informations sur les nouveautés fiscales (facultatif).", false],
                   ] as const).map(([k, text, req]) => (
                     <label key={k} className={clsx('flex cursor-pointer gap-3 rounded-xl border p-3 text-sm', errors[k] ? 'border-rose-300 bg-rose-50' : 'border-slate-200 hover:bg-canvas')}>
@@ -306,14 +379,14 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
 
             {step === 'recap' && cfg && (
               <div>
-                <h2 className="text-2xl font-bold text-navy-900">Tout est prêt, {identite.prenom} !</h2>
-                <p className="mt-1 text-slate-600">Vérifiez vos informations avant d'activer votre espace.</p>
+                <h2 className="text-2xl font-bold text-navy-900">Vérifiez votre demande, {identite.prenom}</h2>
+                <p className="mt-1 text-slate-600">Votre demande sera vérifiée par {cfg.validateur} sous 24 heures. Vous recevrez un e-mail de confirmation.</p>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                   <div className="rounded-2xl border border-slate-200 p-4 text-sm">
                     <div className="font-semibold text-navy-900">{identite.prenom} {identite.nom}</div>
-                    <div className="text-slate-500">{identite.fonction || cfg.label}</div>
+                    <div className="text-slate-500">{cfg.label}{identite.fonction ? ` · ${identite.fonction}` : ''}</div>
                     <div className="mt-2 flex items-center gap-1.5 text-emerald-700"><ShieldCheck size={14} /> {identite.email} vérifié</div>
-                    <div className="mt-1 text-slate-500">Langue : {String(prefs.langue)}</div>
+                    <div className="mt-1 text-slate-500">Justificatifs : {cfg.pieces.map((p) => fichiers[p.type]?.name).filter(Boolean).join(', ')}</div>
                   </div>
                   <div className="rounded-2xl border border-slate-200 p-4 text-sm">
                     {cfg.sections.flatMap((s) => s.fields).filter((f) => details[f.key] !== undefined && details[f.key] !== '').slice(0, 6).map((f) => (
@@ -326,7 +399,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                     ⏰ Date limite pour répondre à votre notification : <b>{deadline.date}</b> ({deadline.left >= 0 ? `il reste ${deadline.left} jours` : 'délai dépassé'} ; art. 44 du CDPF).
                   </div>
                 )}
-                <div className="mt-6 text-sm font-semibold text-navy-900">Votre parcours</div>
+                <div className="mt-6 text-sm font-semibold text-navy-900">Votre parcours une fois l'accès validé</div>
                 <ol className="mt-2 grid gap-3 md:grid-cols-3">
                   {cfg.parcours.map((s, i) => (
                     <li key={s} className="flex items-start gap-3 rounded-2xl bg-canvas p-4 text-sm">
@@ -338,8 +411,29 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                 <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
                   <span className="flex items-center gap-1"><UserCheck size={14} className="text-gold" /> L'humain décide</span>·
                   <span className="flex items-center gap-1"><BadgeCheck size={14} className="text-gold" /> Articles cités</span>·
-                  <span className="flex items-center gap-1"><ShieldCheck size={14} className="text-gold" /> Journal de traçabilité</span>
+                  <span className="flex items-center gap-1"><ShieldCheck size={14} className="text-gold" /> Données chiffrées</span>
                 </div>
+              </div>
+            )}
+
+            {step === 'envoye' && cfg && envoye && (
+              <div className="py-2 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"><MailCheck size={32} /></div>
+                <h2 className="mt-4 text-2xl font-bold text-navy-900">Demande envoyée</h2>
+                <p className="mx-auto mt-2 max-w-lg text-slate-600">Vos informations sont en cours de vérification. Vous recevrez un e-mail de confirmation dès que votre espace sera activé, <b>sous 24 heures</b>.</p>
+                <ol className="mx-auto mt-6 max-w-md space-y-3 text-left">
+                  {[
+                    { ok: true, t: 'Adresse e-mail vérifiée', d: 'Code à usage unique' },
+                    { ok: true, t: 'Pré-vérification automatique', d: `${envoye.verification?.score ?? 0} % des contrôles conformes` },
+                    { ok: false, t: 'Validation humaine', d: `Par ${cfg.validateur}` },
+                    { ok: false, t: 'Accès à votre espace', d: 'E-mail de confirmation' },
+                  ].map((s) => (
+                    <li key={s.t} className="flex items-center gap-3 rounded-xl bg-canvas p-3">
+                      {s.ok ? <CheckCircle2 className="text-emerald-600" size={20} /> : <Clock className="text-gold-dark" size={20} />}
+                      <div><div className="text-sm font-semibold text-navy-900">{s.t}</div><div className="text-xs text-slate-500">{s.d}</div></div>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
 
@@ -349,13 +443,18 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
           <div className="flex items-center justify-between border-t border-slate-100 px-8 py-4">
             {step === 'bienvenue'
               ? <button onClick={() => { onClose(); onLogin() }} className="text-sm font-medium text-navy-900 hover:text-gold-dark">J'ai déjà un compte</button>
-              : <Button variant="ghost" onClick={back} disabled={busy}><ArrowLeft size={16} /> Retour</Button>}
-            {step === 'recap'
-              ? <Button variant="gold" onClick={finish} disabled={busy}>{busy ? 'Activation…' : 'Activer mon espace'} <ArrowRight size={16} /></Button>
-              : step === 'otp' ? <span className="text-xs text-slate-400">Étape sécurisée</span>
-                : <Button variant={step === 'bienvenue' ? 'gold' : 'primary'} onClick={next} disabled={step === 'role' && !role}>
-                  {step === 'bienvenue' ? 'Commencer' : step === 'role' && !role ? 'Choisissez un profil' : step === 'identite' && !verified ? 'Recevoir mon code' : 'Continuer'} <ArrowRight size={16} />
-                </Button>}
+              : step === 'envoye' ? <span />
+                : <Button variant="ghost" onClick={back} disabled={busy}><ArrowLeft size={16} /> Retour</Button>}
+            {step === 'envoye'
+              ? <Button variant="gold" onClick={() => { onClose(); navigate('/compte') }}>Suivre ma demande <ArrowRight size={16} /></Button>
+              : step === 'recap'
+                ? <Button variant="gold" onClick={finish} disabled={busy}>{busy ? 'Envoi sécurisé…' : 'Envoyer ma demande'} <ArrowRight size={16} /></Button>
+                : step === 'otp' ? <span className="text-xs text-slate-400">Étape sécurisée</span>
+                  : <Button variant={step === 'bienvenue' ? 'gold' : 'primary'} onClick={next}
+                    disabled={(step === 'famille' && !famille) || (step === 'role' && !role)}>
+                    {step === 'bienvenue' ? 'Commencer' : step === 'famille' && !famille ? 'Choisissez un profil' : step === 'role' && !role ? 'Choisissez un rôle'
+                      : step === 'identite' && !verified ? 'Recevoir mon code' : 'Continuer'} <ArrowRight size={16} />
+                  </Button>}
           </div>
         </div>
       </div>

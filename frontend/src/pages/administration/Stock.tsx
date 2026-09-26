@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { AlertTriangle, Search } from 'lucide-react'
+import { AlertTriangle, MapPin, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, dt, mdt, type Triage } from '../../api'
@@ -11,11 +11,15 @@ export default function Stock() {
   const [data, setData] = useState<Triage | null>(null)
   const [groupe, setGroupe] = useState('')
   const [q, setQ] = useState('')
+  const [mes, setMes] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
   useEffect(() => {
-    api.dossiers(groupe ? { groupe, limit: '100' } : { limit: '100' }).then(setData).catch((e) => setError(e.message))
-  }, [groupe])
+    const p: Record<string, string> = { limit: '100' }
+    if (groupe) p.groupe = groupe
+    if (mes) p.mes = 'true'
+    api.dossiers(p).then(setData).catch((e) => setError(e.message))
+  }, [groupe, mes])
 
   const rows = useMemo(() => (data?.dossiers ?? []).filter((d) =>
     !q || `${d.entreprise} ${d.reference} ${d.gouvernorat}`.toLowerCase().includes(q.toLowerCase())), [data, q])
@@ -27,6 +31,7 @@ export default function Stock() {
       <div>
         <h1 className="text-3xl font-bold text-navy-900">Stock de dossiers</h1>
         <p className="mt-1 text-slate-500">Triés par l'IA : les dossiers en haut rapportent le plus. Priorité = montant recouvrable estimé × ancienneté.</p>
+        <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-bridge-light px-3 py-1 text-xs font-medium text-navy-800"><MapPin size={12} /> Périmètre : {data.perimetre === 'National' ? 'national' : `gouvernorat de ${data.perimetre}`} · vous ne voyez que les dossiers de votre centre</p>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         <Kpi label="Dossiers en cours" value={data.total} />
@@ -35,6 +40,7 @@ export default function Stock() {
       </div>
       <Card>
         <div className="flex flex-wrap items-center gap-2">
+          <button onClick={() => setMes(!mes)} className={clsx('mr-2 rounded-lg px-3 py-1.5 text-sm font-semibold ring-1', mes ? 'bg-gold text-white ring-gold' : 'bg-white text-navy-900 ring-gold/40 hover:bg-gold-light')}>Mes dossiers affectés</button>
           <span className="mr-1 text-sm font-medium text-slate-500">Groupes similaires :</span>
           <button onClick={() => setGroupe('')} className={clsx('rounded-lg px-3 py-1.5 text-sm', !groupe ? 'bg-navy-900 text-white' : 'bg-slate-100 hover:bg-slate-200')}>Tous</button>
           {data.groupes.map((g) => (
@@ -59,7 +65,7 @@ export default function Stock() {
             <tr>
               <th className="px-4 py-2">#</th><th className="px-4 py-2">Entreprise</th><th className="px-4 py-2">Étape</th>
               <th className="px-4 py-2 text-right">Notifié</th><th className="px-4 py-2 text-right">Recouvrable</th>
-              <th className="px-4 py-2">Solidité</th><th className="px-4 py-2">Alertes</th><th className="px-4 py-2">Ancienneté</th>
+              <th className="px-4 py-2">Solidité</th><th className="px-4 py-2">Alertes</th><th className="px-4 py-2">Affecté à</th><th className="px-4 py-2">Ancienneté</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -72,6 +78,7 @@ export default function Stock() {
                 <td className="whitespace-nowrap px-4 py-2.5 text-right font-semibold text-emerald-700">{dt(d.montant_recouvrable)}</td>
                 <td className="px-4 py-2.5"><Badge tone={scoreTone(d.score_solidite)}>{d.score_solidite}/100</Badge></td>
                 <td className="px-4 py-2.5">{d.vices.length > 0 && <Badge tone="rose"><AlertTriangle size={12} className="mr-1" />{d.vices.length} vice(s)</Badge>}</td>
+                <td className="px-4 py-2.5">{d.affecte_a ? <Badge tone={d.affecte_a_moi ? 'gold' : 'slate'}>{d.affecte_a_moi ? 'Moi' : d.affecte_a}</Badge> : <span className="text-xs text-slate-400">—</span>}</td>
                 <td className="whitespace-nowrap px-4 py-2.5 text-slate-500">{Math.round(d.anciennete_jours / 30)} mois</td>
               </tr>
             ))}

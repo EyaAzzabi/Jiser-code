@@ -117,12 +117,12 @@ def _monthly_series(dossiers: list[Dossier], today) -> list[dict]:
     return [{"mois": f"{MOIS[mm - 1]} {str(yy)[2:]}", "notifies": notified[(yy, mm)], "clotures": closed[(yy, mm)]} for yy, mm in months]
 
 
-@lru_cache(maxsize=1)
-def dashboard() -> dict:
-    """Aggregates over an immutable store: computed once, then served from cache."""
+@lru_cache(maxsize=32)
+def dashboard(zone: str | None = None) -> dict:
+    """Aggregates over an immutable store (optionally one governorate): computed once, then cached."""
     store = get_store()
-    open_files = list(store.open_files.values())
-    closed = [d for d in store.dossiers.values() if d.statut == "cloture"]
+    open_files = [f for f in store.open_files.values() if zone is None or f.dossier.notification.entreprise.gouvernorat == zone]
+    closed = [d for d in store.dossiers.values() if d.statut == "cloture" and (zone is None or d.notification.entreprise.gouvernorat == zone)]
 
     by_gouv: dict[str, dict] = defaultdict(lambda: {"nb": 0, "montant": 0.0, "recouvrable": 0.0})
     by_etape: dict[str, dict] = defaultdict(lambda: {"nb": 0, "montant": 0.0})
@@ -183,6 +183,8 @@ def dashboard() -> dict:
         "par_type": [{"type": k, "montant": round(v, 3)} for k, v in sorted(by_type.items(), key=lambda kv: -kv[1])],
         "causes_annulation": [{"cause": k, "nb": v} for k, v in sorted(causes.items(), key=lambda kv: -kv[1])],
         "motifs": [{"motif": k, "nb": v} for k, v in sorted(motifs.items(), key=lambda kv: -kv[1])],
-        "serie_mensuelle": _monthly_series(list(store.dossiers.values()), TODAY),
+        "serie_mensuelle": _monthly_series([d for d in store.dossiers.values()
+                                            if zone is None or d.notification.entreprise.gouvernorat == zone], TODAY),
+        "perimetre": zone or "National",
         "modele": json.loads(metrics_path.read_text(encoding="utf-8")) if metrics_path.exists() else None,
     }

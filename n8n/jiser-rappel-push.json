@@ -2,7 +2,7 @@
   "name": "JISER · Rappel d'échéance (envoyé par l'API)",
   "nodes": [
     {
-      "id": "f7ec4360-2e4f-457d-9e01-b4fd6c265015",
+      "id": "de513c24-5913-4489-9e60-be1de706c8b7",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "6036666c-d653-4e0b-8b83-fa3eebc688f6"
+      "webhookId": "c3d02562-008e-4f36-aa4b-14f3a6db8f97"
     },
     {
-      "id": "f981d1d9-d9c8-4926-a782-ad92b5f81f88",
+      "id": "0c0d14df-2c1e-49a4-896c-86ca9cee00e5",
       "name": "Secret valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -36,7 +36,7 @@
           },
           "conditions": [
             {
-              "id": "36e27e19-9469-4680-92a0-68ff138f9da7",
+              "id": "a18d940f-880c-4aa3-abbc-13b46cac041b",
               "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
               "rightValue": "CHANGE_ME_SECRET",
               "operator": {
@@ -51,7 +51,7 @@
       }
     },
     {
-      "id": "2a5c3f31-0bbc-489c-8c84-796c2914d6c9",
+      "id": "339f8b3d-bfec-466e-844a-b7b5a78199ce",
       "name": "Envoyer le rappel",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "7e4ba095-94aa-47b3-a9f7-a18803aa3e08",
+      "id": "cd92dbcd-54c0-427d-9024-f551b5b50e8f",
       "name": "Réponse OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "727fafb1-7e84-4302-9168-f07e8733b239",
+      "id": "e5f610b7-e63f-4531-8025-7d6da3377f3c",
       "name": "Refusé",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,

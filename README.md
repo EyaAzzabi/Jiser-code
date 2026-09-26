@@ -4,17 +4,19 @@
 
 <p align="center">
   <b>Plateforme d'IA pour le contentieux fiscal tunisien</b><br>
-  Hackathon national « IA &amp; Finances publiques » 2026 · Défi principal T3, avec T9, T14 et T20
+  Hackathon national « IA &amp; Finances publiques » 2026 · Défi principal T3, avec T9, T14 et T20 · <b>Finaliste</b>
 </p>
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.11-0b2f5b?logo=python&logoColor=white">
-  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-API-0b2f5b?logo=fastapi&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-REST%20%2B%20WebSocket-0b2f5b?logo=fastapi&logoColor=white">
   <img alt="React" src="https://img.shields.io/badge/React-19-0b2f5b?logo=react&logoColor=white">
   <img alt="XGBoost" src="https://img.shields.io/badge/XGBoost-SHAP-c29a2e">
-  <img alt="OpenAI" src="https://img.shields.io/badge/LLM-OpenAI%20%7C%20Gemini-c29a2e">
-  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-PostgreSQL-2f74c0?logo=supabase&logoColor=white">
-  <img alt="n8n" src="https://img.shields.io/badge/n8n-e--mails-2f74c0?logo=n8n&logoColor=white">
+  <img alt="LLM" src="https://img.shields.io/badge/LLM-OpenAI%20%7C%20Gemini-c29a2e">
+  <img alt="RAG" src="https://img.shields.io/badge/RAG-BM25%20%2B%20vecteurs-c29a2e">
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-PostgreSQL%20%2B%20RLS-2f74c0?logo=supabase&logoColor=white">
+  <img alt="n8n" src="https://img.shields.io/badge/n8n-automatisations-2f74c0?logo=n8n&logoColor=white">
+  <img alt="Loi 2004-63" src="https://img.shields.io/badge/Donn%C3%A9es-loi%202004--63%20%C2%B7%20INPDP-059669">
 </p>
 
 ---
@@ -37,73 +39,135 @@ Chaque dossier bloqué est une recette fiscale non recouvrée.
 
 ## La solution
 
-JISER (جسر, « pont ») relie les deux côtés du litige avec trois types d'IA : des **règles** exactes du CDPF, un modèle de **machine learning** explicable et une **IA générative** ancrée dans les textes de loi.
+JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hiérarchie de l'administration et la confidentialité des contribuables.
 
 | Espace | Pour qui | Ce que JISER apporte |
 |---|---|---|
-| **Entreprise** | Chef d'entreprise | Notification expliquée chef par chef en français ou en **tounsi**, lecture à voix haute, vices de procédure détectés, articles cités, pièces à réunir, date limite et rappels e-mail, assistant fiscal, brouillon de réponse, photo directe depuis le téléphone. |
-| **Administration** | Chef(fe) du contentieux | Stock trié par montant recouvrable, score de solidité expliqué (SHAP), avis juridique IA, proposition et lettre de conciliation, contrôle qualité avant envoi, copilote juridique, **chiffres officiels** et **simulateur d'impact**. |
-| **Admin plateforme** | Administrateur (lien privé) | Pouls de la plateforme, santé des services, utilisateurs, journal d'audit de chaque recommandation IA, base juridique. |
+| **Entreprise** | Chef d'entreprise | Notification expliquée chef par chef en français ou en **tounsi**, lecture à voix haute, vices de procédure détectés, articles cités, date limite et rappels, brouillon de réponse, **messagerie en temps réel avec l'agent**, photo depuis le téléphone, **tableau de bord de ses données personnelles**. |
+| **Ministre des Finances** | Niveau national | **Pilotage en temps réel avec filtres**, uniquement sur des statistiques anonymes, chiffres officiels, simulateur d'impact. |
+| **Chef de centre régional (CRCI)** | Niveau régional | Stock de son centre, **affectation des dossiers**, **validation des conciliations importantes et des comptes de ses agents**. |
+| **Chargé(e) du contentieux** | Niveau opérationnel | Dossiers de son centre, score expliqué (SHAP), avis juridique IA, contrôle qualité, copilote, **messagerie avec l'entreprise assistée par l'IA**. |
+| **Admin plateforme** | Lien privé | **Validation des comptes**, **veille juridique automatisée**, santé des services, journal d'audit. |
 
 > L'IA recommande et explique. **La décision reste toujours humaine**, et chaque décision est tracée.
+
+## Ce qui distingue JISER
+
+| | |
+|---|---|
+| 🧠 **3 IA complémentaires** | Règles exactes du CDPF (8 contrôles) · XGBoost + SHAP (AUC 0,84) · LLM ancré dans 305 articles par recherche hybride BM25 + vecteurs |
+| 🏛️ **La hiérarchie réelle de l'administration** | Ministre → chef des 27 centres régionaux (CRCI) → chargé du contentieux, chacun avec ses droits, vérifiés côté serveur à chaque requête |
+| ✅ **Comptes vérifiés avant accès** | Justificatifs + pré-contrôles automatiques + validation humaine sous 24 h ; les agents sont validés par leur chef de centre |
+| 🔒 **Confidentialité dès la conception** | Chiffrement au repos, **pseudonymisation avant toute IA externe**, k-anonymat pour le ministre, accès tracés et visibles par l'entreprise, export et effacement |
+| 💬 **Messagerie en temps réel** | WebSocket, accusés de lecture, pièces jointes chiffrées, IA qui résume l'échange, suggère une réponse et liste les pièces manquantes |
+| 📡 **Veille juridique automatisée** | Chaque semaine : collecte des textes officiels, détection article par article, validation par un juriste, versions archivées, embeddings recalculés |
+| 📊 **Données réelles** | CDPF officiel 2024, statistiques du ministère des Finances, loi de finances 2026 ; simulation calibrée sur les jugements officiels |
 
 ---
 
 ## Aperçu
 
-### Accueil et inscription sécurisée
+### 1. Inscription vérifiée, selon le rôle
 
-| Accueil | Choix du profil | Code reçu par e-mail |
-|---|---|---|
-| <img src="docs/screenshots/01_accueil.jpg" alt="Page d'accueil"> | <img src="docs/screenshots/02_onboarding_profil.jpg" alt="Choix du profil"> | <img src="docs/screenshots/03_onboarding_otp.jpg" alt="Vérification par code"> |
-
-### Espace entreprise
-
-| Tableau de bord | Analyser une notification |
+| Rôle dans l'administration (hiérarchie et droits) | Justificatifs chiffrés |
 |---|---|
-| <img src="docs/screenshots/04_entreprise_tableau_de_bord.jpg" alt="Tableau de bord entreprise"> | <img src="docs/screenshots/05_entreprise_analyser.jpg" alt="Analyser une notification"> |
-| **Assistant fiscal IA** (sources citées, voix) | **Mes réponses** |
-| <img src="docs/screenshots/08_entreprise_assistant.jpg" alt="Assistant fiscal"> | <img src="docs/screenshots/09_entreprise_mes_reponses.jpg" alt="Mes réponses"> |
+| <img src="docs/screenshots/v2/01_onboarding_roles_administration.jpg" alt="Choix du rôle administration"> | <img src="docs/screenshots/v2/03_onboarding_justificatifs.jpg" alt="Justificatifs"> |
+| **Demande envoyée : vérification sous 24 h** | **Compte en attente : pré-vérification automatique** |
+| <img src="docs/screenshots/v2/04_onboarding_demande_envoyee.jpg" alt="Demande envoyée"> | <img src="docs/screenshots/v2/05_compte_en_attente.jpg" alt="Compte en attente"> |
 
 <details>
-<summary><b>Voir l'analyse complète d'une notification</b> (français, puis tounsi avec brouillon de réponse)</summary>
+<summary><b>Voir la file de validation de l'administrateur</b> (score de pré-vérification, justificatifs, décision motivée)</summary>
 
-| Analyse en français | Analyse en tounsi + brouillon |
-|---|---|
-| <img src="docs/screenshots/06_entreprise_analyse.jpg" alt="Analyse en français"> | <img src="docs/screenshots/07_entreprise_analyse_derja_brouillon.jpg" alt="Analyse en tounsi"> |
+<img src="docs/screenshots/v2/06_admin_demandes_acces.jpg" alt="Demandes d'accès">
 
 </details>
 
-### Sur téléphone
+### 2. Messagerie en temps réel entreprise ↔ administration
 
-| Accueil | Prendre une photo de la notification | Analyse |
-|---|---|---|
-| <img src="docs/screenshots/20_mobile_accueil.jpg" width="240" alt="Accueil mobile"> | <img src="docs/screenshots/21_mobile_prendre_photo.jpg" width="240" alt="Prendre une photo"> | <img src="docs/screenshots/22_mobile_analyse.jpg" width="240" alt="Analyse sur mobile"> |
-
-### Espace administration
-
-<img src="docs/screenshots/10_administration_tableau_de_bord.jpg" alt="Tableau de bord de pilotage : chiffres officiels et simulateur d'impact">
-
-<p align="center"><i>Tableau de bord : synthèse IA du stock, chiffres officiels du ministère des Finances, simulateur d'impact, stock calibré.</i></p>
-
-| Stock trié par priorité | Conciliations |
+| Côté agent : l'IA liste les pièces manquantes | Côté entreprise : réponse reçue en direct, accusé de lecture |
 |---|---|
-| <img src="docs/screenshots/11_administration_stock.jpg" alt="Stock de dossiers"> | <img src="docs/screenshots/13_administration_conciliations.jpg" alt="Conciliations"> |
-| **Copilote juridique** | **Contrôle qualité avant envoi** |
-| <img src="docs/screenshots/15_administration_copilote.jpg" alt="Copilote juridique"> | <img src="docs/screenshots/14_administration_controle_qualite.jpg" alt="Contrôle qualité"> |
+| <img src="docs/screenshots/v2/08_agent_messagerie_ia.jpg" alt="Messagerie agent"> | <img src="docs/screenshots/v2/09_entreprise_messagerie_temps_reel.jpg" alt="Messagerie entreprise"> |
+
+### 3. Chaque niveau de l'administration a son espace
+
+<img src="docs/screenshots/v2/13_ministre_pilotage_national.jpg" alt="Pilotage national du ministre">
+
+<p align="center"><i>Ministre : pilotage national en temps réel, filtres, statistiques anonymes (groupes de moins de 5 dossiers masqués), chiffres officiels, simulateur.</i></p>
+
+| Chef de centre : équipe, affectations, conciliations à valider | Chargé : stock limité à son centre, « mes dossiers » |
+|---|---|
+| <img src="docs/screenshots/v2/12_chef_equipe_conciliation.jpg" alt="Équipe et validations"> | <img src="docs/screenshots/v2/10_agent_stock_perimetre.jpg" alt="Stock du centre"> |
 
 <details>
-<summary><b>Voir un dossier : score SHAP, avis juridique IA et lettre de conciliation</b></summary>
+<summary><b>Voir un dossier : score SHAP, avis IA, conciliation soumise au chef de centre</b></summary>
 
-<img src="docs/screenshots/12_administration_dossier_avis_ia.jpg" alt="Dossier avec avis IA">
+<img src="docs/screenshots/v2/11_agent_conciliation_soumise.jpg" alt="Dossier avec conciliation soumise">
 
 </details>
 
-### Admin plateforme
+### 4. Confidentialité : l'entreprise voit et contrôle ses données
 
-| Pouls de la plateforme | Journal d'audit | Base juridique |
+<img src="docs/screenshots/v2/16_entreprise_confidentialite.jpg" alt="Confidentialité et mes données">
+
+<p align="center"><i>Ce que reçoit l'IA (identifiants remplacés par des jetons), qui a consulté ses dossiers, consentements, export, suppression, registre des traitements.</i></p>
+
+### 5. Veille juridique automatisée
+
+<img src="docs/screenshots/v2/17_admin_veille_juridique.jpg" alt="Veille juridique">
+
+<p align="center"><i>Pipeline hebdomadaire : 7 modifications réelles détectées dans le Code de la TVA lors de la première exécution, en attente de validation par un juriste (différences mot à mot).</i></p>
+
+### 6. Espace entreprise
+
+| Tableau de bord | Analyse d'une notification | Assistant fiscal IA |
 |---|---|---|
-| <img src="docs/screenshots/16_plateforme_vue_ensemble.jpg" alt="Vue d'ensemble"> | <img src="docs/screenshots/17_plateforme_journal.jpg" alt="Journal IA"> | <img src="docs/screenshots/18_plateforme_base_juridique.jpg" alt="Base juridique"> |
+| <img src="docs/screenshots/04_entreprise_tableau_de_bord.jpg" alt="Tableau de bord"> | <img src="docs/screenshots/05_entreprise_analyser.jpg" alt="Analyser"> | <img src="docs/screenshots/08_entreprise_assistant.jpg" alt="Assistant"> |
+
+| Sur téléphone : photo de la notification | Analyse en tounsi + brouillon de réponse |
+|---|---|
+| <img src="docs/screenshots/21_mobile_prendre_photo.jpg" width="240" alt="Photo mobile"> | <img src="docs/screenshots/07_entreprise_analyse_derja_brouillon.jpg" width="420" alt="Analyse en tounsi"> |
+
+<details>
+<summary><b>Plus de captures</b> (administration, admin plateforme)</summary>
+
+| Copilote juridique | Contrôle qualité avant envoi |
+|---|---|
+| <img src="docs/screenshots/15_administration_copilote.jpg" alt="Copilote"> | <img src="docs/screenshots/14_administration_controle_qualite.jpg" alt="Contrôle qualité"> |
+| **Pouls de la plateforme** | **Utilisateurs et statuts de vérification** |
+| <img src="docs/screenshots/v2/18_admin_vue_ensemble.jpg" alt="Vue d'ensemble"> | <img src="docs/screenshots/v2/19_admin_utilisateurs.jpg" alt="Utilisateurs"> |
+
+</details>
+
+---
+
+## Confidentialité des données (loi organique 2004-63)
+
+| Garantie | Mise en œuvre |
+|---|---|
+| **Chacun n'accède qu'à son espace** | Permission vérifiée sur chaque route ; rôle relu en base à chaque requête ; dossiers limités au centre de l'agent ; un dossier hors périmètre répond « introuvable » |
+| **Comptes vérifiés** | Statut « en attente » : aucun accès avant validation humaine (justificatifs + pré-contrôles) |
+| **Chiffrement au repos** | Analyses, réponses, messages, pièces jointes et justificatifs chiffrés (AES + HMAC) ; la clé reste sur le serveur |
+| **Pseudonymisation avant l'IA** | Nom, matricule, personnes, e-mails, téléphones, RIB remplacés par des jetons avant tout envoi à OpenAI ou Gemini ; cache pseudonymisé ; synthèse vocale neutralisée |
+| **Anonymat des statistiques** | Le ministre ne voit que des agrégats ; groupes de moins de 5 dossiers masqués |
+| **Transparence** | L'entreprise voit chaque consultation de ses dossiers (rôle, centre, date) et ce que reçoit l'IA |
+| **Droits de la personne** | Consentement séparé pour l'IA (retirable), export complet, droit à l'effacement, registre des traitements |
+| **Traçabilité** | Journal d'audit de chaque recommandation IA, décision humaine et consultation |
+
+Détails : **[docs/CONFIDENTIALITE.md](docs/CONFIDENTIALITE.md)**. Tout cela est vérifié par des tests automatiques ([tests/test_securite_acces.py](tests/test_securite_acces.py)).
+
+## Rôles et droits
+
+| Permission | Entreprise | Chargé(e) | Chef de centre | Ministre | Admin |
+|---|:-:|:-:|:-:|:-:|:-:|
+| Analyser ses notifications, répondre | ✅ | | | | |
+| Voir les dossiers nominatifs | | son centre | son centre | ❌ | ❌ |
+| Messagerie | avec son agent | ses dossiers | son centre | | |
+| Proposer une conciliation | | ✅ | ✅ | | |
+| Valider une conciliation > 100 000 DT | | | ✅ | | |
+| Affecter les dossiers | | | ✅ | | |
+| Valider les comptes | | | ses agents | | tous |
+| Tableau de bord | | son centre | son centre | national, anonyme | usage |
+| Veille juridique | | | | | ✅ |
 
 ---
 
@@ -116,10 +180,8 @@ Mesurés sur 625 dossiers de test jamais vus par le modèle ([`models/metrics.js
 | AUC « chef maintenu devant le juge » | **0,84** |
 | AUC « dossier recouvré à plus de 50 % » | **0,82** |
 | Montant recouvré en traitant 20 % du stock : tri JISER vs ancienneté | **107,3 MDT vs 28,5 MDT (+276 %)** |
-| Même comparaison vs « plus gros montants d'abord » | +2,4 % |
 | Répartition des issues simulées vs jugements officiels 2020 | 51,9 / 33,6 / 14,5 % vs 51,5 / 33,9 / 14,5 % |
-
-Ces chiffres valident la méthode sur des données simulées calibrées ; le modèle doit être réentraîné sur l'historique réel de la DGI.
+| Tests de sécurité (accès, isolation, chiffrement, pseudonymisation, droits) | **8/8** |
 
 ---
 
@@ -127,31 +189,33 @@ Ces chiffres valident la méthode sur des données simulées calibrées ; le mod
 
 ```mermaid
 flowchart LR
-    U[Entreprise · Contentieux · Admin] --> F[React 19 + Vite + Tailwind]
-    F -->|/api| B[FastAPI]
-    B --> R[Règles CDPF<br/>8 contrôles]
-    B --> M[XGBoost + SHAP]
-    B --> G[RAG BM25<br/>305 articles]
-    B --> L[LLM<br/>OpenAI · Gemini secours]
-    B --> D[(Supabase<br/>PostgreSQL + RLS)]
-    B --> N[(n8n<br/>e-mails OTP · rappels)]
+    U[Entreprise · Chargé · Chef de centre · Ministre · Admin] --> F[React 19 + Vite + Tailwind]
+    F -->|REST /api| B[FastAPI]
+    F <-->|WebSocket| W[Messagerie temps réel]
+    B --> P[Contrôle d'accès<br/>permissions + périmètre]
+    P --> R[Règles CDPF]
+    P --> M[XGBoost + SHAP]
+    P --> G[RAG hybride<br/>BM25 + vecteurs]
+    G --> S[Pseudonymisation]
+    S --> L[LLM OpenAI · Gemini]
+    B --> D[(Supabase<br/>chiffré + RLS)]
+    B --> N[(n8n<br/>e-mails)]
+    V[Veille juridique<br/>hebdomadaire] --> G
 ```
 
-La documentation technique complète (modules, flux, IA, données, sécurité, API, mise en production) est dans **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
-
----
+Documentation complète : **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ## Données
 
 | Source | Utilisation |
 |---|---|
 | **CDPF, édition officielle 2024** (jibaya.tn) | Base juridique, règles de procédure, délai de 45 jours |
-| Code de la TVA, Code de l'IRPP et de l'IS (Jurisite Tunisie) | Base juridique (RAG) |
+| Code de la TVA, Code de l'IRPP et de l'IS (Jurisite Tunisie) | Base juridique (RAG), surveillée par la veille |
 | **Ministère des Finances, rapport annuel de performance 2020** (gbo.tn) | Chiffres officiels affichés, calibration de la simulation |
-| Loi de finances 2026 | Recettes fiscales |
+| **27 centres régionaux de contrôle des impôts** (ministère des Finances) | Périmètres des chefs de centre et des agents |
 | 2 822 dossiers **synthétiques calibrés** | Entraînement du modèle, démonstration |
 
-Les dossiers réels de contribuables sont couverts par le secret fiscal et la loi organique 2004-63 : **aucune donnée réelle de contribuable n'est utilisée**.
+Les dossiers réels de contribuables sont couverts par le secret fiscal : **aucune donnée réelle de contribuable n'est utilisée**.
 
 ---
 
@@ -170,55 +234,38 @@ cp .env.example .env                                                # puis rempl
 cd frontend
 npm install
 npm run dev -- --host                                               # http://localhost:5173
+
+# 3. Tests de sécurité
+.venv/Scripts/python -m pytest tests -q
 ```
 
-- Documentation de l'API (Swagger) : http://localhost:8000/docs
-- Espace administrateur : http://localhost:5173/plateforme (e-mails listés dans `ADMIN_EMAILS`)
-- Sur téléphone : ouvrir l'adresse « Network » affichée par Vite (même réseau Wi-Fi)
+- API (Swagger) : http://localhost:8000/docs · Admin plateforme : http://localhost:5173/plateforme
+- **Supabase** : exécuter `supabase/schema.sql`, puis `supabase/migration_002_roles_messagerie_confidentialite.sql`, puis `scripts/seed_supabase.py`
+- **n8n** : `scripts/build_n8n_workflows.py --cloud`, importer les workflows (code, bienvenue, rappel, **notification**, **veille**)
 
-| Service | Rôle | Variables |
-|---|---|---|
-| OpenAI | IA principale, lecture des photos, voix | `OPENAI_API_KEY`, `OPENAI_MODEL` |
-| Google Gemini | IA de secours automatique | `GEMINI_API_KEY` |
-| Supabase | Base de données (exécuter `supabase/schema.sql`, puis `scripts/seed_supabase.py`) | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` |
-| n8n | E-mails : code, bienvenue, rappels (générer avec `scripts/build_n8n_workflows.py --cloud`) | `N8N_*_WEBHOOK_URL`, `N8N_SHARED_SECRET` |
-| Admin | Accès à `/plateforme` | `ADMIN_EMAILS` |
+| Variable | Rôle |
+|---|---|
+| `OPENAI_API_KEY`, `GEMINI_API_KEY` | IA principale et secours, embeddings, voix |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Base de données |
+| `N8N_*_WEBHOOK_URL`, `N8N_SHARED_SECRET` | E-mails (code, bienvenue, rappels, notifications) |
+| `JISER_DATA_KEY` | Clé de chiffrement au repos |
+| `ADMIN_EMAILS`, `OFFICIAL_EMAIL_DOMAINS`, `SEUIL_VALIDATION_CONCILIATION` | Accès et règles de gestion |
 
 Sans ces services, l'application reste utilisable : règles et modèle ML à la place de l'IA générative, base en mémoire, codes écrits dans le journal du serveur.
-
-### Reproduire les données et le modèle
-
-```bash
-.venv/Scripts/python scripts/import_cdpf_officiel.py   # CDPF officiel 2024
-.venv/Scripts/python scripts/scrape_legal.py           # Codes TVA et IRPP/IS
-.venv/Scripts/python scripts/generate_synthetic.py     # dossiers calibrés + PDF de démo
-.venv/Scripts/python scripts/train_model.py            # modèle + métriques
-.venv/Scripts/python scripts/build_note.py             # note de synthèse (2 pages)
-```
-
----
-
-## Sécurité
-
-- Connexion par **code à usage unique** envoyé par e-mail : 6 chiffres, 5 minutes, 5 essais, stocké haché.
-- Sessions à jeton aléatoire de 256 bits, stocké haché, valable 8 heures.
-- Contrôle des rôles sur chaque route de l'API.
-- Espace administrateur invisible dans l'interface, réservé aux e-mails autorisés.
-- Supabase avec Row Level Security, sans accès public ; clés uniquement côté serveur.
-- Journal d'audit de chaque recommandation IA et de chaque décision humaine.
 
 ## Documents
 
 | Document | Contenu |
 |---|---|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture technique complète |
+| [docs/CONFIDENTIALITE.md](docs/CONFIDENTIALITE.md) | Garanties de confidentialité et loi 2004-63 |
 | [docs/JISER_note_de_synthese.pdf](docs/JISER_note_de_synthese.pdf) | Note de synthèse (2 pages) |
-| [docs/JISER_PROMPT_COMPLET.md](docs/JISER_PROMPT_COMPLET.md) | Présentation détaillée du projet |
 
 ## Limites
 
-- Modèle entraîné sur des données simulées calibrées : à réentraîner sur l'historique réel.
-- Chiffres officiels détaillés les plus récents : 2020. Jurisprudence non intégrée.
+- Modèle entraîné sur des données simulées calibrées : à réentraîner sur l'historique réel de la DGI.
+- La vérification des comptes repose sur des justificatifs et une validation humaine ; en production, elle se connecterait au RNE et à l'annuaire de l'administration.
+- La veille juridique surveille 3 codes ; les notes communes de la DGI et le JORT restent à ajouter.
 - L'IA ne remplace ni l'avocat, ni le conseiller fiscal, ni l'agent : elle explique, recommande et cite ses sources.
 
 ---

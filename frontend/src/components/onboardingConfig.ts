@@ -1,7 +1,8 @@
-import { Building2, Landmark, type LucideIcon } from 'lucide-react'
+import { Building2, Crown, Landmark, Scale, UserCog, type LucideIcon } from 'lucide-react'
 
 // The platform administrator is not self-service: that account is reached only through its private link.
-export type Role = 'entreprise' | 'contentieux'
+export type Role = 'entreprise' | 'ministre' | 'chef_centre' | 'contentieux'
+export type Famille = 'entreprise' | 'administration'
 
 export type FieldType = 'text' | 'select' | 'number' | 'date' | 'multi' | 'toggle'
 
@@ -25,29 +26,51 @@ export interface Section {
   fields: Field[]
 }
 
+export interface PieceConfig { type: string; label: string; help: string }
+
 export interface RoleConfig {
   id: Role
+  famille: Famille
   label: string
   who: string
+  niveau?: string
+  droits?: string[]
   icon: LucideIcon
   to: string
   sections: Section[]
+  pieces: PieceConfig[]
+  validateur: string
   parcours: string[]
 }
+
+export const FAMILLES: { id: Famille; label: string; who: string; icon: LucideIcon }[] = [
+  { id: 'entreprise', label: 'Entreprise', who: "J'ai reçu une notification de redressement", icon: Building2 },
+  { id: 'administration', label: 'Administration fiscale', who: 'Ministère des Finances, DGI ou centre régional', icon: Landmark },
+]
 
 export const GOUVERNORATS = ['Tunis', 'Ariana', 'Ben Arous', 'Manouba', 'Nabeul', 'Zaghouan', 'Bizerte', 'Béja', 'Jendouba', 'Le Kef',
   'Siliana', 'Sousse', 'Monastir', 'Mahdia', 'Sfax', 'Kairouan', 'Kasserine', 'Sidi Bouzid', 'Gabès', 'Médenine', 'Tataouine',
   'Gafsa', 'Tozeur', 'Kébili']
+// 27 centres régionaux de contrôle des impôts (ministère des Finances): 16 of category A, 11 of category B
+export const CENTRES = ['Tunis 1', 'Tunis 2', 'Tunis 3', 'Ariana', 'Ben Arous', 'Manouba', 'Bizerte', 'Nabeul', 'Sousse', 'Monastir',
+  'Sfax 1', 'Sfax 2', 'Kairouan', 'Médenine', 'Mahdia', 'Gabès', 'Gafsa', 'Le Kef', 'Béja', 'Jendouba', 'Kasserine', 'Sidi Bouzid',
+  'Zaghouan', 'Siliana', 'Kébili', 'Tozeur', 'Tataouine']
 const SECTEURS = ['Commerce de gros', 'Commerce de détail', 'BTP', 'Industrie textile', 'Agroalimentaire', 'Services informatiques',
   'Transport et logistique', 'Promotion immobilière', 'Tourisme et hôtellerie', 'Professions libérales', 'Autre']
 const IMPOTS = ['TVA', 'Impôt sur les sociétés', 'IRPP', 'Retenue à la source', "Droits d'enregistrement"]
 
 export const MATRICULE_RE = /^\d{7}[A-Z]\/[A-Z]\/[A-Z]\/\d{3}$/
+const MATRICULE_AGENT = { pattern: /^\d{4,10}$/, patternMessage: 'Identifiant unique (4 à 10 chiffres)' }
 
 export const ROLES: RoleConfig[] = [
   {
-    id: 'entreprise', label: "Chef d'entreprise", who: "J'ai reçu une notification de redressement", icon: Building2, to: '/entreprise',
-    parcours: ['Déposez votre notification (PDF ou photo)', "Lisez ce qu'on vous reproche, chef par chef, en clair", 'Générez un brouillon de réponse avant la date limite'],
+    id: 'entreprise', famille: 'entreprise', label: "Chef d'entreprise", who: "J'ai reçu une notification de redressement", icon: Building2, to: '/entreprise',
+    validateur: "l'administrateur de la plateforme",
+    parcours: ['Déposez votre notification (PDF ou photo)', "Lisez ce qu'on vous reproche, chef par chef, en clair", 'Échangez avec l\'administration et répondez avant la date limite'],
+    pieces: [
+      { type: 'rne', label: 'Extrait du registre national des entreprises (RNE)', help: 'Moins de 3 mois. Il prouve que vous représentez la société.' },
+      { type: 'cin', label: "Carte d'identité du gérant", help: 'Recto verso, ou passeport.' },
+    ],
     sections: [
       {
         title: 'Votre entreprise', subtitle: 'Ces informations pré-remplissent vos réponses et vérifient que la notification vous concerne.',
@@ -82,26 +105,58 @@ export const ROLES: RoleConfig[] = [
     ],
   },
   {
-    id: 'contentieux', label: 'Chef(fe) du contentieux', who: 'Je pilote le stock de dossiers', icon: Landmark, to: '/administration',
-    parcours: ["Traitez d'abord les dossiers prioritaires", 'Ouvrez un dossier : score de solidité et explication', 'Validez ou non la proposition de conciliation'],
+    id: 'ministre', famille: 'administration', label: 'Ministre des Finances', niveau: 'Niveau national · stratégique', icon: Crown, to: '/administration',
+    who: 'Pilotage national du contentieux fiscal',
+    droits: ['Tableau de bord national en temps réel, avec filtres', 'Statistiques anonymes uniquement (secret fiscal)', 'Simulateur d\'impact et chiffres officiels'],
+    validateur: "l'administrateur de la plateforme, sur décret de nomination",
+    parcours: ['Filtrez le stock national par gouvernorat, motif ou montant', 'Suivez l\'activité en temps réel', 'Mesurez l\'impact des mesures avec le simulateur'],
+    pieces: [{ type: 'nomination', label: 'Décret de nomination', help: 'Ou attestation du cabinet.' }],
     sections: [
       {
-        title: 'Votre périmètre', subtitle: 'Le stock et le tableau de bord seront filtrés sur votre périmètre.',
+        title: 'Votre cabinet', subtitle: 'Le tableau de bord national présente des statistiques anonymes : aucun nom de contribuable.',
         fields: [
-          { key: 'structure', label: 'Structure', type: 'select', required: true, options: ['Unité du contentieux fiscal (centrale)', 'Direction régionale', 'Direction des grandes entreprises'] },
-          { key: 'perimetre', label: 'Périmètre', type: 'select', required: true, options: ['National', 'Régional'] },
-          { key: 'gouvernorats', label: 'Gouvernorats suivis', type: 'multi', options: GOUVERNORATS, full: true, showIf: (v) => v.perimetre === 'Régional' },
-          { key: 'taille_stock', label: 'Taille approximative du stock', type: 'select', options: ['< 100 dossiers', '100 à 500', '500 à 2 000', '> 2 000'] },
-          { key: 'agents', label: "Nombre d'agents dans l'équipe", type: 'number', placeholder: '8' },
+          { key: 'cabinet', label: 'Cabinet', type: 'text', required: true, placeholder: 'Cabinet du ministre des Finances', full: true },
+          { key: 'priorites', label: 'Priorités de pilotage', type: 'multi', full: true,
+            options: ['Réduire le stock de dossiers', 'Accélérer le recouvrement', 'Développer la conciliation', 'Réduire les annulations', 'Équité entre régions'] },
+          { key: 'rapport', label: 'Rapport de synthèse', type: 'select', options: ['Hebdomadaire', 'Mensuel', 'Trimestriel'] },
         ],
       },
+    ],
+  },
+  {
+    id: 'chef_centre', famille: 'administration', label: 'Chef de centre régional', niveau: 'Niveau régional · pilotage', icon: UserCog, to: '/administration',
+    who: 'Je dirige un centre régional de contrôle des impôts (CRCI)',
+    droits: ['Stock et tableau de bord de votre centre', 'Affectation des dossiers aux agents', 'Validation des conciliations importantes et des comptes agents'],
+    validateur: "l'administrateur de la plateforme, sur décision de nomination",
+    parcours: ['Affectez les dossiers prioritaires à vos agents', 'Validez les conciliations au-dessus du seuil', 'Suivez la charge de votre équipe'],
+    pieces: [{ type: 'nomination', label: 'Décision de nomination', help: 'Ou attestation de fonction signée par la DGI.' }],
+    sections: [
       {
-        title: 'Vos objectifs', subtitle: 'JISER priorise les dossiers selon vos objectifs.',
+        title: 'Votre centre', subtitle: 'Vous ne verrez que les dossiers de votre centre.',
         fields: [
-          { key: 'objectifs', label: 'Objectifs prioritaires', type: 'multi', required: true, full: true,
-            options: ['Accélérer le recouvrement', 'Réduire les annulations', 'Développer la conciliation', 'Réduire la durée des dossiers'] },
+          { key: 'centre', label: 'Centre régional de contrôle des impôts', type: 'select', required: true, options: CENTRES, full: true },
+          { key: 'matricule_agent', label: 'Identifiant unique (matricule)', type: 'text', required: true, placeholder: '104587', ...MATRICULE_AGENT },
+          { key: 'agents', label: "Nombre d'agents du contentieux", type: 'number', placeholder: '8' },
           { key: 'seuil_alerte', label: "Seuil d'alerte (montant en DT)", type: 'number', placeholder: '500000', help: 'Les dossiers au-dessus de ce montant vous sont signalés.' },
-          { key: 'rapport', label: 'Rapport de pilotage', type: 'select', options: ['Hebdomadaire', 'Mensuel', 'Trimestriel'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'contentieux', famille: 'administration', label: 'Chargé(e) du contentieux', niveau: 'Niveau opérationnel', icon: Scale, to: '/administration',
+    who: 'Je traite les dossiers de redressement de mon centre',
+    droits: ['Dossiers de votre centre, affectés par votre chef', 'Avis juridique IA, contrôle qualité, copilote', 'Messagerie sécurisée avec les entreprises'],
+    validateur: 'le chef de votre centre',
+    parcours: ['Traitez d\'abord les dossiers qui vous sont affectés', 'Échangez avec l\'entreprise dans la messagerie sécurisée', 'Proposez une conciliation (validée par votre chef au-delà du seuil)'],
+    pieces: [{ type: 'carte_pro', label: 'Carte professionnelle ou attestation de fonction', help: 'Délivrée par votre direction.' }],
+    sections: [
+      {
+        title: 'Votre poste', subtitle: 'Votre compte sera validé par le chef de votre centre.',
+        fields: [
+          { key: 'centre', label: 'Centre régional de contrôle des impôts', type: 'select', required: true, options: CENTRES, full: true },
+          { key: 'matricule_agent', label: 'Identifiant unique (matricule)', type: 'text', required: true, placeholder: '208761', ...MATRICULE_AGENT },
+          { key: 'grade', label: 'Grade', type: 'select', required: true, options: ['Contrôleur des impôts', 'Inspecteur', 'Inspecteur central', 'Inspecteur en chef'] },
+          { key: 'specialites', label: 'Spécialités', type: 'multi', full: true, options: ['TVA', 'Impôt sur les sociétés', 'IRPP', 'Prix de transfert', 'Retenues à la source'] },
         ],
       },
     ],

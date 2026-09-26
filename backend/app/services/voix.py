@@ -14,7 +14,7 @@ import logging
 from pydantic import BaseModel
 
 from ..config import CACHE_DIR, OPENAI_API_KEY
-from . import llm
+from . import llm, securite
 
 log = logging.getLogger("jiser.voix")
 
@@ -65,6 +65,9 @@ def synthese(texte: str, source: str = "fr", cible: str = "fr") -> bytes:
         raise VoixIndisponible("La lecture vocale nécessite une clé OpenAI.")
     if cible not in VOICES:
         raise VoixIndisponible("Langue non prise en charge.")
+    if not securite.ia_autorisee():
+        raise VoixIndisponible("Lecture vocale désactivée : vous avez retiré votre consentement à l'IA générative.")
+    texte = securite.neutraliser(texte)   # the speech service never receives names or tax IDs
     key = hashlib.sha256(f"{source}|{cible}|{texte}".encode()).hexdigest()[:24]
     path = CACHE_DIR / f"tts-{key}.mp3"
     if path.exists():

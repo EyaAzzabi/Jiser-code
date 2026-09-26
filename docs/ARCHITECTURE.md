@@ -1,37 +1,42 @@
 # JISER : architecture technique
 
-Ce document décrit l'architecture complète de JISER : les composants, les flux de données, l'IA, la sécurité, la configuration et tout ce qu'il faut pour faire tourner la plateforme ou la mettre en production.
+Ce document décrit l'architecture complète de JISER : composants, flux, rôles et droits, IA, confidentialité, données, messagerie en temps réel, veille juridique, configuration, et ce qu'il faut pour la production.
 
 Sommaire
 
 1. [Vue d'ensemble](#1-vue-densemble)
 2. [Architecture logique](#2-architecture-logique)
-3. [Backend (FastAPI)](#3-backend-fastapi)
-4. [Couche IA](#4-couche-ia)
-5. [Données](#5-données)
-6. [Base de données (Supabase)](#6-base-de-données-supabase)
-7. [Authentification et sécurité](#7-authentification-et-sécurité)
-8. [Automatisations e-mail (n8n)](#8-automatisations-e-mail-n8n)
-9. [Frontend (React)](#9-frontend-react)
-10. [API : référence des routes](#10-api--référence-des-routes)
-11. [Configuration et lancement](#11-configuration-et-lancement)
-12. [Reproduire les données et le modèle](#12-reproduire-les-données-et-le-modèle)
-13. [Ce qu'il faut pour la mise en production](#13-ce-quil-faut-pour-la-mise-en-production)
-14. [Limites connues](#14-limites-connues)
+3. [Rôles, droits et périmètres](#3-rôles-droits-et-périmètres)
+4. [Vérification des comptes](#4-vérification-des-comptes)
+5. [Backend (FastAPI)](#5-backend-fastapi)
+6. [Couche IA](#6-couche-ia)
+7. [Confidentialité des données](#7-confidentialité-des-données)
+8. [Messagerie en temps réel](#8-messagerie-en-temps-réel)
+9. [Veille juridique automatisée](#9-veille-juridique-automatisée)
+10. [Données](#10-données)
+11. [Base de données (Supabase)](#11-base-de-données-supabase)
+12. [Automatisations (n8n)](#12-automatisations-n8n)
+13. [Frontend (React)](#13-frontend-react)
+14. [API : référence des routes](#14-api--référence-des-routes)
+15. [Configuration, lancement et tests](#15-configuration-lancement-et-tests)
+16. [Ce qu'il faut pour la mise en production](#16-ce-quil-faut-pour-la-mise-en-production)
+17. [Limites connues](#17-limites-connues)
 
 ---
 
 ## 1. Vue d'ensemble
 
-JISER (جسر, « pont ») est une plateforme d'IA pour le **contentieux fiscal tunisien**, c'est-à-dire tout ce qui suit une notification de redressement après une vérification fiscale.
+JISER (جسر, « pont ») est une plateforme d'IA pour le **contentieux fiscal tunisien**, c'est-à-dire tout ce qui suit une notification de redressement.
 
 | Espace | Utilisateur | Ce qu'il fait |
 |---|---|---|
-| **Entreprise** | Chef d'entreprise | Dépose sa notification (PDF, photo, texte). JISER l'explique chef par chef en français ou en tounsi, contrôle la procédure du CDPF, estime ce qui est contestable, calcule la date limite (45 jours), rédige un brouillon de réponse et envoie des rappels. |
-| **Administration** | Chef(fe) du contentieux | Voit le stock trié par montant recouvrable, le score de solidité de chaque dossier expliqué (SHAP), l'avis juridique de l'IA, une proposition de conciliation, un contrôle qualité avant envoi, un copilote juridique, les chiffres officiels et un simulateur d'impact. |
-| **Admin plateforme** | Administrateur (lien privé) | Santé des services, activité, utilisateurs, journal d'audit de chaque recommandation IA, base juridique. |
+| **Entreprise** | Chef d'entreprise | Dépose sa notification (PDF, photo), la comprend chef par chef en français ou en tounsi, contrôle la procédure, prépare sa réponse, échange en temps réel avec l'agent, contrôle ses données personnelles. |
+| **Administration · ministre** | Ministre des Finances | Pilotage national en temps réel, filtres, statistiques anonymes, chiffres officiels, simulateur d'impact. |
+| **Administration · chef de centre** | Chef d'un des 27 CRCI | Stock de son centre, affectation des dossiers, validation des conciliations importantes et des comptes de ses agents. |
+| **Administration · chargé du contentieux** | Agent d'un CRCI | Dossiers de son centre, score SHAP, avis IA, contrôle qualité, copilote, messagerie avec les entreprises. |
+| **Admin plateforme** | Lien privé | Validation des comptes, veille juridique, santé des services, journal d'audit. |
 
-Principe directeur : **l'IA recommande et explique, la décision reste humaine**. Chaque recommandation et chaque décision est tracée.
+Principes : **l'IA recommande, l'humain décide** ; **chacun n'accède qu'à son espace** ; **aucune donnée identifiante ne part vers une IA externe**.
 
 ---
 
@@ -39,345 +44,376 @@ Principe directeur : **l'IA recommande et explique, la décision reste humaine**
 
 ```mermaid
 flowchart LR
-    subgraph Client
-        U1[Chef d'entreprise<br/>PC ou téléphone]
-        U2[Chef du contentieux]
-        U3[Admin plateforme]
+    subgraph Clients
+        E[Entreprise<br/>PC ou téléphone]
+        A[Chargé · Chef de centre · Ministre]
+        P[Admin plateforme]
     end
-
     subgraph Frontend["Frontend · React 19 + Vite + Tailwind"]
-        SPA[Application monopage<br/>/entreprise · /administration · /plateforme]
+        SPA[Application monopage]
     end
-
-    subgraph Backend["Backend · FastAPI (Python 3.11)"]
-        API[API REST + streaming NDJSON]
-        AUTH[auth.py<br/>OTP + sessions + rôles]
-        EXT[extraction.py<br/>PDF / photo / texte]
-        PROC[procedure.py<br/>8 règles CDPF]
-        RAG[legal_rag.py<br/>BM25 · 305 articles]
-        ML[scoring.py<br/>XGBoost + SHAP]
-        LLM[llm.py<br/>OpenAI · Gemini · Claude]
-        ADM[administration.py<br/>tri · conciliation · tableau de bord]
-        RAP[rappels.py<br/>J-15 · J-7 · J-3 · J-1]
+    subgraph Backend["Backend · FastAPI"]
+        DEP[deps.py<br/>session · statut · rôle · permission]
+        RT[routers/<br/>comptes · pilotage · messagerie · confidentialité · veille]
+        SV[services/<br/>analyse · scoring · RAG · rédaction · administration]
+        SEC[securite.py<br/>chiffrement · pseudonymisation · consentement]
+        HUB[Hub WebSocket]
+        VEI[veille.py<br/>pipeline hebdomadaire]
     end
-
-    subgraph Externe["Services externes"]
-        OAI[(OpenAI<br/>gpt-5.4-mini · TTS)]
-        GEM[(Google Gemini<br/>secours)]
-        SB[(Supabase<br/>PostgreSQL)]
-        N8N[(n8n Cloud<br/>Gmail)]
+    subgraph Externe
+        OAI[(OpenAI · Gemini)]
+        SB[(Supabase<br/>PostgreSQL + RLS)]
+        N8N[(n8n · Gmail)]
+        SRC[(Sources officielles<br/>jibaya.tn · Jurisite)]
     end
-
-    U1 & U2 & U3 --> SPA -->|/api| API
-    API --> AUTH & EXT & PROC & RAG & ML & ADM
-    EXT & RAG & ADM --> LLM
-    LLM --> OAI
-    LLM -.secours.-> GEM
-    AUTH & API & RAP --> SB
-    AUTH -->|webhook OTP / bienvenue| N8N
-    RAP -->|webhook rappel| N8N
+    E & A & P --> SPA -->|REST| DEP --> RT --> SV
+    SPA <-->|WebSocket| HUB
+    SV --> SEC -->|texte pseudonymisé| OAI
+    RT --> SB
+    RT & VEI -->|webhooks signés| N8N
+    VEI --> SRC
+    N8N -.->|chaque lundi| VEI
 ```
 
-**Chemin d'une analyse de notification (côté entreprise)**
+**Parcours d'une requête protégée**
 
 ```mermaid
 sequenceDiagram
-    participant E as Entreprise
-    participant F as Frontend
-    participant A as API
-    participant X as extraction
-    participant P as procédure (règles)
-    participant S as scoring (XGBoost)
-    participant R as RAG (BM25)
-    participant L as LLM
-    participant D as Supabase
-    participant N as n8n
-
-    E->>F: dépose PDF / photo
-    F->>A: POST /api/contribuable/analyser
-    A->>X: texte ou image → notification structurée
-    X->>L: lecture de la photo (vision) si nécessaire
-    A->>P: 8 contrôles CDPF (art. 19, 20, 39, 40, 43, 44)
-    A->>S: probabilité maintenu / réduit / annulé par chef
-    A->>R: articles de loi pertinents par chef
-    A->>L: explication claire (FR ou tounsi), arguments
-    A->>D: enregistre l'analyse + l'échéance
-    A->>N: e-mail « échéance enregistrée »
-    A-->>F: analyse complète
+    participant N as Navigateur
+    participant D as deps.py
+    participant B as Supabase
+    participant R as Route
+    participant S as securite.py
+    participant L as LLM externe
+    N->>D: requête + jeton de session
+    D->>B: session valide ? utilisateur ? statut ?
+    D-->>N: 403 si compte en attente, refusé ou rôle sans permission
+    D->>S: contexte : identifiants à masquer, consentement IA
+    D->>R: rôle relu en base + périmètre (centre)
+    R->>R: dossier hors périmètre → 404
+    R->>S: appel IA
+    S->>L: texte pseudonymisé ([ENTREPRISE_1]…)
+    L-->>S: réponse avec jetons
+    S-->>R: identifiants remis en place
+    R->>B: écriture chiffrée + journal d'audit + journal des accès
 ```
 
 ---
 
-## 3. Backend (FastAPI)
+## 3. Rôles, droits et périmètres
+
+Code : [`services/permissions.py`](../backend/app/services/permissions.py), [`deps.py`](../backend/app/deps.py).
+
+La hiérarchie suit l'organisation du ministère des Finances : **Ministère → Direction générale des impôts → 27 centres régionaux de contrôle des impôts** (16 de catégorie A, 11 de catégorie B) **→ agents**.
+
+| Rôle | Niveau | Périmètre | Permissions |
+|---|---|---|---|
+| `entreprise` | — | ses dossiers | `analyses:propres`, `messagerie:entreprise`, `donnees:propres`, `copilote`, `favoris` |
+| `contentieux` | opérationnel | son centre | `stats:centre`, `dossiers:lire`, `dossier:avis`, `conciliation:proposer`, `controle_qualite`, `copilote`, `messagerie:administration` |
+| `chef_centre` | régional | son centre | celles de l'agent + `dossiers:affecter`, `conciliation:valider`, `comptes:valider_agents`, `equipe:lire` |
+| `ministre` | national | agrégats anonymes | `stats:national`, `copilote` |
+| `admin` | plateforme | — | `plateforme`, `comptes:valider`, `veille:gerer`, `journal:lire` |
+
+Mécanismes :
+- **`compte`** (dépendance async) : la session doit être valide, l'utilisateur relu en base, son statut `actif`. Le **rôle vient toujours de la base**, jamais du navigateur. Elle fixe aussi le contexte de confidentialité de la requête.
+- **`permission(p)`** : le rôle doit détenir `p`.
+- **Périmètre** : un agent ou un chef de centre ne voit que les dossiers du gouvernorat de son centre (Tunis 1 à 3 et Sfax 1 et 2 partagent leur gouvernorat). Hors périmètre, l'API répond **404**, pour ne pas révéler l'existence du dossier.
+- **Conciliation** : au-delà de `SEUIL_VALIDATION_CONCILIATION` (100 000 DT par défaut), la proposition d'un agent est soumise au chef de centre.
+- **Affectation** : le chef de centre affecte un dossier à un agent de son centre ; un dossier affecté n'est plus accessible en messagerie aux autres agents.
+
+---
+
+## 4. Vérification des comptes
+
+Code : [`services/comptes.py`](../backend/app/services/comptes.py), [`routers/comptes.py`](../backend/app/routers/comptes.py).
+
+```mermaid
+stateDiagram-v2
+    [*] --> en_attente: inscription (OTP + profil + justificatifs)
+    en_attente --> actif: validation humaine
+    en_attente --> refuse: refus motivé
+    actif --> suspendu: décision de l'administrateur
+```
+
+1. **Inscription** : e-mail vérifié par OTP, profil (entreprise, ou administration puis choix du rôle), **justificatifs** (extrait RNE et CIN pour une entreprise ; carte professionnelle, décision ou décret de nomination pour l'administration).
+2. **Pré-vérification automatique** (score affiché au validateur) :
+
+| Profil | Contrôles |
+|---|---|
+| Entreprise | pièces présentes, format du matricule fiscal, matricule non déjà utilisé, **raison sociale et matricule retrouvés dans l'extrait RNE** (lecture locale du PDF), adresse professionnelle |
+| Administration | pièces présentes, **adresse e-mail officielle** (`OFFICIAL_EMAIL_DOMAINS`), centre de rattachement, matricule d'agent, un seul ministre actif |
+
+3. **Validation humaine sous 24 h** :
+   - chargé du contentieux → par **le chef de son centre** (hiérarchie), ou l'administrateur ;
+   - entreprise, chef de centre, ministre → par l'administrateur plateforme.
+4. **Notification** : e-mails « demande reçue », « compte activé » ou « demande refusée (motif) » via n8n. Chaque décision est inscrite au journal.
+
+Tant que le compte n'est pas `actif`, l'utilisateur ne voit que sa page de suivi, qui se met à jour seule.
+
+---
+
+## 5. Backend (FastAPI)
 
 Code : [`backend/app/`](../backend/app/)
 
 | Fichier | Rôle |
 |---|---|
-| `main.py` | Toutes les routes, contrôle d'accès par rôle (`require(*roles)`), démarrage (test du LLM, planificateur de rappels). |
-| `config.py` | Lecture du `.env`, chemins des données, choix automatique du fournisseur d'IA. |
-| `domain.py` | Connaissance métier : 6 types de chefs de redressement (articles, pièces, taux de maintien de base), règles de procédure, délais (45 j, 10 j, 90 j), gouvernorats, étapes. |
-| `schemas.py` | Modèles Pydantic : Entreprise, ChefRedressement, Notification, Dossier, AnalyseNotification, ScoreDossier… |
+| `main.py` | Routes historiques (analyse, dossiers, tableau de bord, plateforme), inclusion des routeurs, démarrage des planificateurs |
+| `deps.py` | Contrôle d'accès (session, statut, rôle, permission), secret n8n, journal des accès |
+| `config.py` | Lecture du `.env` |
+| `domain.py` | Types de chefs, règles de procédure, délais (45 j, 10 j, 90 j), gouvernorats |
+| `routers/comptes.py` | Justificatifs, soumission, file de validation, décision |
+| `routers/pilotage.py` | Tableau national, équipe, affectations, conciliations à valider |
+| `routers/messagerie.py` | Conversations, messages, pièces, IA, **WebSocket** |
+| `routers/confidentialite.py` | Accès, export, effacement, consentements, aperçu IA, registre |
+| `routers/veille.py` | État du pipeline, lancement, validation des changements, embeddings |
 
-### Services ([`backend/app/services/`](../backend/app/services/))
+### Services
 
 | Service | Ce qu'il fait |
 |---|---|
-| `extraction.py` | Transforme un PDF (pypdf), une photo (vision LLM) ou un texte en notification structurée (entreprise, dates, chefs, montants). Un parseur à règles sert de base et de secours. |
-| `procedure.py` | 8 règles déterministes du CDPF : avis préalable (art. 39), délai de 15 jours, droit à l'assistance, durée maximale de vérification (art. 40), motivation des chefs (art. 43), délai de réponse de 45 jours (art. 43-44), montants chiffrés, délai de reprise de 4 ans (art. 19-20). |
-| `features.py` | 26 variables par chef (type, montant, exercice, vices, motivation, secteur…). |
-| `scoring.py` | Modèle XGBoost 3 classes (maintenu / réduit / annulé) par chef, agrégé par dossier en score de solidité 0-100 et montant recouvrable ; explications SHAP. |
-| `legal_rag.py` | Recherche BM25 (rank-bm25) sur 305 articles (CDPF officiel 2024, Code de la TVA, Code de l'IRPP et de l'IS), avec expansion des termes en tounsi. |
-| `analysis.py` | Assemble l'analyse côté entreprise : contrôle de procédure, contestabilité par chef, arguments, pièces à réunir, date limite, explications (FR / tounsi). |
-| `drafting.py` + `letter.py` | Brouillon de la lettre d'opposition (art. 44) ; gabarit complet hors ligne, reformulé par le LLM sans ajouter de faits. |
-| `assistant.py` | Assistant fiscal et copilote juridique : RAG + LLM, réponses en streaming mot à mot, articles cités, suggestions de questions. |
-| `administration.py` | Tri du stock (priorité = montant recouvrable attendu × (1 + 0,25 × min(ancienneté en années, 2))), conciliation par chef, tableau de bord (séries mensuelles, motifs, gouvernorats). |
-| `ai_admin.py` | Synthèse IA du stock, avis juridique par dossier (points forts / faibles, lettre de conciliation), amélioration des motivations avant envoi. |
-| `voix.py` | Lecture à voix haute (OpenAI `gpt-4o-mini-tts`, voix « coral ») en français, anglais ou tounsi (texte réécrit en écriture arabe pour la prononciation). |
-| `export_pdf.py` | Export PDF (ReportLab) du rapport d'analyse et de la fiche dossier. |
-| `rappels.py` | Rappels d'échéance à J-15, J-7, J-3, J-1 ; vérification toutes les 6 h ; dédoublonnage par le journal. |
-| `auth.py` | Codes OTP, sessions, rôles, envoi des e-mails via n8n. |
-| `db.py` | Dépôt de données : `SupabaseRepo` en production, `MemoryRepo` en secours (même interface). |
-| `store.py` | Dossiers de l'administration chargés en mémoire, journalisation des recommandations. |
-| `llm.py` | Passerelle multi-fournisseurs (voir section 4). |
-
-### Règles de conciliation
-
-| Part du montant qui tiendrait devant le juge | Vice de procédure | Recommandation |
-|---|---|---|
-| ≥ 70 % | non | **Maintenir** |
-| 30 % à 70 % | — | **Transiger** (principal, abandon des pénalités ou montant réduit) |
-| < 30 % | — | **Abandonner** |
+| `extraction.py` | PDF, photo ou texte → notification structurée |
+| `procedure.py` | 8 contrôles du CDPF (art. 19-20, 39, 40, 43-44) |
+| `features.py`, `scoring.py` | 26 variables par chef ; XGBoost 3 classes + SHAP |
+| `legal_rag.py` | **Recherche hybride** : BM25 + similarité vectorielle, fusion par rang réciproque |
+| `analysis.py`, `drafting.py`, `letter.py` | Analyse côté entreprise, brouillon de réponse (art. 44) |
+| `assistant.py` | Assistant et copilote, réponses en streaming |
+| `administration.py` | Tri du stock, conciliation, tableau de bord (national ou par centre) |
+| `ai_admin.py` | Synthèse du stock, avis juridique, amélioration des motivations |
+| `pilotage.py` | Agrégats nationaux filtrés et k-anonymes, activité 24 h, équipe, affectations, validations |
+| `comptes.py` | Pré-vérification, file de validation, décision, notifications |
+| `messagerie.py` | Conversations par notification, règles d'accès, IA dans l'échange, hub WebSocket |
+| `securite.py` | Chiffrement, pseudonymisation, consentement, neutralisation pour la voix |
+| `veille.py` | Pipeline de veille juridique, versions, embeddings, planificateur |
+| `permissions.py` | Rôles, permissions, 27 CRCI, périmètres |
+| `db.py` | Supabase ou mémoire (même interface), **chiffrement à l'écriture** |
+| `voix.py`, `export_pdf.py`, `rappels.py`, `auth.py`, `llm.py` | Voix, PDF, rappels J-15 à J-1, OTP et sessions, passerelle LLM |
 
 ---
 
-## 4. Couche IA
-
-JISER combine **trois types d'IA**, chacun là où il est le plus fiable :
+## 6. Couche IA
 
 | Type | Utilisé pour | Pourquoi |
 |---|---|---|
-| **Règles déterministes** | Contrôle de procédure, délais, calculs | Le droit est exact : pas de place pour l'approximation. |
-| **Machine learning** (XGBoost + SHAP) | Probabilité qu'un chef tienne devant le juge, tri du stock | Prédiction chiffrée, mesurable, explicable facteur par facteur. |
-| **IA générative** (LLM + RAG) | Lecture des photos, explications en langage clair et en tounsi, assistant, rédaction, avis juridique | Langage naturel, toujours ancré dans les articles retrouvés par le RAG. |
+| **Règles déterministes** | Contrôle de procédure, délais, calculs | Le droit est exact |
+| **Machine learning** (XGBoost + SHAP) | Probabilité qu'un chef tienne devant le juge, tri du stock, conciliation | Prédiction mesurable et explicable |
+| **IA générative** (LLM + RAG) | Lecture des photos, explications FR/tounsi, assistant, rédaction, avis, aide à la messagerie | Langage naturel ancré dans les articles |
 
-### Passerelle LLM (`llm.py`)
+- **Passerelle LLM** : OpenAI `gpt-5.4-mini` en principal, Gemini Flash en secours automatique, Claude en option ; sorties structurées ; disjoncteur ; cache disque (pseudonymisé) ; mode hors ligne.
+- **RAG hybride** : 305 articles ; BM25 (mots exacts) + embeddings `text-embedding-3-small` (sens), fusionnés. Exemple mesuré : « chhal 3andi wa9t bech njeweb 3al notification » → article 43 du CDPF en premier (BM25 seul : article 27).
+- **Anti-hallucination** : numéros d'articles injectés dans les faits ; le modèle ne cite que ceux-là.
 
-- **Fournisseur principal** : OpenAI `gpt-5.4-mini`, sorties structurées (Pydantic), `reasoning_effort=low`.
-- **Secours automatique** : Google Gemini Flash (modèle le plus récent détecté, puis `gemini-3.5-flash`, `gemini-flash-latest`, `gemini-2.5-flash`), avec une nouvelle tentative après 2 s.
-- **Option** : Claude (Anthropic).
-- **Disjoncteur** par fournisseur : un fournisseur en erreur est écarté, sans bloquer l'application.
-- **Cache disque** (`data/cache/`) : une même question ne coûte qu'un appel.
-- **Mode hors ligne** : sans clé, tout fonctionne avec les règles, le modèle ML et des gabarits.
-- **Contrôle du tounsi** : les réponses en tounsi doivent être en lettres latines (arabizi) ; sinon réécriture automatique, puis translittération de secours.
-- **Anti-hallucination** : les numéros d'articles exacts sont injectés dans les faits ; le modèle a l'ordre de ne citer que ceux-là.
-
-### Modèle de prédiction
-
-- XGBoost, 3 classes par chef, 26 variables, 300 arbres de profondeur 4.
-- Découpage par dossier (GroupShuffleSplit), pour éviter toute fuite entre les chefs d'un même dossier.
-- Résultats sur 625 dossiers de test (1 459 chefs), voir [`models/metrics.json`](../models/metrics.json) :
-
-| Mesure | Valeur |
+| Mesure (625 dossiers de test) | Valeur |
 |---|---|
 | AUC « chef maintenu » | **0,84** |
-| AUC « dossier recouvré à 50 % ou plus » | **0,82** |
-| Exactitude 3 classes | 0,675 |
-| Erreur moyenne sur le taux de recouvrement | 0,171 |
-| Tri JISER vs ancienneté (capacité 20 %) | **+276 %** (107,3 MDT contre 28,5 MDT) |
-| Tri JISER vs plus gros montants | +2,4 % |
+| AUC « dossier recouvré ≥ 50 % » | **0,82** |
+| Tri JISER vs ancienneté (capacité 20 %) | **+276 %** |
 
 ---
 
-## 5. Données
+## 7. Confidentialité des données
 
-| Jeu | Emplacement | Source |
+Détails et correspondance avec la loi 2004-63 : **[CONFIDENTIALITE.md](CONFIDENTIALITE.md)**.
+
+| Mécanisme | Où | Effet |
 |---|---|---|
-| **CDPF, édition officielle 2024** (154 articles) | `data/legal/cdpf.json` | PDF officiel (jibaya.tn), importé par `scripts/import_cdpf_officiel.py` ; 10 articles complétés depuis Jurisite, marqués « à vérifier ». |
-| Code de la TVA (27 articles), Code de l'IRPP et de l'IS (114 articles) | `data/legal/ctva.json`, `data/legal/cirppis.json` | Jurisite Tunisie (`scripts/scrape_legal.py`). |
-| **Indicateurs officiels** | `data/real/indicateurs_officiels.json` | Ministère des Finances, Rapport annuel de performance 2020, mission « Finances » (gbo.tn) ; loi de finances 2026 pour les recettes fiscales. |
-| Dossiers de contentieux (2 822) | `data/synthetic/dossiers.json` | Générés par `scripts/generate_synthetic.py`, **calibrés sur les chiffres officiels**. |
-| PDF de démonstration | `data/synthetic/samples/` | Notifications fictives (Sfax, Monastir). |
-
-**Pourquoi des dossiers synthétiques ?** Les dossiers réels de contribuables sont couverts par le secret fiscal et la loi organique 2004-63 sur les données personnelles ; ils ne sont pas publics. JISER utilise donc :
-
-1. les **vrais chiffres agrégés** publiés par le ministère des Finances, affichés tels quels dans le tableau de bord ;
-2. des dossiers simulés **calibrés** pour reproduire la distribution officielle des jugements de 2020 : 51,5 % confirmés, 33,9 % révisés ou conciliés, 14,5 % annulés (simulation : 51,9 / 33,6 / 14,5 %). Taux de recouvrement simulé : 70 %, contre 71,8 % de montants confirmés en première instance (officiel 2020).
-
-Chiffres officiels clés (RAP 2020) : 5 059 affaires enrôlées en 2020 contre 1 139 jugées, soit **près de 3 900 dossiers de plus dans le stock chaque année** ; durée moyenne d'une vérification : 199 jours.
+| Chiffrement au repos (Fernet) | `db.py`, `securite.py` | Analyses, réponses, messages, pièces, justificatifs illisibles en base |
+| Pseudonymisation | `llm.py` → `securite.masquer` | Aucun nom, matricule, e-mail, téléphone, RIB, CIN envoyé à l'IA ; jetons restaurés côté serveur, y compris en streaming |
+| Consentement IA | `deps.compte` → contexte | Consentement retiré : l'IA générative est coupée pour cet utilisateur, règles et ML seulement |
+| k-anonymat | `pilotage.national` | Groupes < 5 dossiers masqués pour le ministre |
+| Journal des accès | `deps.journaliser_acces` | L'entreprise voit chaque consultation de ses dossiers (rôle, centre, date) |
+| Export, effacement | `routers/confidentialite.py` | Droit d'accès (JSON) et droit à l'effacement |
+| E-mails sans contenu | `messagerie.envoyer` | Une alerte de message ne contient jamais le texte |
 
 ---
 
-## 6. Base de données (Supabase)
-
-Schéma : [`supabase/schema.sql`](../supabase/schema.sql). PostgreSQL géré par Supabase.
-
-| Table | Contenu |
-|---|---|
-| `utilisateurs` | Profil, rôle, détails (raison sociale, matricule fiscal…), consentements, dates. |
-| `otp_codes` | Code haché (SHA-256 salé), expiration, essais, dernier envoi. |
-| `sessions` | Jeton haché, rôle, expiration. |
-| `analyses` | Analyses de notifications de chaque entreprise, date limite de réponse. |
-| `reponses` | Brouillons de réponse générés. |
-| `journal` | Journal d'audit : action, cible, recommandation, mode (IA / modèle / humain), décision humaine, utilisateur. |
-| `dossiers` | Stock de dossiers de l'administration. |
-| `favoris` | Articles, réponses et dossiers mis en favori. |
-
-- **Row Level Security activée sans aucune politique publique** : seule l'API, avec la clé de service côté serveur, lit et écrit.
-- Sans Supabase, `MemoryRepo` prend le relais (données perdues au redémarrage).
-
----
-
-## 7. Authentification et sécurité
+## 8. Messagerie en temps réel
 
 ```mermaid
 sequenceDiagram
-    participant U as Utilisateur
-    participant A as API
-    participant N as n8n (Gmail)
-    participant D as Supabase
-    U->>A: e-mail + intention (inscription / connexion / admin)
-    A->>D: code haché, expire dans 5 min
-    A->>N: webhook signé (X-Jiser-Secret)
-    N-->>U: e-mail « Votre code de connexion JISER »
-    U->>A: code à 6 chiffres
-    A->>D: vérifie (5 essais max, usage unique)
-    A-->>U: jeton de session (8 h)
+    participant E as Entreprise
+    participant API as API + Hub WebSocket
+    participant A as Agent affecté
+    E->>API: ouvrir (analyse) → conversation liée au dossier de même référence
+    E->>API: WS auth (jeton dans le 1er message, jamais dans l'URL)
+    A->>API: WS auth → canal de son centre
+    E->>API: POST message (+ pièce jointe)
+    API->>API: chiffrement, journal
+    API-->>A: événement « message » (instantané)
+    A->>API: GET conversation → messages marqués lus
+    API-->>E: événement « lu » (✓✓)
+    A->>API: IA : résumer · suggérer une réponse · pièces manquantes
 ```
 
-| Mesure | Détail |
+- **Canaux** : `conv:<id>`, `zone:<gouvernorat>` (boîte de réception du centre), `user:<id>`.
+- **Accès** : l'entreprise ; l'agent affecté (ou tout agent du centre si non affecté) ; le chef de centre. Ni le ministre ni l'administrateur plateforme.
+- **Indicateurs** : « en train d'écrire », accusés de lecture, compteur de non-lus.
+- **Hors ligne** : si l'entreprise n'est pas connectée, un e-mail l'avertit, sans le contenu.
+
+---
+
+## 9. Veille juridique automatisée
+
+Code : [`services/veille.py`](../backend/app/services/veille.py). Déclenchement : planificateur interne hebdomadaire, workflow n8n (lundi 6 h, `POST /api/n8n/veille`), ou bouton dans l'espace administrateur.
+
+```mermaid
+flowchart LR
+    C[1. Collecte<br/>jibaya.tn · Jurisite] --> D[2. Détection<br/>empreinte SHA-256]
+    D -->|inchangé| X[Fin]
+    D -->|modifié| P[3. Découpage<br/>article par article]
+    P --> CMP[4. Comparaison<br/>ajout · modification · abrogation]
+    CMP --> Q[5. File « à valider »<br/>juriste]
+    Q -->|publier| PUB[6. Publication<br/>ancienne version archivée]
+    PUB --> EMB[7. Embeddings<br/>recalculés]
+    Q -->|rejeter| X
+    CMP --> R[Rapport e-mail<br/>n8n]
+```
+
+- **Rien n'atteint l'IA sans validation humaine.**
+- **Versions** : `data/legal/versions/<code>.json` garde chaque texte remplacé, avec ses dates de validité.
+- **Simulation** : un changement fictif, clairement marqué, démontre le circuit ; le valider ne modifie jamais la base.
+- **Première exécution réelle** : CDPF identique (154 articles), Code IRPP/IS identique (114), **Code de la TVA : 7 articles différents** de la base, placés en attente de validation.
+
+---
+
+## 10. Données
+
+| Jeu | Emplacement | Source |
+|---|---|---|
+| CDPF, édition officielle 2024 (154 articles + 10 complétés) | `data/legal/cdpf.json` | PDF officiel (jibaya.tn) |
+| Code de la TVA (27), Code de l'IRPP et de l'IS (114) | `data/legal/ctva.json`, `cirppis.json` | Jurisite Tunisie |
+| Embeddings des 305 articles | `data/legal/embeddings.npz` | OpenAI `text-embedding-3-small` |
+| État de la veille, versions | `data/legal/veille/`, `data/legal/versions/` | Pipeline de veille |
+| Indicateurs officiels | `data/real/indicateurs_officiels.json` | Ministère des Finances, RAP 2020 ; LF 2026 |
+| 2 822 dossiers | `data/synthetic/dossiers.json` | Synthétiques, **calibrés sur les jugements officiels 2020** |
+
+Aucune donnée réelle de contribuable (secret fiscal, loi 2004-63).
+
+---
+
+## 11. Base de données (Supabase)
+
+Schéma : [`supabase/schema.sql`](../supabase/schema.sql) puis [`supabase/migration_002_roles_messagerie_confidentialite.sql`](../supabase/migration_002_roles_messagerie_confidentialite.sql).
+
+| Table | Contenu |
 |---|---|
-| Code à usage unique | 6 chiffres, valable 5 minutes, 5 essais, un renvoi toutes les 30 secondes ; seul un hachage salé est stocké. |
-| Session | Jeton aléatoire de 256 bits, stocké haché, valable 8 heures, effacé à la fermeture de l'onglet. |
-| Rôles | Chaque route vérifie le rôle : `entreprise`, `contentieux`, `admin`. |
-| Admin | Aucun lien dans l'interface ; accès par `/plateforme` uniquement pour les e-mails de `ADMIN_EMAILS`. |
-| n8n | Chaque webhook exige le secret partagé `N8N_SHARED_SECRET` (en-tête `X-Jiser-Secret`). |
-| Secrets | Uniquement dans `.env` (ignoré par git) ; aucune clé côté navigateur. |
-| Données | Aucune donnée réelle de contribuable ; consentement explicite (loi 2004-63) à l'inscription. |
-| Traçabilité | Chaque recommandation IA et chaque décision humaine est inscrite au journal. |
+| `utilisateurs` | Profil, rôle, **statut** (`en_attente`, `actif`, `refuse`, `suspendu`), **vérification** (pré-contrôles, décision, motif), consentements |
+| `otp_codes`, `sessions` | Codes et jetons, stockés hachés |
+| `analyses`, `reponses` | Analyses et brouillons (**chiffrés**) |
+| `pieces_justificatives` | Justificatifs d'identité (**chiffrés**) |
+| `affectations` | Dossier → agent, par le chef de centre |
+| `conciliations` | Propositions soumises au chef de centre, décision |
+| `conversations`, `messages` | Messagerie (contenus et pièces **chiffrés**), accusés de lecture |
+| `acces` | Journal des consultations (rôle, centre, action) montré à l'entreprise |
+| `journal` | Audit de chaque recommandation IA et décision humaine |
+| `dossiers`, `favoris` | Stock de l'administration, favoris |
+
+Row Level Security activée partout, **aucune politique publique** : seule l'API (clé de service, côté serveur) lit et écrit. Les suppressions de compte se propagent en cascade.
 
 ---
 
-## 8. Automatisations e-mail (n8n)
+## 12. Automatisations (n8n)
 
-Workflows générés par [`scripts/build_n8n_workflows.py`](../scripts/build_n8n_workflows.py) (`--cloud` pour n8n Cloud avec le nœud Gmail).
+| Workflow | Déclencheur | Rôle |
+|---|---|---|
+| `jiser-otp` | API | Code de connexion |
+| `jiser-bienvenue` | API (compte validé) | Bienvenue et étapes selon le rôle |
+| `jiser-rappel` | API | Échéance enregistrée, rappels J-15, J-7, J-3, J-1 |
+| `jiser-notification` | API | Demande reçue, compte validé ou refusé, nouveau message (sans contenu), rapport de veille |
+| `jiser-veille` | Chaque lundi 6 h | Lance le pipeline de veille (`POST /api/n8n/veille`, secret requis) |
 
-| Workflow | Webhook | Déclencheur | E-mail |
-|---|---|---|---|
-| Code OTP | `jiser-otp` | Demande de code | « Votre code de connexion JISER » |
-| Bienvenue | `jiser-bienvenue` | Compte activé | Étapes suivantes selon le profil |
-| Rappel d'échéance | `jiser-rappel` | Analyse enregistrée, puis J-15, J-7, J-3, J-1 | Date limite et lien vers la réponse |
-
-Chaque workflow : Webhook → vérification du secret → envoi Gmail → réponse 200 (ou 401 si le secret est faux).
-
-Délivrabilité : sujets sans emoji, pas de code dans le sujet, mise en page texte, pas de lien `localhost`. En production : domaine propre avec SPF, DKIM et DMARC.
+Chaque webhook vérifie `X-Jiser-Secret`. Générés par [`scripts/build_n8n_workflows.py`](../scripts/build_n8n_workflows.py).
 
 ---
 
-## 9. Frontend (React)
-
-Code : [`frontend/src/`](../frontend/src/). React 19, TypeScript, Vite 8, Tailwind CSS v4, Recharts, lucide-react, react-router.
+## 13. Frontend (React)
 
 | Dossier / fichier | Contenu |
 |---|---|
-| `api.ts` | Types, appels à l'API (jeton, délai de 90 s, déconnexion sur 401), session. |
-| `App.tsx` | En-tête public, routes, contrôle d'accès (`AccessGate`). |
-| `components/` | `AppShell` (barre latérale), `AnalyseView`, `AssistantChat` (streaming), `CameraScanner`, `ExportMenu` (PDF, partage, e-mail), `Favoris`, `ListenButton` (voix), `NotificationBell`, `Onboarding`, `OtpCode`, `ui`. |
-| `pages/Home.tsx` | Page d'accueil. |
-| `pages/entreprise/` | Tableau de bord, Analyser (fichier, **prendre une photo**, scanner), Mes dossiers, Détail dossier, Assistant, Mes réponses. |
-| `pages/administration/` | Tableau de bord (chiffres officiels, **simulateur d'impact**), Stock, Dossier, Conciliations, Contrôle qualité, Copilote. |
-| `pages/AdminPlateforme.tsx` | Vue d'ensemble (pouls de la plateforme), Utilisateurs, Journal IA, Base juridique. |
-
-Identité visuelle : bleu marine `#0b2f5b`, or `#c29a2e`, bleu pont `#2f74c0`, polices Poppins (titres) et Inter (texte). Responsive : utilisable sur téléphone.
+| `api.ts` | Types et clients : `api`, `authApi`, `comptesApi`, `pilotageApi`, `messagerieApi`, `confidentialiteApi`, `veilleApi` |
+| `App.tsx` | Routes ; un compte non actif n'atteint que `/compte` |
+| `components/Onboarding.tsx` | Profil → **rôle administration** → identité → OTP → métier → **justificatifs** → consentements → « demande envoyée » |
+| `components/CompteEnAttente.tsx` | Suivi de la vérification, rafraîchi toutes les 20 s |
+| `components/Messagerie.tsx` | Messagerie partagée, hook `useTempsReel` (WebSocket, reconnexion) |
+| `components/DemandesAcces.tsx` | File de validation (admin et chef de centre) |
+| `pages/Administration.tsx` | Menu et routes **selon le rôle** |
+| `pages/administration/Pilotage.tsx` | Ministre : temps réel (10 s), filtres, k-anonymat, chiffres officiels, simulateur |
+| `pages/administration/Equipe.tsx` | Chef de centre : conciliations à valider, équipe, affectations, comptes d'agents |
+| `pages/entreprise/Confidentialite.tsx` | Aperçu de ce que voit l'IA, accès, consentements, export, effacement, registre |
+| `pages/plateforme/Veille.tsx` | Pipeline, sources, changements (différences mot à mot), historique, embeddings |
 
 ---
 
-## 10. API : référence des routes
+## 14. API : référence des routes
 
-Documentation interactive : `http://localhost:8000/docs` (Swagger).
+Documentation interactive : `http://localhost:8000/docs`.
 
 | Groupe | Routes |
 |---|---|
-| Public | `GET /api/status` · `GET /api/public/chiffres` · `GET /api/donnees-officielles` · `GET /api/exemples` |
-| Authentification | `POST /api/auth/otp/demander` · `POST /api/auth/otp/verifier` · `POST /api/auth/profil` · `GET /api/auth/moi` · `POST /api/auth/deconnexion` |
-| Entreprise | `POST /api/contribuable/analyser` · `GET /api/contribuable/analyses` · `GET /api/contribuable/analyses/{id}` (+ `/pdf`) · `POST /api/contribuable/brouillon` · `GET /api/contribuable/reponses` · `POST /api/contribuable/assistant` (+ `/stream`) |
-| Commun | `POST /api/voix` · `GET/POST/DELETE /api/favoris` · `GET /api/notifications` |
-| Administration | `GET /api/admin/dossiers` · `GET /api/admin/dossiers/{id}` (+ `/avis-ia`, `/pdf`) · `POST /api/admin/dossiers/{id}/decision` · `POST /api/admin/controle-qualite` · `POST /api/admin/ameliorer-notification` · `GET /api/admin/tableau-de-bord` · `GET /api/admin/synthese-ia` · `GET /api/admin/conciliations` |
-| Admin plateforme | `GET /api/plateforme/utilisateurs` · `GET /api/plateforme/journal` · `GET /api/plateforme/base-juridique` · `GET /api/plateforme/recherche-juridique` · `GET /api/plateforme/systeme` · `POST /api/plateforme/rappels` |
-| n8n | `GET /api/n8n/echeances` (secret requis) |
+| Public | `GET /api/status` · `/api/public/chiffres` · `/api/public/referentiel` · `/api/donnees-officielles` |
+| Authentification | `POST /api/auth/otp/demander` · `/otp/verifier` · `/profil` · `/deconnexion` · `GET /api/auth/moi` |
+| Comptes | `POST /api/comptes/pieces` · `/soumettre` · `GET /statut` · `/demandes` · `/pieces/{id}` · `POST /demandes/{id}/decision` |
+| Entreprise | `/api/contribuable/analyser` · `/analyses` · `/analyses/{id}` (+ `/pdf`) · `/brouillon` · `/reponses` · `/assistant` (+ `/stream`) |
+| Messagerie | `GET/POST /api/messagerie/conversations` · `GET /conversations/{id}` · `POST /conversations/{id}/messages` · `/conversations/{id}/ia` · `GET /messages/{id}/piece` · `/dossier/{id}` · **WS `/api/messagerie/ws`** |
+| Confidentialité | `GET /api/confidentialite/acces` · `/export` · `/apercu-ia` · `/registre` · `PUT /consentements` · `POST /suppression` |
+| Administration | `/api/admin/dossiers` (+ `mes=true`) · `/dossiers/{id}` (+ `/avis-ia`, `/pdf`, `/decision`) · `/controle-qualite` · `/ameliorer-notification` · `/tableau-de-bord` · `/synthese-ia` · `/conciliations` |
+| Pilotage | `GET /api/pilotage/national` · `/equipe` · `/conciliations-a-valider` · `POST /affectations` · `/conciliations/{id}/decision` |
+| Plateforme | `/api/plateforme/utilisateurs` · `/journal` · `/base-juridique` · `/recherche-juridique` · `/systeme` · `/rappels` · `/veille` (+ `/lancer`, `/simuler`, `/changements/{id}/decision`, `/embeddings`, `/historique/{id}`) |
+| n8n | `GET /api/n8n/echeances` · `POST /api/n8n/veille` (secret requis) |
 
 ---
 
-## 11. Configuration et lancement
-
-**Prérequis** : Python 3.11+, Node.js 20+, un compte OpenAI (ou Gemini gratuit), un projet Supabase, un compte n8n (Cloud ou auto-hébergé) avec Gmail.
-
-Variables d'environnement (`.env`, modèle dans [`.env.example`](../.env.example)) :
+## 15. Configuration, lancement et tests
 
 | Variable | Rôle |
 |---|---|
-| `OPENAI_API_KEY`, `OPENAI_MODEL` | IA principale (défaut `gpt-5.4-mini`) et synthèse vocale |
-| `GEMINI_API_KEY` | IA de secours |
-| `ANTHROPIC_API_KEY` | Claude (optionnel) |
-| `JISER_LLM_PROVIDER` | `openai`, `gemini`, `anthropic` ou automatique |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `JISER_LLM_PROVIDER` | IA, embeddings, voix |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Base de données |
-| `N8N_OTP_WEBHOOK_URL`, `N8N_WELCOME_WEBHOOK_URL`, `N8N_RAPPEL_WEBHOOK_URL` | Webhooks e-mail |
-| `N8N_SHARED_SECRET` | Secret partagé API ↔ n8n |
-| `ADMIN_EMAILS` | E-mails autorisés sur `/plateforme` |
-| `APP_URL` | URL publique de l'application (liens dans les e-mails) |
+| `N8N_OTP_WEBHOOK_URL`, `N8N_WELCOME_WEBHOOK_URL`, `N8N_RAPPEL_WEBHOOK_URL`, `N8N_NOTIF_WEBHOOK_URL`, `N8N_SHARED_SECRET` | E-mails et secret partagé |
+| `JISER_DATA_KEY` | Clé de chiffrement (sinon dérivée de la clé Supabase) |
+| `ADMIN_EMAILS`, `OFFICIAL_EMAIL_DOMAINS`, `SEUIL_VALIDATION_CONCILIATION`, `APP_URL` | Accès et règles de gestion |
 
 ```bash
-# Backend
-python -m venv .venv
-.venv/Scripts/python -m pip install -r backend/requirements.txt      # Windows (Linux/Mac : .venv/bin/python)
-cp .env.example .env                                                  # puis remplir
-.venv/Scripts/python -m uvicorn app.main:app --app-dir backend --port 8000
-
-# Frontend
-cd frontend && npm install && npm run dev -- --host                   # http://localhost:5173
+.venv/Scripts/python -m uvicorn app.main:app --app-dir backend --port 8000   # API
+cd frontend && npm run dev -- --host                                         # interface
+.venv/Scripts/python -m pytest tests -q                                      # tests de sécurité
 ```
 
-Supabase : SQL Editor → exécuter `supabase/schema.sql`, puis `python scripts/seed_supabase.py`.
-n8n : `python scripts/build_n8n_workflows.py --cloud`, importer les fichiers de `n8n/local/`, choisir l'identifiant Gmail sur chaque nœud d'envoi, publier.
+**Tests** ([tests/test_securite_acces.py](../tests/test_securite_acces.py), base en mémoire, sans e-mail ni IA externe) :
+- isolation des espaces ;
+- périmètre du centre ;
+- validation hiérarchique des comptes ;
+- affectation et validation des conciliations ;
+- messagerie, avec son chiffrement ;
+- pseudonymisation ;
+- retrait du consentement ;
+- simulation de veille sans effet sur la base ;
+- droit à l'effacement.
 
-Test sur téléphone : même réseau que le PC, ouvrir l'adresse « Network » affichée par Vite (autoriser le port 5173 dans le pare-feu Windows).
-
----
-
-## 12. Reproduire les données et le modèle
-
-```bash
-.venv/Scripts/python scripts/import_cdpf_officiel.py   # CDPF officiel 2024 -> data/legal/cdpf.json
-.venv/Scripts/python scripts/scrape_legal.py           # Codes TVA et IRPP/IS
-.venv/Scripts/python scripts/generate_synthetic.py     # dossiers calibrés + PDF de démo
-.venv/Scripts/python scripts/calibrate_synthetic.py    # (optionnel) recherche des paramètres de calibration
-.venv/Scripts/python scripts/train_model.py            # modèle + models/metrics.json
-.venv/Scripts/python scripts/seed_supabase.py          # charge les dossiers dans Supabase
-.venv/Scripts/python scripts/build_note.py             # note de synthèse PDF (2 pages)
-```
+Reproduire les données : `import_cdpf_officiel.py`, `scrape_legal.py`, `generate_synthetic.py`, `train_model.py`, `seed_supabase.py`, `build_note.py`, `build_n8n_workflows.py`.
 
 ---
 
-## 13. Ce qu'il faut pour la mise en production
+## 16. Ce qu'il faut pour la mise en production
 
-| Besoin | Pourquoi | Solution proposée |
-|---|---|---|
-| **Historique réel des dossiers (DGI)** | Réentraîner le modèle sur des issues réelles | Convention avec la DGI, anonymisation, hébergement en Tunisie |
-| **Hébergement souverain** | Données fiscales sensibles | Cloud national (ex. Centre national de l'informatique) ou serveurs du ministère |
-| **LLM hébergé localement** | Ne pas envoyer de données fiscales à l'étranger | Modèle ouvert (Llama, Mistral, Qwen) servi en interne ; la passerelle `llm.py` est déjà multi-fournisseurs |
-| **Domaine et e-mails** | Délivrabilité, confiance | Domaine officiel avec SPF, DKIM, DMARC ; serveur d'envoi transactionnel |
-| **HTTPS** | Sécurité, caméra sur téléphone | Certificat TLS, reverse proxy (Nginx / Caddy) |
-| **Validation des comptes administration** | Éviter les faux agents | Validation par un administrateur ou connexion à l'annuaire de l'administration |
-| **Mise à jour juridique** | Les lois de finances changent chaque année | Import annuel du CDPF et des codes, relecture par un juriste |
-| **Supervision** | Disponibilité, coûts IA | Journaux centralisés, alertes, suivi des appels LLM |
-| **Revue juridique et DPO** | Conformité loi 2004-63, INPDP | Déclaration à l'INPDP, analyse d'impact |
+| Besoin | Solution proposée |
+|---|---|
+| Historique réel des dossiers (DGI) | Convention, anonymisation, réentraînement du modèle |
+| Vérification d'identité automatique | Connexion au registre national des entreprises (RNE) et à l'annuaire de l'administration |
+| Hébergement souverain | Cloud national ou serveurs du ministère |
+| LLM hébergé localement | Modèle ouvert servi en interne (la passerelle est déjà multi-fournisseurs) |
+| Clés | Coffre-fort de secrets, rotation de `JISER_DATA_KEY` |
+| Domaine, HTTPS, e-mails | Domaine officiel (SPF, DKIM, DMARC), TLS, reverse proxy ; API publique pour les workflows n8n |
+| Veille élargie | Notes communes de la DGI, JORT, lois de finances ; pgvector pour les embeddings |
+| Conformité | Déclaration INPDP, analyse d'impact, purge selon le registre des traitements |
+| Temps réel à l'échelle | Hub WebSocket partagé (Redis pub/sub) pour plusieurs serveurs |
 
 ---
 
-## 14. Limites connues
+## 17. Limites connues
 
-- Le modèle est entraîné sur des données simulées (calibrées sur les statistiques officielles) : il doit être réentraîné sur l'historique réel.
-- Les chiffres officiels les plus détaillés datent de 2020 (dernier rapport de performance publié avec ce niveau de détail).
-- 10 articles du CDPF viennent de Jurisite et sont marqués « à vérifier ».
-- La jurisprudence n'est pas encore intégrée.
-- L'IA recommande et explique ; elle ne remplace ni l'avocat, ni le conseiller fiscal, ni l'agent.
+- Modèle entraîné sur des données simulées calibrées ; chiffres officiels détaillés les plus récents : 2020.
+- La vérification des justificatifs est locale (PDF) ; les images sont contrôlées visuellement par le validateur.
+- Le hub WebSocket vit dans un seul processus (suffisant pour un centre ; Redis au-delà).
+- Jurisprudence non intégrée.
+- L'IA ne remplace ni l'avocat, ni le conseiller fiscal, ni l'agent.

@@ -25,6 +25,7 @@ from pydantic import BaseModel, ValidationError
 
 from ..config import (ANTHROPIC_API_KEY, ANTHROPIC_MODEL, CACHE_DIR, GEMINI_API_KEY, GEMINI_MODEL,
                       LLM_PROVIDER, OFFLINE, OPENAI_API_KEY, OPENAI_MODEL)
+from . import securite
 
 log = logging.getLogger("jiser.llm")
 T = TypeVar("T", bound=BaseModel)
@@ -37,7 +38,9 @@ SYSTEM_PROMPT = (
     "pour un chef d'entreprise qui n'est pas juriste. Quand on te demande le tunisien (derja), écris en "
     "derja tunisienne UNIQUEMENT en caractères latins (arabizi : 3, 7, 9, 5 pour ع ح ق خ ; ex. « lazmek tjeweb "
     "9bal 45 jour ») — aucun caractère arabe — en gardant les termes juridiques en français. "
-    "Tu rappelles qu'un professionnel doit relire avant toute décision."
+    "Tu rappelles qu'un professionnel doit relire avant toute décision. Les jetons entre crochets "
+    "(ex. [ENTREPRISE_1], [MATRICULE_1], [PERSONNE_1]) remplacent des données confidentielles : "
+    "reprends-les exactement tels quels, sans les commenter."
 )
 
 
@@ -292,7 +295,16 @@ def parse(kind: str, prompt: list[dict] | str, schema: type[T], max_tokens: int 
 def _parse(kind: str, prompt: list[dict] | str, schema: type[T], max_tokens: int, cache: bool) -> T:
     if not available():
         raise LLMUnavailable(status()["raison"])
+    if not securite.ia_autorisee():
+        raise LLMUnavailable("IA générative désactivée par l'utilisateur (consentement retiré)")
     content = prompt if isinstance(prompt, list) else [{"type": "text", "text": prompt}]
+    # pseudonymisation: identifiers never leave the server; the cache only holds masked text
+    table: dict[str, str] = {}
+    content = [{**b, "text": securite.masquer(b["text"], table)} if b["type"] == "text" else b for b in content]
+    return securite.restaurer_modele(_parse_masque(kind, content, schema, max_tokens, cache), table)
+
+
+def _parse_masque(kind: str, content: list[dict], schema: type[T], max_tokens: int, cache: bool) -> T:
     cacheable = cache and all(b["type"] == "text" for b in content)
     path = _cache_path(kind, {"c": content, "s": schema.__name__}) if cacheable else None
     if path and path.exists():
@@ -336,6 +348,10 @@ def stream_text(prompt: str, max_tokens: int = 2500):
     first chunk if streaming is not possible, so the caller can fall back to a normal answer."""
     if OFFLINE or LLM_PROVIDER != "openai" or "openai" in _disabled:
         raise LLMUnavailable("streaming indisponible")
+    if not securite.ia_autorisee():
+        raise LLMUnavailable("IA générative désactivée par l'utilisateur (consentement retiré)")
+    table: dict[str, str] = {}
+    prompt = securite.masquer(prompt, table)
     import openai
     global _openai_client
     if _openai_client is None:
@@ -350,7 +366,13 @@ def stream_text(prompt: str, max_tokens: int = 2500):
         raise LLMUnavailable(f"erreur OpenAI : {e}") from e
 
     def gen():
+        restaurateur = securite.RestaurateurFlux(table)
         for chunk in stream:
             if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
+                out = restaurateur.pousser(chunk.choices[0].delta.content)
+                if out:
+                    yield out
+        reste = restaurateur.vider()
+        if reste:
+            yield reste
     return gen()

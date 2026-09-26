@@ -1,23 +1,25 @@
 import clsx from 'clsx'
-import { Activity, BellRing, BookOpen, BrainCircuit, Handshake, CheckCircle2, Database, Mail, ScrollText, Search, Server, Sparkles, Users, XCircle } from 'lucide-react'
+import { Activity, BellRing, BookOpen, Radar, UserCheck, BrainCircuit, Handshake, CheckCircle2, Database, Mail, ScrollText, Search, Server, Sparkles, Users, XCircle } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Route, Routes } from 'react-router-dom'
-import { api, articleLabel, frDate, type ArticleRef, type Session } from '../api'
+import { api, articleLabel, frDate, ROLE_LABELS, type ArticleRef, type Session } from '../api'
+import DemandesAcces from '../components/DemandesAcces'
+import Veille from './plateforme/Veille'
 import AppShell, { type NavItem } from '../components/AppShell'
 import { LoginForm } from '../components/Login'
 import { Badge, Button, Card, SectionTitle, Spinner } from '../components/ui'
 
 const NAV: NavItem[] = [
   { to: '/plateforme', label: 'Vue d\'ensemble', icon: Server, end: true },
+  { to: '/plateforme/demandes', label: "Demandes d'accès", icon: UserCheck },
   { to: '/plateforme/utilisateurs', label: 'Utilisateurs', icon: Users },
   { to: '/plateforme/journal', label: 'Journal IA', icon: ScrollText },
   { to: '/plateforme/base-juridique', label: 'Base juridique', icon: BookOpen },
+  { to: '/plateforme/veille', label: 'Veille juridique', icon: Radar },
 ]
 
-const ROLE_LABEL: Record<string, string> = {
-  entreprise: 'Entreprise', conseil: 'Conseil fiscal', verificateur: 'Vérificateur', contentieux: 'Contentieux', admin: 'Administrateur',
-}
+const ROLE_LABEL = ROLE_LABELS
 
 function Title({ title, sub }: { title: string; sub: string }) {
   return <div><h1 className="text-3xl font-bold text-navy-900">{title}</h1><p className="mt-1 text-slate-500">{sub}</p></div>
@@ -27,6 +29,9 @@ const ACTION_LABEL: Record<string, string> = {
   analyse_notification: 'Analyses de notification', brouillon_reponse: 'Brouillons de réponse', assistant: "Questions à l'assistant",
   avis_ia: 'Avis IA sur dossier', decision_conciliation: 'Décisions de conciliation', amelioration_motivation: 'Motivations renforcées',
   controle_qualite: 'Contrôles qualité', synthese_stock: 'Synthèses du stock', rappel_email: 'Rappels e-mail envoyés', otp_verifie: 'Connexions vérifiées (OTP)', inscription: 'Inscriptions',
+  message: 'Messages échangés', demande_acces: "Demandes d'accès", decision_acces: "Décisions d'accès", affectation: 'Affectations de dossiers',
+  proposition_conciliation: 'Conciliations soumises au chef', veille_juridique: 'Décisions de veille juridique', avis_juridique: 'Avis juridiques IA',
+  score_solidite: 'Scores de solidité calculés', suppression_compte: 'Comptes supprimés (droit à l\'effacement)',
 }
 const PIE = ['#0b2f5b', '#c29a2e', '#2f74c0', '#10b981', '#e11d48']
 
@@ -134,6 +139,8 @@ function Overview() {
     { icon: Database, label: 'Base de données', ok: s.base === 'supabase', detail: s.base === 'supabase' ? 'Supabase (PostgreSQL)' : 'Mémoire locale (Supabase non configuré)' },
     { icon: Mail, label: 'E-mail OTP (n8n)', ok: s.n8n_otp, detail: s.n8n_otp ? 'Webhook configuré' : 'Non configuré : codes dans le journal serveur' },
     { icon: Mail, label: 'E-mail de bienvenue (n8n)', ok: s.n8n_bienvenue, detail: s.n8n_bienvenue ? 'Webhook configuré' : 'Non configuré' },
+    { icon: Mail, label: 'Notifications (n8n)', ok: s.n8n_notifications, detail: s.n8n_notifications ? 'Décisions de compte, alertes de messages, rapport de veille' : 'Non configuré' },
+    { icon: Radar, label: 'Recherche hybride (BM25 + vecteurs)', ok: s.recherche_hybride, detail: s.recherche_hybride ? 'Embeddings des articles calculés' : 'BM25 seul : calculez les embeddings (Veille juridique)' },
     { icon: BellRing, label: 'Rappels d\'échéance (n8n)', ok: s.n8n_rappels, detail: s.n8n_rappels ? 'J-15, J-7, J-3, J-1 · vérifié toutes les 6 h' : 'Non configuré' },
   ]
   return (
@@ -170,7 +177,7 @@ function Utilisateurs() {
         {!users ? <div className="p-5"><Spinner /></div> : users.length === 0 ? <p className="p-5 text-sm text-slate-500">Aucun compte pour le moment.</p> : (
           <table className="w-full text-sm">
             <thead className="whitespace-nowrap bg-slate-50 text-left text-xs uppercase text-slate-500">
-              <tr><th className="px-5 py-2">Nom</th><th className="px-5 py-2">E-mail</th><th className="px-5 py-2">Rôle</th><th className="px-5 py-2">Structure</th><th className="px-5 py-2">Inscription</th><th className="px-5 py-2">Dernière connexion</th></tr>
+              <tr><th className="px-5 py-2">Nom</th><th className="px-5 py-2">E-mail</th><th className="px-5 py-2">Rôle</th><th className="px-5 py-2">Statut</th><th className="px-5 py-2">Structure</th><th className="px-5 py-2">Inscription</th><th className="px-5 py-2">Dernière connexion</th></tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {users.map((u) => (
@@ -178,7 +185,8 @@ function Utilisateurs() {
                   <td className="px-5 py-3 font-medium text-navy-900">{u.prenom} {u.nom}</td>
                   <td className="px-5 py-3 text-slate-600">{u.email}</td>
                   <td className="px-5 py-3"><Badge tone={u.role === 'entreprise' || u.role === 'conseil' ? 'sky' : 'emerald'}>{ROLE_LABEL[u.role] ?? u.role}</Badge></td>
-                  <td className="px-5 py-3 text-slate-600">{String(u.details?.raison_sociale ?? u.details?.cabinet ?? u.details?.structure ?? '—')}</td>
+                  <td className="px-5 py-3"><Badge tone={u.statut === 'actif' ? 'emerald' : u.statut === 'en_attente' ? 'amber' : 'rose'}>{u.statut === 'en_attente' ? 'en attente' : u.statut ?? 'actif'}</Badge></td>
+                  <td className="px-5 py-3 text-slate-600">{String(u.details?.raison_sociale ?? (u.details?.centre ? `CRCI ${String(u.details.centre)}` : u.details?.cabinet ?? u.details?.structure ?? '—'))}</td>
                   <td className="px-5 py-3 text-slate-500">{frDate(u.cree_le)}</td>
                   <td className="px-5 py-3 text-slate-500">{u.derniere_connexion ? frDate(u.derniere_connexion) : '—'}</td>
                 </tr>
@@ -263,6 +271,8 @@ export default function AdminPlateforme({ session }: { session: Session | null }
         <Route path="utilisateurs" element={<Utilisateurs />} />
         <Route path="journal" element={<Journal />} />
         <Route path="base-juridique" element={<BaseJuridique />} />
+        <Route path="demandes" element={<div className="space-y-6"><Title title="Demandes d'accès" sub="Chaque compte est vérifié avant activation : pré-vérification automatique, puis décision humaine sous 24 h." /><DemandesAcces /></div>} />
+        <Route path="veille" element={<Veille />} />
       </Routes>
     </AppShell>
   )

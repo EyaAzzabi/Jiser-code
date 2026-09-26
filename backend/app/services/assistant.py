@@ -55,7 +55,7 @@ def _expand(question: str) -> str:
 def answer(question: str, langue: str = "fr", historique: list[Echange] | None = None, contexte: dict | None = None) -> AssistantAnswer:
     index = get_index()
     query = _expand(question + " " + " ".join(e.texte for e in (historique or [])[-2:] if e.role == "utilisateur"))
-    articles = index.search(query, k=4, codes=["cdpf", "ctva", "cirppis"])
+    articles = index.search(query, k=4, codes=["cdpf", "ctva", "cirppis"], hybride=True)
     if not articles:   # general procedure questions: notification and reply rules
         articles = [a for a in (index.get("cdpf-art-43"), index.get("cdpf-art-44")) if a]
 
@@ -95,7 +95,7 @@ def answer_stream(question: str, langue: str = "fr", historique: list[Echange] |
     """Same answer as `answer`, streamed as events: articles first, then text deltas, then suggestions."""
     index = get_index()
     query = _expand(question + " " + " ".join(e.texte for e in (historique or [])[-2:] if e.role == "utilisateur"))
-    articles = index.search(query, k=4, codes=["cdpf", "ctva", "cirppis"]) or \
+    articles = index.search(query, k=4, codes=["cdpf", "ctva", "cirppis"], hybride=True) or \
         [a for a in (index.get("cdpf-art-43"), index.get("cdpf-art-44")) if a]
     lang = ("Réponds en derja tunisienne en caractères latins uniquement (arabizi, chiffres 3/7/9/5, aucun caractère arabe), "
             "termes juridiques en français." if langue == "derja" else "Réponds en français simple.")

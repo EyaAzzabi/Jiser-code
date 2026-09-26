@@ -1,8 +1,8 @@
 import clsx from 'clsx'
-import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, ImagePlus, MessageCircle, PenLine, ScanLine, Sparkles, Wallet } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, ImagePlus, MessageCircle, MessagesSquare, PenLine, ScanLine, Sparkles, Wallet } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { api, dt, frDate, type Analyse, type AnalyseResume, type Reponse, type Session } from '../../api'
+import { api, dt, frDate, messagerieApi, type Analyse, type AnalyseResume, type Reponse, type Session } from '../../api'
 import AiPanel from '../../components/AiPanel'
 import AnalyseView from '../../components/AnalyseView'
 import AssistantChat from '../../components/AssistantChat'
@@ -212,7 +212,12 @@ export function DossierDetail() {
   const [lettre, setLettre] = useState('')
   const [draftBusy, setDraftBusy] = useState(false)
   const [signataire, setSignataire] = useState('Le Gérant')
+  const navigate = useNavigate()
   useEffect(() => { if (id) api.analyse(id).then(setA).catch((e) => setError(e.message)) }, [id])
+  const ecrire = async () => {
+    if (!id) return
+    try { const c = await messagerieApi.ouvrir(id); navigate(`/entreprise/messagerie/${c.id}`) } catch (e) { setError((e as Error).message) }
+  }
 
   const switchLang = async (l: 'fr' | 'derja') => {
     if (!id || !a || a.langue === l) return
@@ -237,6 +242,9 @@ export function DossierDetail() {
       <div className="space-y-6 2xl:col-span-2">
         <Link to="/entreprise/dossiers" className="text-sm text-slate-500 hover:text-navy-900">← Mes dossiers</Link>
         <AnalyseView a={a} onLangue={switchLang} langueBusy={langBusy} actions={id && <>
+          <button onClick={ecrire} className="flex items-center gap-1.5 rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-white hover:bg-gold-dark">
+            <MessagesSquare size={14} /> Écrire à l'administration
+          </button>
           <StarButton type="dossier" refId={id} tone="dark" titre={`Notification ${a.notification.reference}`}
             extrait={`${a.notification.entreprise.nom} · ${dt(a.montant_total)} · réponse avant le ${frDate(a.date_limite_reponse)}`} lien={`/entreprise/dossiers/${id}`} />
           <ExportMenu tone="dark" url={`/api/contribuable/analyses/${id}/pdf`} filename={`JISER_${a.notification.reference}.pdf`}

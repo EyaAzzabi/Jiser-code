@@ -3,6 +3,9 @@
 1. jiser-otp.json        Webhook -> check secret -> send the OTP e-mail -> respond
 2. jiser-bienvenue.json  Webhook -> check secret -> send the welcome e-mail (account activated) -> respond
 3. jiser-rappels.json    Every day 08:00 -> GET /api/n8n/echeances -> reminder e-mail per reply due within 7 days
+4. jiser-rappel-push.json  Webhook pushed by the API -> deadline reminder e-mail
+5. jiser-notification.json Webhook -> generic e-mail (account decisions, message alerts, legal watch report)
+6. jiser-veille.json       Every Monday 06:00 -> POST /api/n8n/veille (legal watch pipeline)
 
 After import in n8n: set the SMTP credential on the "Envoyer" nodes, replace CHANGE_ME_SECRET with the
 value of N8N_SHARED_SECRET from .env, set the API URL in the reminder workflow, then activate.
@@ -144,6 +147,29 @@ def reminder_push_workflow() -> dict:
     return webhook_flow("JISER · Rappel d'échéance (envoyé par l'API)", "jiser-rappel", send)
 
 
+def notification_workflow() -> dict:
+    """Generic e-mail sent by the API: account decisions, new message alerts (never their text), legal watch report."""
+    b = "$('Webhook').item.json.body"
+    html = page("{{ " + b + ".titre }}", "<p>{{ " + b + ".message }}</p>" + button(b + ".lien", "Ouvrir JISER") +
+                "<p>Cordialement,<br>L'équipe JISER</p>")
+    send = email("Envoyer la notification", "={{ " + b + ".email }}", "={{ " + b + ".sujet }}", "=" + html, (0, 0))
+    return webhook_flow("JISER · Notifications (comptes, messages, veille)", "jiser-notification", send)
+
+
+def veille_workflow() -> dict:
+    """Every Monday 06:00: ask the API to run the legal watch pipeline (needs a public API URL)."""
+    trigger = node("Chaque lundi à 6h", "n8n-nodes-base.scheduleTrigger", 1.2,
+                   {"rule": {"interval": [{"field": "cronExpression", "expression": "0 6 * * 1"}]}}, (0, 0))
+    call = node("Lancer la veille juridique", "n8n-nodes-base.httpRequest", 4.2, {
+        "method": "POST", "url": f"{API}/api/n8n/veille", "sendHeaders": True,
+        "headerParameters": {"parameters": [{"name": "X-Jiser-Secret", "value": SECRET}]}, "options": {}}, (240, 0))
+    return {
+        "name": "JISER · Veille juridique hebdomadaire", "nodes": [trigger, call],
+        "connections": {trigger["name"]: {"main": [[{"node": call["name"], "type": "main", "index": 0}]]}},
+        "settings": {"executionOrder": "v1"}, "active": False,
+    }
+
+
 def reminders_workflow() -> dict:
     trigger = node("Chaque jour à 8h", "n8n-nodes-base.scheduleTrigger", 1.2,
                    {"rule": {"interval": [{"field": "cronExpression", "expression": "0 8 * * *"}]}}, (0, 0))
@@ -181,7 +207,8 @@ def main() -> None:
         OUT = ROOT / "n8n" / "local"
     OUT.mkdir(parents=True, exist_ok=True)
     for fname, wf in (("jiser-otp.json", otp_workflow()), ("jiser-bienvenue.json", welcome_workflow()),
-                      ("jiser-rappels.json", reminders_workflow()), ("jiser-rappel-push.json", reminder_push_workflow())):
+                      ("jiser-rappels.json", reminders_workflow()), ("jiser-rappel-push.json", reminder_push_workflow()),
+                      ("jiser-notification.json", notification_workflow()), ("jiser-veille.json", veille_workflow())):
         (OUT / fname).write_text(json.dumps(wf, ensure_ascii=False, indent=2), encoding="utf-8")
         print("written", OUT / fname)
 

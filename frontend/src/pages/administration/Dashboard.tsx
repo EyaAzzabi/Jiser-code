@@ -44,7 +44,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-navy-900">Tableau de bord de pilotage</h1>
-        <p className="mt-1 text-slate-500">Vue d'ensemble du contentieux fiscal et recommandations de l'IA.</p>
+        <p className="mt-1 text-slate-500">Vue d'ensemble du contentieux fiscal de {d.perimetre && d.perimetre !== 'National' ? `votre centre (gouvernorat de ${d.perimetre})` : 'votre périmètre'} et recommandations de l'IA.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

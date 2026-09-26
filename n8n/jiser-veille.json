@@ -1,0 +1,66 @@
+{
+  "name": "JISER · Veille juridique hebdomadaire",
+  "nodes": [
+    {
+      "id": "eb0c0f79-31e1-4e9a-8b1d-5f62b250f21d",
+      "name": "Chaque lundi à 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "70c124d5-822b-486a-be17-35391d0c63d9",
+      "name": "Lancer la veille juridique",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/api/n8n/veille",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Jiser-Secret",
+              "value": "CHANGE_ME_SECRET"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Chaque lundi à 6h": {
+      "main": [
+        [
+          {
+            "node": "Lancer la veille juridique",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

@@ -1,7 +1,8 @@
 import { ArrowRight, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { authApi, espaceDuRole, loadSession, onSessionChange, saveSession, type Session } from './api'
+import { authApi, espaceDuRole, loadSession, onSessionChange, ROLES_ADMINISTRATION, saveSession, type Session } from './api'
+import CompteEnAttente from './components/CompteEnAttente'
 import LoginModal, { AccessGate } from './components/Login'
 import Onboarding from './components/Onboarding'
 import Administration from './pages/Administration'
@@ -83,6 +84,8 @@ export default function App() {
   const openLogin = () => setModal('login')
   const openSignup = () => setModal('signup')
   const complete = session?.role ? session : null   // a verified e-mail without a finished profile is not an account yet
+  // an account waiting for verification (or refused) reaches nothing but its status page
+  const enAttente = !!complete?.utilisateur?.statut && complete.utilisateur.statut !== 'actif'
 
   return (
     <>
@@ -94,12 +97,15 @@ export default function App() {
             <Footer />
           </div>
         } />
-        <Route path="/entreprise/*" element={complete && ['entreprise', 'conseil'].includes(complete.role!)
-          ? <Entreprise session={complete} />
-          : <AccessGate session={complete} roles={['entreprise', 'conseil']} onLogin={openLogin} onSignup={openSignup} />} />
-        <Route path="/administration/*" element={complete && ['verificateur', 'contentieux', 'admin'].includes(complete.role!)
-          ? <Administration session={complete} />
-          : <AccessGate session={complete} roles={['verificateur', 'contentieux', 'admin']} onLogin={openLogin} onSignup={openSignup} />} />
+        <Route path="/compte" element={complete ? <CompteEnAttente session={complete} /> : <AccessGate session={null} roles={[]} onLogin={openLogin} onSignup={openSignup} />} />
+        <Route path="/entreprise/*" element={complete && enAttente ? <CompteEnAttente session={complete} />
+          : complete && complete.role === 'entreprise'
+            ? <Entreprise session={complete} />
+            : <AccessGate session={complete} roles={['entreprise']} onLogin={openLogin} onSignup={openSignup} />} />
+        <Route path="/administration/*" element={complete && enAttente ? <CompteEnAttente session={complete} />
+          : complete && ROLES_ADMINISTRATION.includes(complete.role!)
+            ? <Administration session={complete} />
+            : <AccessGate session={complete} roles={ROLES_ADMINISTRATION} onLogin={openLogin} onSignup={openSignup} />} />
         <Route path="/plateforme/*" element={<AdminPlateforme session={complete} />} />
         <Route path="*" element={<AccessGate session={complete} roles={[]} onLogin={openLogin} onSignup={openSignup} />} />
       </Routes>

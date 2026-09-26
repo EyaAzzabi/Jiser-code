@@ -34,11 +34,10 @@ def clean(text: str) -> str:
     return re.sub(r"\s{2,}", " ", t)
 
 
-def main() -> None:
-    PDF.parent.mkdir(parents=True, exist_ok=True)
-    if not PDF.exists():
-        PDF.write_bytes(requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=60).content)
-    text = clean("\n".join(p.extract_text() or "" for p in PdfReader(str(PDF)).pages))
+def parse_pdf(data: bytes) -> list[dict]:
+    """Official CDPF PDF -> list of articles (also used by the legal watch pipeline, veille.py)."""
+    import io
+    text = clean("\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(data)).pages))
     matches = list(ART.finditer(text))
     # The code's articles appear once, in increasing order. Annexed laws reuse the same numbers
     # (their "Article 43" is not the code's): accept an article only if it keeps the order going.
@@ -54,8 +53,15 @@ def main() -> None:
         best[num] = body
         last = n
     order = lambda n: (int(n.split()[0]), n)
-    articles = [{"id": f"cdpf-art-{n.replace(' ', '-')}", "code": "cdpf", "code_name": NAME, "article": n,
-                 "heading": "", "text": best[n][:6000], "source_url": URL} for n in sorted(best, key=order)]
+    return [{"id": f"cdpf-art-{n.replace(' ', '-')}", "code": "cdpf", "code_name": NAME, "article": n,
+             "heading": "", "text": best[n][:6000], "source_url": URL} for n in sorted(best, key=order)]
+
+
+def main() -> None:
+    PDF.parent.mkdir(parents=True, exist_ok=True)
+    if not PDF.exists():
+        PDF.write_bytes(requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=60).content)
+    articles = parse_pdf(PDF.read_bytes())
     OUT.write_text(json.dumps(articles, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(articles)} articles written to {OUT}")
 

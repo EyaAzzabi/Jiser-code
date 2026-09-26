@@ -8,6 +8,7 @@ Security choices:
   If no n8n webhook is configured, it is written to the server log only (developer setup).
 * Session token: 256-bit random; only its SHA-256 is stored; expires after 8 hours.
 * The platform administration space only accepts e-mails listed in ADMIN_EMAILS.
+* New accounts start "en_attente": nothing is accessible until a validator approves them (comptes.py).
 """
 from __future__ import annotations
 
@@ -22,6 +23,7 @@ import requests
 
 from ..config import ADMIN_EMAILS, APP_URL, N8N_OTP_WEBHOOK_URL, N8N_SHARED_SECRET, N8N_WELCOME_WEBHOOK_URL
 from .db import repo
+from .permissions import ROLE_LABELS, SELF_SERVICE_ROLES
 
 log = logging.getLogger("jiser.auth")
 
@@ -30,10 +32,6 @@ OTP_MAX_ATTEMPTS = 5
 OTP_RESEND = timedelta(seconds=30)
 SESSION_TTL = timedelta(hours=8)
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$")
-SELF_SERVICE_ROLES = {"entreprise", "contentieux"}   # one profile per side; "admin" is never self-service
-
-ROLE_LABELS = {"entreprise": "Chef d'entreprise", "conseil": "Conseil fiscal", "verificateur": "Vérificateur",
-               "contentieux": "Chef(fe) du contentieux", "admin": "Administrateur"}
 
 
 class AuthError(ValueError):
@@ -180,14 +178,18 @@ def complete_signup(session: dict, profile: dict) -> dict:
         raise AuthError("Ce compte existe déjà.", 409)
     if profile["role"] not in SELF_SERVICE_ROLES:
         raise AuthError("Rôle non autorisé.", 403)
-    user = db.create_user({"email": session["email"], **profile})
+    # nothing is accessible before a validator approves the account (see comptes.py)
+    user = db.create_user({"email": session["email"], **profile, "statut": "en_attente", "verification": {}})
     db.session_update(session["token_hash"], role=user["role"], utilisateur_id=user["id"])
-    send_welcome(user)
     return public_user(user)
 
 
 def public_user(user: dict) -> dict:
-    return {k: user.get(k) for k in ("id", "email", "role", "nom", "prenom", "fonction", "langue", "details")}
+    v = user.get("verification") or {}
+    return {**{k: user.get(k) for k in ("id", "email", "role", "nom", "prenom", "fonction", "langue", "details")},
+            "statut": user.get("statut") or "actif", "consentements": user.get("consentements") or {},
+            "verification": {"soumis_le": v.get("soumis_le"), "decision": v.get("decision"), "motif": v.get("motif"),
+                             "score": (v.get("pre_verification") or {}).get("score"), "validateur": v.get("validateur")}}
 
 
 def logout(token: str) -> None:
