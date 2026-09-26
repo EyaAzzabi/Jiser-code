@@ -1,7 +1,7 @@
-import { Briefcase, Building2, Landmark, UserCheck, type LucideIcon } from 'lucide-react'
+import { Building2, Landmark, type LucideIcon } from 'lucide-react'
 
 // The platform administrator is not self-service: that account is reached only through its private link.
-export type Role = 'entreprise' | 'conseil' | 'verificateur' | 'contentieux'
+export type Role = 'entreprise' | 'contentieux'
 
 export type FieldType = 'text' | 'select' | 'number' | 'date' | 'multi' | 'toggle'
 
@@ -77,56 +77,6 @@ export const ROLES: RoleConfig[] = [
           { key: 'impots_concernes', label: 'Impôts concernés', type: 'multi', options: IMPOTS, full: true },
           { key: 'conseil_fiscal', label: 'Êtes-vous accompagné par un conseil ?', type: 'select', options: ['Oui', 'Non', 'Je cherche un conseil'] },
           { key: 'nom_conseil', label: 'Nom du conseil / cabinet', type: 'text', showIf: (v) => v.conseil_fiscal === 'Oui' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'conseil', label: 'Conseil fiscal / comptable', who: "J'accompagne des entreprises", icon: Briefcase, to: '/entreprise',
-    parcours: ['Analysez la notification de votre client', 'Vérifiez les vices de procédure et les articles cités', 'Partez du brouillon de réponse et complétez-le'],
-    sections: [
-      {
-        title: 'Votre cabinet', subtitle: "Votre qualité professionnelle est vérifiée avant l'accès aux dossiers de vos clients.",
-        fields: [
-          { key: 'cabinet', label: 'Nom du cabinet', type: 'text', required: true, full: true },
-          { key: 'profession', label: 'Profession', type: 'select', required: true, options: ['Expert-comptable', 'Conseiller fiscal', 'Avocat', 'Comptable'] },
-          { key: 'numero_inscription', label: "N° d'inscription à l'ordre", type: 'text', required: true,
-            help: 'Ordre des experts-comptables, Ordre des conseillers fiscaux ou Barreau.' },
-          { key: 'gouvernorat', label: 'Gouvernorat', type: 'select', required: true, options: GOUVERNORATS },
-          { key: 'taille_cabinet', label: 'Taille du cabinet', type: 'select', options: ['Indépendant', '2 à 5 personnes', '6 à 20 personnes', 'Plus de 20'] },
-        ],
-      },
-      {
-        title: 'Votre activité', subtitle: 'Pour organiser votre portefeuille de dossiers.',
-        fields: [
-          { key: 'nb_clients', label: 'Nombre de clients suivis', type: 'select', options: ['< 20', '20 à 50', '50 à 150', '> 150'] },
-          { key: 'contentieux_an', label: 'Dossiers de contentieux par an', type: 'select', options: ['< 5', '5 à 20', '20 à 50', '> 50'] },
-          { key: 'specialites', label: 'Spécialités', type: 'multi', options: ['TVA', 'IS / IRPP', 'Contentieux fiscal', 'Prix de transfert', 'Contrôle fiscal', 'Fiscalité internationale'], full: true },
-          { key: 'secteurs_clients', label: 'Secteurs de vos clients', type: 'multi', options: SECTEURS.slice(0, 8), full: true },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'verificateur', label: 'Vérificateur', who: 'Je prépare des notifications', icon: UserCheck, to: '/administration/controle-qualite',
-    parcours: ['Déposez votre projet de notification', 'Corrigez les vices de procédure signalés', "Renforcez les chefs mal motivés avant l'envoi"],
-    sections: [
-      {
-        title: 'Votre affectation', subtitle: "L'accès aux espaces de l'administration est réservé aux agents habilités.",
-        fields: [
-          { key: 'matricule_agent', label: "Matricule d'agent", type: 'text', required: true },
-          { key: 'grade', label: 'Grade', type: 'select', required: true, options: ['Contrôleur', 'Inspecteur', 'Inspecteur central', 'Inspecteur principal', 'Inspecteur en chef'] },
-          { key: 'structure', label: 'Structure', type: 'select', required: true, options: ['Centre régional de contrôle des impôts', 'Direction des grandes entreprises', 'Unité du contrôle national et des enquêtes fiscales', 'Bureau de contrôle des impôts'] },
-          { key: 'gouvernorat', label: 'Gouvernorat', type: 'select', required: true, options: GOUVERNORATS },
-        ],
-      },
-      {
-        title: 'Votre activité de contrôle', subtitle: 'Pour adapter les contrôles qualité à vos vérifications.',
-        fields: [
-          { key: 'types_verification', label: 'Types de vérification', type: 'multi', options: ['Vérification préliminaire', 'Vérification approfondie'], full: true },
-          { key: 'secteurs', label: 'Secteurs contrôlés', type: 'multi', options: SECTEURS.slice(0, 8), full: true },
-          { key: 'notifications_mois', label: 'Notifications préparées par mois', type: 'select', options: ['< 5', '5 à 15', '15 à 30', '> 30'] },
-          { key: 'besoin', label: 'Votre besoin principal', type: 'select', options: ['Éviter les vices de procédure', 'Mieux motiver les chefs', 'Gagner du temps de rédaction', 'Trouver les bons articles'] },
         ],
       },
     ],

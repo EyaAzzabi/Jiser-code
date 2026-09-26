@@ -30,7 +30,7 @@ OTP_MAX_ATTEMPTS = 5
 OTP_RESEND = timedelta(seconds=30)
 SESSION_TTL = timedelta(hours=8)
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$")
-SELF_SERVICE_ROLES = {"entreprise", "conseil", "verificateur", "contentieux"}   # "admin" is never self-service
+SELF_SERVICE_ROLES = {"entreprise", "contentieux"}   # one profile per side; "admin" is never self-service
 
 ROLE_LABELS = {"entreprise": "Chef d'entreprise", "conseil": "Conseil fiscal", "verificateur": "Vérificateur",
                "contentieux": "Chef(fe) du contentieux", "admin": "Administrateur"}

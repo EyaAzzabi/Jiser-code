@@ -234,7 +234,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                 <p className="mt-1 text-slate-600">Un code de vérification sera envoyé à votre adresse e-mail.</p>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   {([['prenom', 'Prénom', 'Sami', true], ['nom', 'Nom', 'Ben Salah', true],
-                    ['fonction', 'Fonction', cfg?.id === 'entreprise' ? 'Gérant' : cfg?.id === 'conseil' ? 'Expert-comptable' : 'Inspecteur', false],
+                    ['fonction', 'Fonction', cfg?.id === 'entreprise' ? 'Gérant' : 'Chef du contentieux', false],
                     ['email', 'E-mail professionnel', 'sami@elamen.tn', true], ['telephone', 'Téléphone mobile', '22 123 456', false]] as const).map(([k, label, ph, req]) => (
                     <div key={k} className={clsx(k === 'email' && 'sm:col-span-2')}>
                       <Label f={{ label, required: req }}>
