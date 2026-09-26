@@ -2,7 +2,7 @@
   "name": "JISER · Rappel d'échéance (envoyé par l'API)",
   "nodes": [
     {
-      "id": "985b1506-78c1-4d09-879f-a7b9902d1d60",
+      "id": "f7ec4360-2e4f-457d-9e01-b4fd6c265015",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "6d477d2c-fa11-4240-854a-53405528b9d3"
+      "webhookId": "6036666c-d653-4e0b-8b83-fa3eebc688f6"
     },
     {
-      "id": "7ac2f0e8-c712-447f-be65-8b3b4fd50b49",
+      "id": "f981d1d9-d9c8-4926-a782-ad92b5f81f88",
       "name": "Secret valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -36,7 +36,7 @@
           },
           "conditions": [
             {
-              "id": "e7478711-8147-4479-a70e-7cc343db42ed",
+              "id": "36e27e19-9469-4680-92a0-68ff138f9da7",
               "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
               "rightValue": "CHANGE_ME_SECRET",
               "operator": {
@@ -51,7 +51,7 @@
       }
     },
     {
-      "id": "c3673243-b555-4fe8-9aaa-df17dadece7a",
+      "id": "2a5c3f31-0bbc-489c-8c84-796c2914d6c9",
       "name": "Envoyer le rappel",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -62,9 +62,9 @@
       "parameters": {
         "fromEmail": "JISER <no-reply@jiser.tn>",
         "toEmail": "={{ $('Webhook').item.json.body.email }}",
-        "subject": "={{ $('Webhook').item.json.body.palier === 'enregistrement' ? '📌 Échéance enregistrée : ' : '⏰ J-' + $('Webhook').item.json.body.jours_restants + ' : ' }}répondre à {{ $('Webhook').item.json.body.reference }} avant le {{ $('Webhook').item.json.body.date_limite }}",
+        "subject": "={{ $('Webhook').item.json.body.palier === 'enregistrement' ? 'Échéance enregistrée : ' : 'Rappel J-' + $('Webhook').item.json.body.jours_restants + ' : ' }}répondre à {{ $('Webhook').item.json.body.reference }} avant le {{ $('Webhook').item.json.body.date_limite }}",
         "emailFormat": "html",
-        "html": "=<div style=\"font-family:Arial,sans-serif;background:#f6f8fb;padding:24px\">\n<div style=\"max-width:560px;margin:auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0\">\n<div style=\"background:#0b2f5b;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:bold\">J<span style=\"color:#c29a2e\">i</span>SER <span style=\"color:#c29a2e;font-weight:normal\">جسر</span>\n<div style=\"font-size:12px;font-weight:normal;color:#cbd5e1\">Le pont entre le contribuable et l'administration fiscale</div></div>\n<div style=\"padding:24px;color:#1e293b;font-size:15px;line-height:1.6\"><h2 style=\"color:#0b2f5b;margin-top:0\">{{ $('Webhook').item.json.body.palier === 'enregistrement' ? 'Votre échéance est enregistrée' : 'Rappel : plus que ' + $('Webhook').item.json.body.jours_restants + ' jour(s)' }}</h2><p>Bonjour {{ $('Webhook').item.json.body.prenom }},</p><p>Notification <b>{{ $('Webhook').item.json.body.reference }}</b> ({{ $('Webhook').item.json.body.entreprise }}) : vous devez répondre par écrit <b>avant le {{ $('Webhook').item.json.body.date_limite }}</b>, soit dans <b>{{ $('Webhook').item.json.body.jours_restants }} jour(s)</b>.</p><p>Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF). JISER vous a préparé l'analyse de chaque chef et un brouillon de réponse.</p><p style=\"text-align:center;margin-top:24px\"><a href=\"{{ $('Webhook').item.json.body.lien }}\" style=\"background:#c29a2e;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p><p style=\"color:#64748b;font-size:13px\">Vous recevrez un rappel à J-15, J-7, J-3 et J-1.</p></div>\n<div style=\"padding:14px 24px;background:#f1f5f9;color:#64748b;font-size:12px\">Message automatique de JISER. Ne partagez jamais votre code.</div>\n</div></div>",
+        "html": "=<div style=\"font-family:Arial,Helvetica,sans-serif;color:#1e293b;font-size:15px;line-height:1.6;max-width:560px;margin:auto;padding:16px\">\n<p style=\"font-size:20px;font-weight:bold;color:#0b2f5b;margin:0 0 4px\">JISER</p>\n<p style=\"color:#64748b;font-size:13px;margin:0 0 20px\">Plateforme d'accompagnement du contentieux fiscal</p>\n<h2 style=\"color:#0b2f5b;font-size:18px;margin:0 0 12px\">{{ $('Webhook').item.json.body.palier === 'enregistrement' ? 'Votre échéance est enregistrée' : 'Rappel : plus que ' + $('Webhook').item.json.body.jours_restants + ' jour(s)' }}</h2><p>Bonjour {{ $('Webhook').item.json.body.prenom }},</p><p>Notification <b>{{ $('Webhook').item.json.body.reference }}</b> ({{ $('Webhook').item.json.body.entreprise }}) : vous devez répondre par écrit <b>avant le {{ $('Webhook').item.json.body.date_limite }}</b>, soit dans <b>{{ $('Webhook').item.json.body.jours_restants }} jour(s)</b>.</p><p>Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF). JISER vous a préparé l'analyse de chaque chef et un brouillon de réponse.</p>{{ ($('Webhook').item.json.body.lien || '').includes('localhost') ? '' : '<p><a href=\"' + $('Webhook').item.json.body.lien + '\" style=\"background:#0b2f5b;color:#ffffff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p>' }}<p style=\"color:#64748b;font-size:13px\">Vous recevrez un rappel à J-15, J-7, J-3 et J-1.</p>\n<hr style=\"border:none;border-top:1px solid #e2e8f0;margin:24px 0 12px\">\n<p style=\"color:#64748b;font-size:12px;margin:0\">Vous recevez ce message parce qu'une action a été effectuée avec votre adresse e-mail sur JISER.\nSi ce n'est pas vous, ignorez simplement ce message. L'équipe JISER ne vous demandera jamais votre code.</p>\n</div>",
         "options": {}
       },
       "credentials": {
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "54d99d5d-66b0-492d-83cd-199d5036fc71",
+      "id": "7e4ba095-94aa-47b3-a9f7-a18803aa3e08",
       "name": "Réponse OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "2bf7fccb-d039-4b85-81c8-13381c9cc92c",
+      "id": "727fafb1-7e84-4302-9168-f07e8733b239",
       "name": "Refusé",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,

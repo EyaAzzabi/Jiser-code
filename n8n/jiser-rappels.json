@@ -2,7 +2,7 @@
   "name": "JISER · Rappels des délais de réponse",
   "nodes": [
     {
-      "id": "a2aadc2b-624c-4790-b00e-1b4cef807884",
+      "id": "548f082d-beee-4d84-b4de-a0ccb5405de0",
       "name": "Chaque jour à 8h",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "2941218d-baaf-429f-9bf8-67ec6ff14671",
+      "id": "df7a7978-5fb1-4f64-81af-038b4102e8fa",
       "name": "Échéances à 7 jours",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -45,7 +45,7 @@
       }
     },
     {
-      "id": "3dcc6e52-d9c1-4b51-bd10-9dc8de4c9fd8",
+      "id": "0a878297-650e-4255-b890-4650cb5cd08a",
       "name": "Envoyer le rappel",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -56,9 +56,9 @@
       "parameters": {
         "fromEmail": "JISER <no-reply@jiser.tn>",
         "toEmail": "={{ $json.email }}",
-        "subject": "=⏰ Plus que {{ $json.jours_restants }} jour(s) pour répondre à {{ $json.reference }}",
+        "subject": "=Plus que {{ $json.jours_restants }} jour(s) pour répondre à {{ $json.reference }}",
         "emailFormat": "html",
-        "html": "=<div style=\"font-family:Arial,sans-serif;background:#f6f8fb;padding:24px\">\n<div style=\"max-width:560px;margin:auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0\">\n<div style=\"background:#0b2f5b;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:bold\">J<span style=\"color:#c29a2e\">i</span>SER <span style=\"color:#c29a2e;font-weight:normal\">جسر</span>\n<div style=\"font-size:12px;font-weight:normal;color:#cbd5e1\">Le pont entre le contribuable et l'administration fiscale</div></div>\n<div style=\"padding:24px;color:#1e293b;font-size:15px;line-height:1.6\"><h2 style=\"color:#0b2f5b;margin-top:0\">Rappel : répondez avant le {{ $json.date_limite }}</h2><p>Bonjour {{ $json.prenom }},</p><p>Il vous reste <b>{{ $json.jours_restants }} jour(s)</b> pour répondre à la notification <b>{{ $json.reference }}</b> ({{ $json.entreprise }}). Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF).</p><p style=\"text-align:center\"><a href=\"http://localhost:5173/entreprise\" style=\"background:#0b2f5b;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p></div>\n<div style=\"padding:14px 24px;background:#f1f5f9;color:#64748b;font-size:12px\">Message automatique de JISER. Ne partagez jamais votre code.</div>\n</div></div>",
+        "html": "=<div style=\"font-family:Arial,Helvetica,sans-serif;color:#1e293b;font-size:15px;line-height:1.6;max-width:560px;margin:auto;padding:16px\">\n<p style=\"font-size:20px;font-weight:bold;color:#0b2f5b;margin:0 0 4px\">JISER</p>\n<p style=\"color:#64748b;font-size:13px;margin:0 0 20px\">Plateforme d'accompagnement du contentieux fiscal</p>\n<h2 style=\"color:#0b2f5b;font-size:18px;margin:0 0 12px\">Rappel : répondez avant le {{ $json.date_limite }}</h2><p>Bonjour {{ $json.prenom }},</p><p>Il vous reste <b>{{ $json.jours_restants }} jour(s)</b> pour répondre à la notification <b>{{ $json.reference }}</b> ({{ $json.entreprise }}). Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF).</p><p>Connectez-vous à JISER pour retrouver l'analyse et le brouillon de réponse.</p>\n<hr style=\"border:none;border-top:1px solid #e2e8f0;margin:24px 0 12px\">\n<p style=\"color:#64748b;font-size:12px;margin:0\">Vous recevez ce message parce qu'une action a été effectuée avec votre adresse e-mail sur JISER.\nSi ce n'est pas vous, ignorez simplement ce message. L'équipe JISER ne vous demandera jamais votre code.</p>\n</div>",
         "options": {}
       },
       "credentials": {

@@ -25,13 +25,22 @@ NAVY, GOLD = "#0b2f5b", "#c29a2e"
 
 
 def page(title: str, body: str) -> str:
-    return f"""<div style="font-family:Arial,sans-serif;background:#f6f8fb;padding:24px">
-<div style="max-width:560px;margin:auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
-<div style="background:{NAVY};padding:20px 24px;color:#ffffff;font-size:22px;font-weight:bold">J<span style="color:{GOLD}">i</span>SER <span style="color:{GOLD};font-weight:normal">جسر</span>
-<div style="font-size:12px;font-weight:normal;color:#cbd5e1">Le pont entre le contribuable et l'administration fiscale</div></div>
-<div style="padding:24px;color:#1e293b;font-size:15px;line-height:1.6"><h2 style="color:{NAVY};margin-top:0">{title}</h2>{body}</div>
-<div style="padding:14px 24px;background:#f1f5f9;color:#64748b;font-size:12px">Message automatique de JISER. Ne partagez jamais votre code.</div>
-</div></div>"""
+    """Plain, text-heavy layout: spam filters penalise image-like headers, big coloured blocks and short bodies."""
+    return f"""<div style="font-family:Arial,Helvetica,sans-serif;color:#1e293b;font-size:15px;line-height:1.6;max-width:560px;margin:auto;padding:16px">
+<p style="font-size:20px;font-weight:bold;color:{NAVY};margin:0 0 4px">JISER</p>
+<p style="color:#64748b;font-size:13px;margin:0 0 20px">Plateforme d'accompagnement du contentieux fiscal</p>
+<h2 style="color:{NAVY};font-size:18px;margin:0 0 12px">{title}</h2>{body}
+<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0 12px">
+<p style="color:#64748b;font-size:12px;margin:0">Vous recevez ce message parce qu'une action a été effectuée avec votre adresse e-mail sur JISER.
+Si ce n'est pas vous, ignorez simplement ce message. L'équipe JISER ne vous demandera jamais votre code.</p>
+</div>"""
+
+
+def button(link_expr: str, label: str) -> str:
+    """Call-to-action shown only with a public URL: links to localhost are a strong spam signal."""
+    a = (f"'<p><a href=\"' + {link_expr} + '\" style=\"background:{NAVY};color:#ffffff;padding:10px 18px;"
+         f"border-radius:8px;text-decoration:none;font-weight:bold\">{label}</a></p>'")
+    return "{{ (" + link_expr + " || '').includes('localhost') ? '' : " + a + " }}"
 
 
 def node(name: str, ntype: str, version: float, params: dict, pos: tuple[int, int], creds: dict | None = None) -> dict:
@@ -90,19 +99,19 @@ def webhook_flow(wf_name: str, path: str, send: dict) -> dict:
 
 
 def otp_workflow() -> dict:
-    html = page("Votre code de vérification",
-                "<p>Voici votre code à usage unique pour accéder à JISER :</p>"
-                f"<p style=\"font-size:34px;letter-spacing:10px;font-weight:bold;color:{NAVY};text-align:center;"
-                f"background:#f6edd4;border-radius:12px;padding:14px\">{{{{ $('Webhook').item.json.body.code }}}}</p>"
-                "<p>Il est valable <b>{{ $('Webhook').item.json.body.expire_minutes }} minutes</b> et ne peut servir qu'une fois.</p>"
-                "<p style=\"color:#64748b\">Si vous n'êtes pas à l'origine de cette demande, ignorez ce message : votre compte reste protégé.</p>")
-    send = email("Envoyer le code", "={{ $('Webhook').item.json.body.email }}",
-                 "={{ $('Webhook').item.json.body.code }} est votre code JISER", "=" + html, (0, 0))
+    b = "$('Webhook').item.json.body"
+    html = page("Votre code de connexion",
+                "<p>Bonjour,</p>"
+                "<p>Vous avez demandé à vous connecter à votre espace JISER. Saisissez le code ci-dessous dans la page de connexion :</p>"
+                f"<p style=\"font-size:28px;letter-spacing:6px;font-weight:bold;color:{NAVY};margin:16px 0\">{{{{ {b}.code }}}}</p>"
+                "<p>Ce code est valable {{ " + b + ".expire_minutes }} minutes et ne peut être utilisé qu'une seule fois.</p>"
+                "<p>Cordialement,<br>L'équipe JISER</p>")
+    send = email("Envoyer le code", "={{ " + b + ".email }}", "Votre code de connexion JISER", "=" + html, (0, 0))
     return webhook_flow("JISER · Code OTP par e-mail", "jiser-otp", send)
 
 
 def welcome_workflow() -> dict:
-    html = page("Bienvenue sur JISER, {{ $('Webhook').item.json.body.prenom }} !",
+    html = page("Bienvenue sur JISER, {{ $('Webhook').item.json.body.prenom }}",
                 "<p>Votre espace <b>{{ $('Webhook').item.json.body.role_label }}</b> est activé. Votre identité a été vérifiée par code à usage unique.</p>"
                 "<p><b>Vos prochaines étapes :</b></p>"
                 "{{ ({"
@@ -111,8 +120,7 @@ def welcome_workflow() -> dict:
                 "verificateur: '<ol><li>Déposez votre projet de notification</li><li>Corrigez les points de procédure signalés</li><li>Renforcez les chefs mal motivés</li></ol>',"
                 "contentieux: '<ol><li>Consultez le stock trié par priorité</li><li>Ouvrez un dossier : score et explication</li><li>Validez les propositions de conciliation</li></ol>'"
                 "})[$('Webhook').item.json.body.role] || '' }}"
-                f"<p style=\"text-align:center;margin-top:24px\"><a href=\"{{{{ $('Webhook').item.json.body.lien }}}}\" "
-                f"style=\"background:{GOLD};color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Accéder à mon espace</a></p>"
+                + button("$('Webhook').item.json.body.lien", "Accéder à mon espace") +
                 "<p style=\"color:#64748b;font-size:13px\">L'IA de JISER recommande et explique ; la décision reste toujours humaine.</p>")
     send = email("Envoyer la bienvenue", "={{ $('Webhook').item.json.body.email }}",
                  "Votre espace JISER est activé", "=" + html, (0, 0))
@@ -128,11 +136,10 @@ def reminder_push_workflow() -> dict:
                 "<b>avant le {{ " + b + ".date_limite }}</b>, soit dans <b>{{ " + b + ".jours_restants }} jour(s)</b>.</p>"
                 "<p>Passé ce délai, la taxation peut être établie d'office (articles 44 et 47 du CDPF). "
                 "JISER vous a préparé l'analyse de chaque chef et un brouillon de réponse.</p>"
-                f"<p style=\"text-align:center;margin-top:24px\"><a href=\"{{{{ {b}.lien }}}}\" style=\"background:{GOLD};color:#ffffff;"
-                "padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p>"
+                + button(b + ".lien", "Préparer ma réponse") +
                 "<p style=\"color:#64748b;font-size:13px\">Vous recevrez un rappel à J-15, J-7, J-3 et J-1.</p>")
     send = email("Envoyer le rappel", "={{ " + b + ".email }}",
-                 "={{ " + b + ".palier === 'enregistrement' ? '📌 Échéance enregistrée : ' : '⏰ J-' + " + b + ".jours_restants + ' : ' }}"
+                 "={{ " + b + ".palier === 'enregistrement' ? 'Échéance enregistrée : ' : 'Rappel J-' + " + b + ".jours_restants + ' : ' }}"
                  "répondre à {{ " + b + ".reference }} avant le {{ " + b + ".date_limite }}", "=" + html, (0, 0))
     return webhook_flow("JISER · Rappel d'échéance (envoyé par l'API)", "jiser-rappel", send)
 
@@ -148,10 +155,9 @@ def reminders_workflow() -> dict:
                 "<p>Il vous reste <b>{{ $json.jours_restants }} jour(s)</b> pour répondre à la notification "
                 "<b>{{ $json.reference }}</b> ({{ $json.entreprise }}). Passé ce délai, la taxation peut être établie d'office "
                 "(articles 44 et 47 du CDPF).</p>"
-                f"<p style=\"text-align:center\"><a href=\"http://localhost:5173/entreprise\" style=\"background:{NAVY};color:#fff;"
-                "padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:bold\">Préparer ma réponse</a></p>")
+                "<p>Connectez-vous à JISER pour retrouver l'analyse et le brouillon de réponse.</p>")
     send = email("Envoyer le rappel", "={{ $json.email }}",
-                 "=⏰ Plus que {{ $json.jours_restants }} jour(s) pour répondre à {{ $json.reference }}", "=" + html, (480, 0))
+                 "=Plus que {{ $json.jours_restants }} jour(s) pour répondre à {{ $json.reference }}", "=" + html, (480, 0))
     return {
         "name": "JISER · Rappels des délais de réponse", "nodes": [trigger, fetch, send],
         "connections": {

@@ -208,9 +208,17 @@ def procedure_defects(n: Notification) -> list[str]:
     return d
 
 
+# Calibration on the real 2020 court outcomes of tax assessments (ministère des Finances, RAP 2020):
+# 1 139 cases judged = 587 confirmed (51.5 %), 309 revised (27.1 %), 78 settled (6.8 %), 165 cancelled (14.5 %).
+# Targets per item: upheld ≈ 51.5 %, reduced (revised or settled) ≈ 34 %, cancelled ≈ 14.5 %.
+# See data/real/indicateurs_officiels.json. Values found by scripts/calibrate_synthetic.py.
+UPHOLD_SCALE = 1.7
+REDUCED_SHARE = 0.75
+
+
 def simulate_outcome(rng: random.Random, n: Notification, pieces: float, reponse: bool) -> list[ChefIssue]:
     """Documented synthetic rules: procedure defects and weak motivation get reassessments cancelled,
-    strong supporting documents get them reduced."""
+    strong supporting documents get them reduced; overall rates calibrated on official 2020 figures."""
     vices = procedure_defects(n)
     issues = []
     for c in n.chefs:
@@ -227,11 +235,11 @@ def simulate_outcome(rng: random.Random, n: Notification, pieces: float, reponse
         p *= 1 - 0.55 * pieces
         if not reponse:
             p = min(0.97, p * 1.2)
-        p = min(0.97, max(0.02, p + rng.gauss(0, 0.07)))
+        p = min(0.97, max(0.02, p * UPHOLD_SCALE + rng.gauss(0, 0.07)))
         u = rng.random()
         if u < p:
             issues.append(ChefIssue(chef_id=c.id, issue="maintenu", montant_final=round(total, 3)))
-        elif u < p + (1 - p) * 0.5:
+        elif u < p + (1 - p) * REDUCED_SHARE:
             issues.append(ChefIssue(chef_id=c.id, issue="reduit", montant_final=round(total * rng.uniform(0.3, 0.7), 3)))
         else:
             issues.append(ChefIssue(chef_id=c.id, issue="annule", montant_final=0.0))

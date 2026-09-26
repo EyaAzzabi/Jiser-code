@@ -1,0 +1,23 @@
+{
+  "source": "Ministère des Finances, Rapport annuel de performance 2020 de la mission « Finances » (programme Fiscalité, DGI), publié sur gbo.tn",
+  "source_url": "http://www.gbo.tn/sites/default/files/2022-04/RAP%202020%20MF29%20(1).pdf",
+  "verifications_fiscales": {"2018": 15690, "2019": 15477, "2020": 11914, "prevision_2020": 18000, "prevision_2021": 20000, "prevision_2022": 25000},
+  "duree_moyenne_verification_jours": {"2019": 187, "2020": 199},
+  "rendement_controle_MD": {"2018": 2729, "2019": 3200, "2020": 3177},
+  "contentieux": {
+    "affaires_enrolees": {"2019": 4767, "2020": 5059},
+    "affaires_jugees": {"2019": 1816, "2020": 1139},
+    "jugements_2020": {"confirmees": 587, "revisees": 309, "annulees": 165, "conciliees": 78},
+    "montants_2020_MD": {"confirmes": 98.645, "annules": 21.0, "concilies": 18.135},
+    "montants_2019_MD": {"confirmes": 125.678, "annules": 68.0, "concilies": 55.865},
+    "taux_annulation_affaires_jugees": {"2019": 0.146, "2020": 0.1449},
+    "taux_median_confirmation_TO": {"2018": 0.7035, "2019": 0.7040, "2020": 0.7492},
+    "montants_TO_confirmes_1re_instance": {"2019": {"taux": 0.537, "montant_MD": 233.393}, "2020": {"taux": 0.7181, "montant_MD": 186.890}}
+  },
+  "paiement_comptant_transactions": {"2018": 0.318, "2019": 0.353, "2020": 0.2342},
+  "transactions_sanctions_MD": {"2019": 5.439, "2020": 4.331},
+  "recettes_fiscales_MD": {
+    "2025": 44523, "2026": 47773,
+    "source": "Loi de finances 2026 (chiffres publiés par La Presse de Tunisie et WebManagerCenter)"
+  }
+}

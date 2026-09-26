@@ -5,6 +5,7 @@ import { api, mdt, type Dashboard as DashboardData, type Synthese } from '../../
 import AiPanel from '../../components/AiPanel'
 import ListenButton from '../../components/ListenButton'
 import { Card, ErrorBox, SectionTitle, Spinner } from '../../components/ui'
+import { ImpactSimulator, OfficialReality } from './RealityAndSimulator'
 
 export const CHART_COLORS = ['#2f74c0', '#c29a2e', '#10b981', '#e11d48', '#8b5cf6', '#0b2f5b', '#f59e0b']
 
@@ -74,9 +75,12 @@ export default function Dashboard() {
         )}
       </AiPanel>
 
+      <OfficialReality simulatedRecovery={k.taux_recouvrement_historique} />
+      <ImpactSimulator />
+
       <div className="grid gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
-          <SectionTitle>Dossiers notifiés vs clôturés (12 derniers mois)</SectionTitle>
+          <SectionTitle sub="Stock simulé de JISER, calibré sur les statistiques officielles.">Dossiers notifiés vs clôturés (12 derniers mois)</SectionTitle>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={d.serie_mensuelle} margin={{ left: -15, right: 10 }}>
               <defs>

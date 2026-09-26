@@ -18,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from .config import CORS_ORIGINS, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
+from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
 from .domain import DELAI_REPONSE_JOURS
 from .schemas import AnalyseNotification
 from .services import (administration, ai_admin, analysis, assistant, auth, drafting, export_pdf, extraction, llm, rappels,
@@ -433,6 +433,12 @@ def tableau_de_bord(_: dict = Depends(require(*ADMINISTRATION))):
     return administration.dashboard()
 
 
+@app.get("/api/donnees-officielles", tags=["public"])
+def donnees_officielles():
+    """Real public figures on tax control and litigation (ministère des Finances), used by the dashboards."""
+    return json.loads((DATA_DIR / "real" / "indicateurs_officiels.json").read_text(encoding="utf-8"))
+
+
 @app.get("/api/admin/synthese-ia", response_model=ai_admin.Synthese, tags=["administration"])
 def synthese_ia(session: dict = Depends(require(*ADMINISTRATION))):
     out = ai_admin.synthese_stock(administration.dashboard())
@@ -498,7 +504,7 @@ def utilisateurs(_: dict = Depends(require("admin"))):
 
 
 @app.get("/api/plateforme/journal", tags=["admin plateforme"])
-def journal(limit: int = 100, _: dict = Depends(require("admin"))):
+def journal(limit: int = 500, _: dict = Depends(require("admin"))):
     return repo().journal_list(limit)
 
 

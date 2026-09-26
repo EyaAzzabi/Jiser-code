@@ -1,18 +1,18 @@
 {
   "n_dossiers_train": 1875,
   "n_dossiers_test": 625,
-  "n_chefs_test": 1430,
-  "auc_chef_maintenu": 0.708,
-  "accuracy_chef_3_classes": 0.425,
-  "auc_dossier_recouvre_50pct": 0.671,
-  "mae_taux_recouvrement": 0.256,
+  "n_chefs_test": 1459,
+  "auc_chef_maintenu": 0.84,
+  "accuracy_chef_3_classes": 0.675,
+  "auc_dossier_recouvre_50pct": 0.822,
+  "mae_taux_recouvrement": 0.171,
   "triage": {
     "capacite": "20 % des dossiers",
-    "recouvre_jiser": 71741885,
-    "recouvre_fifo": 19437623,
-    "recouvre_plus_gros_montants": 70722244,
-    "gain_vs_fifo_pct": 269.1,
-    "gain_vs_plus_gros_pct": 1.4
+    "recouvre_jiser": 107265575,
+    "recouvre_fifo": 28521898,
+    "recouvre_plus_gros_montants": 104789459,
+    "gain_vs_fifo_pct": 276.1,
+    "gain_vs_plus_gros_pct": 2.4
   },
-  "note": "Mesuré sur des données synthétiques (règles métier + bruit). À réentraîner sur l'historique réel."
+  "note": "Mesuré sur des données synthétiques calibrées sur les statistiques officielles 2020 du ministère des Finances (issues des jugements, taux de confirmation). À réentraîner sur l'historique réel de la DGI."
 }

@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, MessageCircle, PenLine, Sparkles, Wallet } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, ImagePlus, MessageCircle, PenLine, ScanLine, Sparkles, Wallet } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, dt, frDate, type Analyse, type AnalyseResume, type Reponse, type Session } from '../../api'
@@ -158,8 +158,17 @@ export function Analyser({ session }: { session: Session }) {
           </div>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm text-slate-500">Vous avez la notification sur papier ?</span>
-            <Button onClick={() => setCamera(true)}><Camera size={16} /> Scanner avec la caméra</Button>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gold-dark">
+              <Camera size={16} /> Prendre une photo
+              <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+            </label>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 ring-1 ring-slate-300 hover:bg-canvas">
+              <ImagePlus size={16} /> Ajouter une photo
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+            </label>
+            <Button variant="ghost" onClick={() => setCamera(true)}><ScanLine size={16} /> Scanner à l'écran</Button>
           </div>
+          <p className="mt-2 text-center text-xs text-slate-400">Sur téléphone, « Prendre une photo » ouvre directement l'appareil photo.</p>
           {samples.length > 0 && (
             <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
               <span className="text-slate-500">Exemples :</span>

@@ -2,7 +2,7 @@
   "name": "JISER · Code OTP par e-mail",
   "nodes": [
     {
-      "id": "4ee3f4fd-9df8-4ba5-a6dc-08d52d3a370d",
+      "id": "b4a4681c-077d-4d63-8b46-8f6f0a59e93e",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "5d8ef065-5096-4e29-a37c-ae8ee1f06151"
+      "webhookId": "794f7359-6baa-4d8b-bee0-63d28d358074"
     },
     {
-      "id": "5c5728f9-26a2-4c1e-bcd2-a88c335be024",
+      "id": "f44a64bb-ee2e-4e61-9a97-80a6e6215ee5",
       "name": "Secret valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -36,7 +36,7 @@
           },
           "conditions": [
             {
-              "id": "93b72350-3a3d-4aec-b790-bc62149e2748",
+              "id": "cde66c3a-6eba-4caf-8cbd-c619458846d0",
               "leftValue": "={{ $json.headers['x-jiser-secret'] }}",
               "rightValue": "CHANGE_ME_SECRET",
               "operator": {
@@ -51,7 +51,7 @@
       }
     },
     {
-      "id": "480d57b3-9728-40b0-a95f-b453eb5f8721",
+      "id": "af4f6e1f-4f18-4fd8-8141-d4cb78d2f413",
       "name": "Envoyer le code",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -62,9 +62,9 @@
       "parameters": {
         "fromEmail": "JISER <no-reply@jiser.tn>",
         "toEmail": "={{ $('Webhook').item.json.body.email }}",
-        "subject": "={{ $('Webhook').item.json.body.code }} est votre code JISER",
+        "subject": "Votre code de connexion JISER",
         "emailFormat": "html",
-        "html": "=<div style=\"font-family:Arial,sans-serif;background:#f6f8fb;padding:24px\">\n<div style=\"max-width:560px;margin:auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0\">\n<div style=\"background:#0b2f5b;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:bold\">J<span style=\"color:#c29a2e\">i</span>SER <span style=\"color:#c29a2e;font-weight:normal\">جسر</span>\n<div style=\"font-size:12px;font-weight:normal;color:#cbd5e1\">Le pont entre le contribuable et l'administration fiscale</div></div>\n<div style=\"padding:24px;color:#1e293b;font-size:15px;line-height:1.6\"><h2 style=\"color:#0b2f5b;margin-top:0\">Votre code de vérification</h2><p>Voici votre code à usage unique pour accéder à JISER :</p><p style=\"font-size:34px;letter-spacing:10px;font-weight:bold;color:#0b2f5b;text-align:center;background:#f6edd4;border-radius:12px;padding:14px\">{{ $('Webhook').item.json.body.code }}</p><p>Il est valable <b>{{ $('Webhook').item.json.body.expire_minutes }} minutes</b> et ne peut servir qu'une fois.</p><p style=\"color:#64748b\">Si vous n'êtes pas à l'origine de cette demande, ignorez ce message : votre compte reste protégé.</p></div>\n<div style=\"padding:14px 24px;background:#f1f5f9;color:#64748b;font-size:12px\">Message automatique de JISER. Ne partagez jamais votre code.</div>\n</div></div>",
+        "html": "=<div style=\"font-family:Arial,Helvetica,sans-serif;color:#1e293b;font-size:15px;line-height:1.6;max-width:560px;margin:auto;padding:16px\">\n<p style=\"font-size:20px;font-weight:bold;color:#0b2f5b;margin:0 0 4px\">JISER</p>\n<p style=\"color:#64748b;font-size:13px;margin:0 0 20px\">Plateforme d'accompagnement du contentieux fiscal</p>\n<h2 style=\"color:#0b2f5b;font-size:18px;margin:0 0 12px\">Votre code de connexion</h2><p>Bonjour,</p><p>Vous avez demandé à vous connecter à votre espace JISER. Saisissez le code ci-dessous dans la page de connexion :</p><p style=\"font-size:28px;letter-spacing:6px;font-weight:bold;color:#0b2f5b;margin:16px 0\">{{ $('Webhook').item.json.body.code }}</p><p>Ce code est valable {{ $('Webhook').item.json.body.expire_minutes }} minutes et ne peut être utilisé qu'une seule fois.</p><p>Cordialement,<br>L'équipe JISER</p>\n<hr style=\"border:none;border-top:1px solid #e2e8f0;margin:24px 0 12px\">\n<p style=\"color:#64748b;font-size:12px;margin:0\">Vous recevez ce message parce qu'une action a été effectuée avec votre adresse e-mail sur JISER.\nSi ce n'est pas vous, ignorez simplement ce message. L'équipe JISER ne vous demandera jamais votre code.</p>\n</div>",
         "options": {}
       },
       "credentials": {
@@ -75,7 +75,7 @@
       }
     },
     {
-      "id": "53a34eba-4af6-49aa-aae6-4808c7c75f37",
+      "id": "78417ae1-a83a-4c4f-8696-1c2a472c0e6d",
       "name": "Réponse OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "333ab6e8-20f1-485f-9e4a-28b5df356174",
+      "id": "a19fa8ea-170a-4fbc-9a4c-e0d71b1b395f",
       "name": "Refusé",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,

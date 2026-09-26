@@ -110,7 +110,7 @@ def main() -> None:
             "gain_vs_fifo_pct": round(100 * (jiser / fifo - 1), 1),
             "gain_vs_plus_gros_pct": round(100 * (jiser / biggest - 1), 1),
         },
-        "note": "Mesuré sur des données synthétiques (règles métier + bruit). À réentraîner sur l'historique réel.",
+        "note": "Mesuré sur des données synthétiques calibrées sur les statistiques officielles 2020 du ministère des Finances (issues des jugements, taux de confirmation). À réentraîner sur l'historique réel de la DGI.",
     }
 
     # Final model on all closed files
