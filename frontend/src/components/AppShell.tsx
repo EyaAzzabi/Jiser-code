@@ -1,8 +1,8 @@
 import clsx from 'clsx'
-import { Home, LogOut, Menu, Sparkles, WifiOff, X, type LucideIcon } from 'lucide-react'
+import { Home, LogOut, Menu, Sparkles, X, type LucideIcon } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { api, authApi, saveSession, type Session, type Status } from '../api'
+import { authApi, saveSession, type Session } from '../api'
 
 export interface NavItem {
   to: string
@@ -28,11 +28,9 @@ export default function AppShell({ session, espace, nav, children }: {
   nav: NavItem[]
   children: ReactNode
 }) {
-  const [status, setStatus] = useState<Status | null>(null)
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  useEffect(() => { api.status().then(setStatus).catch(() => setStatus(null)) }, [])
   useEffect(() => { setOpen(false); window.scrollTo(0, 0) }, [pathname])
 
   const logout = async () => {
@@ -73,13 +71,6 @@ export default function AppShell({ session, espace, nav, children }: {
       </nav>
 
       <div className="space-y-1 border-t border-slate-200 p-3">
-        {status && (
-          <div className={clsx('mb-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs',
-            status.llm.ia ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700')} title={status.llm.raison}>
-            {status.llm.ia ? <Sparkles size={14} /> : <WifiOff size={14} />}
-            {status.llm.ia ? `IA active · ${status.llm.modele ?? ''}` : 'IA indisponible : règles et modèle ML'}
-          </div>
-        )}
         <Link to="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"><Home size={18} /> Retour à l'accueil</Link>
         <button onClick={logout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-600 hover:bg-rose-50 hover:text-rose-700"><LogOut size={18} /> Se déconnecter</button>
       </div>
