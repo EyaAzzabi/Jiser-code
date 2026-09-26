@@ -96,7 +96,7 @@ export default function DossierPage() {
         <SectionTitle sub={d.conciliation.commentaire}>Proposition de conciliation</SectionTitle>
         <table className="w-full text-sm">
           <thead className="whitespace-nowrap text-left text-xs uppercase text-slate-500">
-            <tr><th className="py-2">Chef</th><th className="py-2 text-right">Notifié</th><th className="py-2 text-right">P(maintenu)</th><th className="py-2 pl-4">Recommandation</th><th className="py-2 text-right">Proposé</th></tr>
+            <tr><th className="py-2">Chef</th><th className="py-2 pl-4 text-right">Notifié</th><th className="py-2 pl-4 text-right">Chance de maintien</th><th className="py-2 pl-4">Recommandation</th><th className="py-2 text-right">Proposé</th></tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {d.conciliation.items.map((it) => (

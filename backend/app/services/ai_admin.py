@@ -94,15 +94,17 @@ def avis_dossier(detail: dict) -> AvisDossier:
              for p in detail["procedure"] if p["statut"] == "vice"]
     facts = {"entreprise": n["entreprise"]["nom"], "reference": n["reference"], "score_solidite": score["score_solidite"],
              "facteurs": score["explications"], "vices": vices,
-             "chefs": [{"libelle": i["libelle"], "montant": i["montant"], "p_maintenu": i["p_maintenu"], "action": i["action"],
-                        "montant_propose": i["montant_propose"]} for i in conc["items"]],
-             "montant_notifie": conc["montant_notifie"], "montant_propose": conc["montant_propose"]}
+             # amounts pre-formatted ("102 721 DT") so the letter never shows raw floats
+             "chefs": [{"libelle": i["libelle"], "montant": fmt_dt(i["montant"]), "p_maintenu": f"{round(i['p_maintenu'] * 100)} %",
+                        "action": i["action"], "montant_propose": fmt_dt(i["montant_propose"])} for i in conc["items"]],
+             "montant_notifie": fmt_dt(conc["montant_notifie"]), "montant_propose": fmt_dt(conc["montant_propose"])}
     if llm.available():
         try:
             out = llm.parse("avis-dossier",
                             "Tu es le juriste IA de l'unité du contentieux fiscal tunisien. À partir de ce dossier (JSON), rédige : "
                             "(1) un avis de 4 phrases sur la solidité du redressement devant le juge ; (2) 2 à 4 points forts et points "
                             "faibles ; (3) un projet de lettre proposant une conciliation au contribuable avec les montants proposés, "
+                            "recopiés exactement tels qu'écrits dans les données (ex. « 102 721 DT »). "
                             "Ne cite QUE les articles qui figurent dans les données (champ vices) ; n'invente aucun article, "
                             "fait ni montant.\n\n" + str(facts),
                             _AvisLLM, max_tokens=3000)

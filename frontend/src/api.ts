@@ -280,7 +280,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = loadSession()?.token
   const headers = new Headers(init.headers)
   if (token) headers.set('Authorization', `Bearer ${token}`)
-  const res = await fetch(path, { ...init, headers })
+  let res: Response
+  try {
+    // never hang silently (lost Wi-Fi, server unreachable): give up after 90 s, AI analyses included
+    res = await fetch(path, { signal: AbortSignal.timeout(90_000), ...init, headers })
+  } catch {
+    throw new Error('Serveur injoignable : vérifiez votre connexion internet puis réessayez.')
+  }
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`
     try {
