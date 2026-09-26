@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { Send, Sparkles, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { api, articleLabel, type ArticleRef } from '../api'
+import { articleLabel, loadSession, type ArticleRef } from '../api'
 import { StarButton } from './Favoris'
 import ListenButton from './ListenButton'
 
@@ -10,6 +10,7 @@ interface Message {
   texte: string
   articles?: ArticleRef[]
   mode?: string
+  streaming?: boolean
 }
 
 const WELCOME = {
@@ -39,12 +40,41 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
     const history = messages.filter((m) => m.texte !== WELCOME[langue]).map((m) => ({ role: m.role, texte: m.texte }))
     setMessages((m) => [...m, { role: 'utilisateur', texte: q }])
     setInput(''); setBusy(true)
+    // streamed answer: NDJSON events (articles, then text deltas, then suggestions)
+    const update = (patch: (last: Message) => Message) =>
+      setMessages((m) => [...m.slice(0, -1), patch(m[m.length - 1])])
+    setMessages((m) => [...m, { role: 'assistant', texte: '', streaming: true }])
     try {
-      const r = await api.assistant(q, langue, history, analyseId)
-      setMessages((m) => [...m, { role: 'assistant', texte: r.reponse, articles: r.articles, mode: r.mode }])
-      if (r.suggestions.length) setSuggestions(r.suggestions)
+      const token = loadSession()?.token
+      const res = await fetch('/api/contribuable/assistant/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ question: q, langue, historique: history, analyse_id: analyseId }),
+      })
+      if (!res.ok || !res.body) throw new Error(`${res.status}`)
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      for (;;) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+        for (const line of lines) {
+          if (!line.trim()) continue
+          const ev = JSON.parse(line)
+          if (ev.type === 'articles') update((l) => ({ ...l, articles: ev.articles }))
+          else if (ev.type === 'delta') update((l) => ({ ...l, texte: l.texte + ev.text }))
+          else if (ev.type === 'fin') {
+            update((l) => ({ ...l, mode: ev.mode, streaming: false }))
+            if (ev.suggestions?.length) setSuggestions(ev.suggestions)
+          }
+        }
+      }
+      update((l) => ({ ...l, streaming: false }))
     } catch (e) {
-      setMessages((m) => [...m, { role: 'assistant', texte: `Erreur : ${(e as Error).message}` }])
+      update((l) => ({ ...l, texte: l.texte || `Erreur : ${(e as Error).message}`, streaming: false }))
     } finally { setBusy(false) }
   }
 
@@ -59,7 +89,7 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
             </div>
             <div className={clsx('max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
               m.role === 'assistant' ? 'bg-canvas text-slate-700' : 'bg-navy-900 text-white')}>
-              <p className="whitespace-pre-line">{m.texte}</p>
+              <p className="whitespace-pre-line">{m.texte}{m.streaming && <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-gold align-middle" />}</p>
               {m.articles && m.articles.length > 0 && (
                 <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-2">
                   {m.articles.map((a) => (
@@ -71,7 +101,7 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
                 </div>
               )}
               {m.mode === 'hors_ligne' && <p className="mt-2 text-[11px] text-slate-400">Réponse sans IA générative (recherche dans les textes).</p>}
-              {m.role === 'assistant' && m.mode === 'ia' && (
+              {m.role === 'assistant' && m.mode === 'ia' && !m.streaming && (
                 <div className="mt-3 flex flex-wrap items-center gap-2">
                   <ListenButton text={m.texte} source={langue} />
                   <StarButton type="assistant" refId={`${m.texte.length}-${m.texte.slice(0, 60)}`}
@@ -81,7 +111,7 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
             </div>
           </div>
         ))}
-        {busy && <div className="flex gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-white"><Sparkles size={15} /></div>
+        {busy && !messages[messages.length - 1]?.streaming && <div className="flex gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-white"><Sparkles size={15} /></div>
           <div className="flex items-center gap-1 rounded-2xl bg-canvas px-4 py-3">{[0, 1, 2].map((i) => <span key={i} className="h-2 w-2 animate-bounce rounded-full bg-gold" style={{ animationDelay: `${i * 120}ms` }} />)}</div></div>}
         <div ref={end} />
       </div>

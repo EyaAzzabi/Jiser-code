@@ -15,7 +15,7 @@ from datetime import date
 
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, LEGAL_DIR, N8N_SHARED_SECRET, SYNTHETIC_DIR
@@ -248,6 +248,10 @@ class QuestionRequest(BaseModel):
 
 @app.post("/api/contribuable/assistant", response_model=assistant.AssistantAnswer, tags=["contribuable"])
 def assistant_ia(req: QuestionRequest, session: dict = Depends(require(*CONTRIBUABLE, *ADMINISTRATION))):
+    return assistant.answer(req.question, req.langue, req.historique, _assistant_context(req, session))
+
+
+def _assistant_context(req: QuestionRequest, session: dict) -> dict | None:
     contexte = None
     if req.analyse_id and session.get("utilisateur_id"):
         row = repo().analysis_get(req.analyse_id, session["utilisateur_id"])
@@ -257,7 +261,18 @@ def assistant_ia(req: QuestionRequest, session: dict = Depends(require(*CONTRIBU
                         "resume": r["resume"], "chefs": [{"libelle": c["chef"]["libelle"], "contestabilite": c["contestabilite"],
                                                           "montant": c["chef"]["montant_principal"]} for c in r["chefs"]],
                         "vices": [p["detail"] for p in r["procedure"] if p["statut"] == "vice"]}
-    return assistant.answer(req.question, req.langue, req.historique, contexte)
+    return contexte
+
+
+@app.post("/api/contribuable/assistant/stream", tags=["contribuable"])
+def assistant_stream(req: QuestionRequest, session: dict = Depends(require(*CONTRIBUABLE, *ADMINISTRATION))):
+    """Streamed answer (NDJSON events: articles, delta…, fin)."""
+    contexte = _assistant_context(req, session)
+
+    def events():
+        for ev in assistant.answer_stream(req.question, req.langue, req.historique, contexte):
+            yield json.dumps(ev, ensure_ascii=False) + "\n"
+    return StreamingResponse(events(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @app.get("/api/exemples", tags=["contribuable"])

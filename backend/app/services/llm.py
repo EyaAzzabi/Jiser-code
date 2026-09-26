@@ -329,3 +329,28 @@ def probe() -> None:
         parse("probe", "Réponds ok=true.", _Ping, max_tokens=50, cache=False)
     except LLMUnavailable as e:
         log.warning("LLM probe failed: %s", e)
+
+
+def stream_text(prompt: str, max_tokens: int = 2500):
+    """Yield the answer as it is generated (OpenAI streaming). Raises LLMUnavailable before the
+    first chunk if streaming is not possible, so the caller can fall back to a normal answer."""
+    if OFFLINE or LLM_PROVIDER != "openai" or "openai" in _disabled:
+        raise LLMUnavailable("streaming indisponible")
+    import openai
+    global _openai_client
+    if _openai_client is None:
+        _openai_client = openai.OpenAI(api_key=OPENAI_API_KEY, max_retries=2, timeout=120)
+    kwargs = {"model": OPENAI_MODEL, "max_completion_tokens": max_tokens + 4000, "stream": True,
+              "messages": [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}]}
+    if OPENAI_MODEL.startswith(("gpt-5", "o")):
+        kwargs["reasoning_effort"] = "low"
+    try:
+        stream = _openai_client.chat.completions.create(**kwargs)
+    except openai.APIError as e:
+        raise LLMUnavailable(f"erreur OpenAI : {e}") from e
+
+    def gen():
+        for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
+    return gen()
