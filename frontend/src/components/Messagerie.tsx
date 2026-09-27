@@ -77,7 +77,7 @@ export default function Messagerie({ espace, base }: { espace: 'entreprise' | 'a
     setAide(null); setConv(null)
     if (id) { chargerConv(id); send({ type: 'rejoindre', conversation_id: id }) }
   }, [id, chargerConv, send, connecte])
-  useEffect(() => { bas.current?.scrollIntoView({ behavior: 'smooth' }) }, [conv?.messages?.length, ecrit])
+  useEffect(() => { const box = bas.current?.parentElement; if (box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' }) }, [conv?.messages?.length, ecrit])
 
   const envoyer = async () => {
     if (!id || (!texte.trim() && !piece)) return

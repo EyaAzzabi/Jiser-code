@@ -33,7 +33,8 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
     setMessages([{ role: 'assistant', texte: WELCOME[langue] }])
     setSuggestions(STARTERS[langue])
   }, [langue])
-  useEffect(() => { end.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }) }, [messages])
+  // scroll inside the chat box only: scrollIntoView would also move the whole page down to the chat
+  useEffect(() => { const box = end.current?.parentElement; if (box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' }) }, [messages])
 
   const ask = async (q: string) => {
     if (!q.trim() || busy) return

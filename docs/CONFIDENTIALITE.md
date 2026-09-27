@@ -42,6 +42,8 @@ L'entreprise voit en direct, dans « Confidentialité », **ce que l'IA reçoit*
 
 Les images de justificatifs ne sont **jamais envoyées à une IA externe** : seuls les PDF sont lus, localement.
 
+**Exception assumée : la photo d'une notification.** Une image ne peut pas être pseudonymisée comme un texte. Quand l'entreprise photographie sa notification, la photo est lue par le modèle de vision, dans le cadre de son consentement à l'IA générative. L'interface le dit clairement sous les boutons photo, et recommande de déposer le PDF pour une confidentialité maximale. Tout ce qui suit la lecture (explications, assistant, rédaction) repasse par la pseudonymisation. En production, un OCR hébergé localement supprimerait cette exception.
+
 ## 4. Consentement et droits de la personne
 
 | Droit (loi 2004-63) | Dans JISER |

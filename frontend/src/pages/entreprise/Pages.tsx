@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, ImagePlus, MessageCircle, MessagesSquare, PenLine, ScanLine, Sparkles, Wallet } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Camera, CheckCircle2, Clock, Copy, Download, FileText, FileUp, FolderOpen, ImagePlus, Lock, MessageCircle, Plus, X, MessagesSquare, PenLine, ScanLine, Sparkles, Wallet } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, dt, frDate, messagerieApi, type Analyse, type AnalyseResume, type Reponse, type Session } from '../../api'
@@ -130,10 +130,21 @@ export function Analyser({ session }: { session: Session }) {
   const [error, setError] = useState('')
   const [samples, setSamples] = useState<{ nom: string; fichier: string }[]>([])
   const [camera, setCamera] = useState(false)
+  // a paper notification is photographed page by page, then read in one go
+  const [pages, setPages] = useState<{ file: File; url: string }[]>([])
   const navigate = useNavigate()
   useEffect(() => { api.exemples().then(setSamples).catch(() => setSamples([])) }, [])
+  useEffect(() => () => pages.forEach((p) => URL.revokeObjectURL(p.url)), [pages])
+  const ajouter = (files: FileList | File[] | null) => {
+    if (!files) return
+    setError('')
+    // copy now: the input's FileList is emptied right after, when the field is reset for the next photo
+    const nouvelles = Array.from(files).map((file) => ({ file, url: URL.createObjectURL(file) }))
+    setPages((prev) => [...prev, ...nouvelles].slice(0, 8))
+  }
+  const retirer = (i: number) => setPages((prev) => prev.filter((_, j) => j !== i))
 
-  const run = async (file: File) => {
+  const run = async (file: File | File[]) => {
     setError(''); setStep(0)
     const timer = setInterval(() => setStep((s) => Math.min(s + 1, STEPS.length - 1)), 500)
     try {
@@ -147,6 +158,34 @@ export function Analyser({ session }: { session: Session }) {
       <Title title="Analyser une notification" sub="PDF, photo ou texte. L'IA lit le document, contrôle la procédure et explique chaque chef de redressement." />
       {step < 0 ? (
         <Card className="p-8">
+          {pages.length > 0 && (
+            <div className="mb-6 rounded-2xl border-2 border-gold/40 bg-gold-light/30 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="font-semibold text-navy-900">{pages.length} page(s) photographiée(s)</div>
+                <span className="text-xs text-slate-500">Photographiez chaque page de la notification, dans l'ordre.</span>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {pages.map((p, i) => (
+                  <div key={p.url} className="relative">
+                    <img src={p.url} alt={`Page ${i + 1}`} className="h-28 w-20 rounded-lg object-cover ring-1 ring-slate-300" />
+                    <span className="absolute bottom-1 left-1 rounded bg-navy-900/80 px-1.5 text-[10px] font-bold text-white">{i + 1}</span>
+                    <button onClick={() => retirer(i)} aria-label={`Retirer la page ${i + 1}`}
+                      className="absolute -right-2 -top-2 rounded-full bg-white p-0.5 text-rose-600 shadow ring-1 ring-slate-200"><X size={14} /></button>
+                  </div>
+                ))}
+                {pages.length < 8 && (
+                  <label className="flex h-28 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-gold text-center text-[11px] font-medium text-gold-dark hover:bg-white">
+                    <Plus size={18} /> Page suivante
+                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { ajouter(e.target.files); e.target.value = '' }} />
+                  </label>
+                )}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button variant="gold" onClick={() => run(pages.map((p) => p.file))}><Sparkles size={16} /> Analyser {pages.length > 1 ? `les ${pages.length} pages` : 'la page'}</Button>
+                <Button variant="ghost" onClick={() => setPages([])}>Recommencer</Button>
+              </div>
+            </div>
+          )}
           <div onDragOver={(e) => { e.preventDefault(); setDrag(true) }} onDragLeave={() => setDrag(false)}
             onDrop={(e) => { e.preventDefault(); setDrag(false); if (e.dataTransfer.files[0]) void run(e.dataTransfer.files[0]) }}
             onClick={() => input.current?.click()}
@@ -155,21 +194,29 @@ export function Analyser({ session }: { session: Session }) {
             <p className="mt-4 text-lg font-semibold text-navy-900">Déposez votre notification de redressement</p>
             <p className="text-sm text-slate-500">ou cliquez pour choisir un fichier · PDF, JPG, PNG, TXT</p>
             <p className="mt-3 inline-flex items-center gap-1 rounded-full bg-gold-light px-3 py-1 text-xs text-gold-dark"><Sparkles size={12} /> Les photos de notifications sont lues par l'IA</p>
-            <input ref={input} type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+            <input ref={input} type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.heic,.txt" className="hidden" onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) { if (f.type.startsWith('image/')) ajouter([f]); else void run(f) }
+              e.target.value = ''
+            }} />
           </div>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm text-slate-500">Vous avez la notification sur papier ?</span>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gold-dark">
-              <Camera size={16} /> Prendre une photo
-              <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+              <Camera size={16} /> {pages.length ? 'Photographier une autre page' : 'Prendre une photo'}
+              <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { ajouter(e.target.files); e.target.value = '' }} />
             </label>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 ring-1 ring-slate-300 hover:bg-canvas">
-              <ImagePlus size={16} /> Ajouter une photo
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && run(e.target.files[0])} />
+              <ImagePlus size={16} /> Ajouter des photos
+              <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { ajouter(e.target.files); e.target.value = '' }} />
             </label>
             <Button variant="ghost" onClick={() => setCamera(true)}><ScanLine size={16} /> Scanner à l'écran</Button>
           </div>
-          <p className="mt-2 text-center text-xs text-slate-400">Sur téléphone, « Prendre une photo » ouvre directement l'appareil photo.</p>
+          <p className="mt-2 text-center text-xs text-slate-400">Sur téléphone, « Prendre une photo » ouvre l'appareil photo : une photo par page, à plat, bien éclairée.</p>
+          <p className="mx-auto mt-2 flex max-w-2xl items-start justify-center gap-1.5 text-center text-xs text-slate-500">
+            <Lock size={13} className="mt-0.5 shrink-0 text-gold-dark" />
+            Une photo est lue telle quelle par l'IA de vision : contrairement au texte, elle ne peut pas être pseudonymisée. Pour une confidentialité maximale, déposez plutôt le PDF de la notification.
+          </p>
           {samples.length > 0 && (
             <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
               <span className="text-slate-500">Exemples :</span>
@@ -198,7 +245,7 @@ export function Analyser({ session }: { session: Session }) {
         </Card>
       )}
       {error && <ErrorBox message={error} />}
-      {camera && <CameraScanner onClose={() => setCamera(false)} onCapture={(f) => { setCamera(false); void run(f) }} />}
+      {camera && <CameraScanner onClose={() => setCamera(false)} onCapture={(f) => { setCamera(false); ajouter([f]) }} />}
     </div>
   )
 }

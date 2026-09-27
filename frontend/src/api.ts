@@ -397,9 +397,11 @@ export const api = {
     if (!res.ok) throw new Error('Exemple introuvable')
     return new File([await res.blob()], fichier, { type: 'application/pdf' })
   },
-  analyser: (file: File, langue: string, endpoint = '/api/contribuable/analyser') => {
+  // one file, or several photos = the pages of one notification
+  analyser: (file: File | File[], langue: string, endpoint = '/api/contribuable/analyser') => {
     const form = new FormData()
-    form.append('fichier', file)
+    if (Array.isArray(file)) file.forEach((f) => form.append('pages', f))
+    else form.append('fichier', file)
     form.append('langue', langue)
     return request<Analyse>(endpoint, { method: 'POST', body: form })
   },

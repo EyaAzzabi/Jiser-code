@@ -190,15 +190,21 @@ def _save_analysis(result: AnalyseNotification, session: dict) -> AnalyseNotific
 
 
 @app.post("/api/contribuable/analyser", response_model=AnalyseNotification, tags=["contribuable"])
-async def analyser_fichier(fichier: UploadFile = File(...), pieces_ratio: float = Form(analysis.DEFAULT_PIECES_RATIO),
-                           langue: str = Form("fr"), session: dict = Depends(ENTREPRISE)):
-    """Upload a notification (PDF, image or text), get the full analysis, saved (encrypted) to the user's space."""
+async def analyser_fichier(fichier: UploadFile | None = File(None), pages: list[UploadFile] | None = File(None),
+                           pieces_ratio: float = Form(analysis.DEFAULT_PIECES_RATIO), langue: str = Form("fr"),
+                           session: dict = Depends(ENTREPRISE)):
+    """Upload a notification (PDF, photo(s) - one per page - or text), get the full analysis, saved encrypted."""
     from starlette.concurrency import run_in_threadpool
-    data = await fichier.read()
+    envois = [f for f in ([fichier] if fichier else []) + list(pages or []) if f is not None]
+    if not envois:
+        raise HTTPException(422, "Aucun fichier reçu.")
+    if sum(f.size or 0 for f in envois) > 40 * 1024 * 1024:
+        raise HTTPException(413, "Fichiers trop volumineux (40 Mo au total).")
+    fichiers = [(await f.read(), f.filename or "", f.content_type) for f in envois]
 
     def run() -> AnalyseNotification:
         try:
-            notif, _mode = extraction.from_upload(data, fichier.filename or "", fichier.content_type)
+            notif, _mode = extraction.from_uploads(fichiers)
         except extraction.ExtractionError as e:
             raise HTTPException(status_code=422, detail=str(e)) from e
         result = analysis.analyse(notif, pieces_ratio, today=TODAY, langue=_langue(langue))
