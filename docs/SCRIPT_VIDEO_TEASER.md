@@ -5,7 +5,7 @@ Consigne reçue : **2 minutes maximum**, réalisée par l'équipe, présentant l
 
 - **Durée visée** : 1 min 55 (marge de sécurité).
 - **Format** : 16:9, 1080p (1920×1080). Si l'organisation la publie sur les réseaux, faire une version 9:16 (1080×1920).
-- **Voix off** : environ 250 mots en français, avec une phrase en arabe. Rythme posé, environ 130 mots par minute.
+- **Voix off** : environ 225 mots en français et une phrase en arabe (environ 1 min 48 à voix posée). Rythme posé, environ 130 mots par minute.
 - **Sous-titres** : obligatoires (la vidéo sera souvent regardée sans le son). Sous-titres en français, et en arabe sous la phrase arabe.
 - **Musique** : instrumentale, calme puis montante, libre de droits (bibliothèque audio de YouTube ou de CapCut), volume à −20 dB sous la voix.
 - **Identité visuelle** : bleu marine `#0b2f5b`, or `#c29a2e` ; titres en Poppins ; logo JISER en fin de vidéo.
@@ -28,7 +28,7 @@ Consigne reçue : **2 minutes maximum**, réalisée par l'équipe, présentant l
 | **1:38 – 1:50** | Chiffres d'impact animés sur fond bleu. | « Résultat : sur nos dossiers de test, JISER récupère près de quatre fois plus qu'un traitement par ancienneté, et aide l'État à désengorger son contentieux. » | **×3,8 recouvré** · « L'IA explique. L'humain décide. » |
 | **1:50 – 1:55** | Logo final, bannière JISER, adresse du dépôt. | « JISER. Le pont qui manquait. » | **JISER · جسر** · github.com/EyaAzzabi/Jiser |
 
-**Mots de la voix off** : environ 245 en français, plus une phrase en arabe. À vérifier en lisant à voix haute avec un chronomètre.
+**Mots de la voix off** : 225 en français et 9 en arabe, soit environ 1 min 48 à 130 mots par minute. À vérifier en lisant à voix haute avec un chronomètre.
 
 ---
 
