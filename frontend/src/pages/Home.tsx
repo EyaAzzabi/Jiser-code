@@ -55,7 +55,7 @@ const PERSONAS = [
 
 const AI_FEATURES = [
   { icon: ScanText, t: 'Lit vos documents', d: 'Une photo ou un PDF de notification devient un dossier structuré, chef par chef.' },
-  { icon: Languages, t: 'Explique en français ou en tounsi', d: 'Chaque redressement reformulé simplement, dans la langue que vous choisissez.' },
+  { icon: Languages, t: 'Explique en français ou en arabe', d: 'Chaque redressement reformulé simplement, dans la langue que vous choisissez.' },
   { icon: Bot, t: 'Répond à vos questions', d: "Un assistant qui cite les articles du CDPF, du Code de la TVA et de l'IRPP/IS." },
   { icon: PenLine, t: 'Rédige les réponses', d: "Brouillon d'opposition pour l'entreprise, motivations renforcées pour le vérificateur." },
   { icon: Gavel, t: 'Évalue chaque dossier', d: 'Score de solidité par modèle ML, expliqué facteur par facteur (SHAP).' },

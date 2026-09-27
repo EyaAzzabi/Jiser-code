@@ -43,7 +43,7 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 
 | Espace | Pour qui | Ce que JISER apporte |
 |---|---|---|
-| **Entreprise** | Chef d'entreprise | Notification expliquée chef par chef en français ou en **tounsi**, lecture à voix haute, vices de procédure détectés, articles cités, date limite et rappels, brouillon de réponse, **messagerie en temps réel avec l'agent**, photo depuis le téléphone, **tableau de bord de ses données personnelles**. |
+| **Entreprise** | Chef d'entreprise | Notification expliquée chef par chef en français ou en **arabe**, lecture à voix haute, vices de procédure détectés, articles cités, date limite et rappels, brouillon de réponse, **messagerie en temps réel avec l'agent**, photo depuis le téléphone, **tableau de bord de ses données personnelles**. |
 | **Ministre des Finances** | Niveau national | **Pilotage en temps réel avec filtres**, uniquement sur des statistiques anonymes, chiffres officiels, simulateur d'impact. |
 | **Chef de centre régional (CRCI)** | Niveau régional | Stock de son centre, **affectation des dossiers**, **validation des conciliations importantes et des comptes de ses agents**. |
 | **Chargé(e) du contentieux** | Niveau opérationnel | Dossiers de son centre, score expliqué (SHAP), avis juridique IA, contrôle qualité, copilote, **messagerie avec l'entreprise assistée par l'IA**. |
@@ -56,6 +56,7 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 | | |
 |---|---|
 | 🧠 **3 IA complémentaires** | Règles exactes du CDPF (8 contrôles) · XGBoost + SHAP (AUC 0,84) · LLM ancré dans 305 articles par recherche hybride BM25 + vecteurs |
+| 🌍 **Français et arabe** | Explications, assistant et lecture à voix haute en **arabe standard**, avec la terminologie fiscale officielle (« الفصل 44 من مجلة الحقوق والإجراءات الجبائية »), affichage de droite à gauche |
 | 🏛️ **La hiérarchie réelle de l'administration** | Ministre → chef des 27 centres régionaux (CRCI) → chargé du contentieux, chacun avec ses droits, vérifiés côté serveur à chaque requête |
 | ✅ **Comptes vérifiés avant accès** | Justificatifs + pré-contrôles automatiques + validation humaine sous 24 h ; les agents sont validés par leur chef de centre |
 | 🔒 **Confidentialité dès la conception** | Chiffrement au repos, **pseudonymisation avant toute IA externe**, k-anonymat pour le ministre, accès tracés et visibles par l'entreprise, export et effacement |
@@ -123,9 +124,9 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 |---|---|---|
 | <img src="docs/screenshots/04_entreprise_tableau_de_bord.jpg" alt="Tableau de bord"> | <img src="docs/screenshots/05_entreprise_analyser.jpg" alt="Analyser"> | <img src="docs/screenshots/08_entreprise_assistant.jpg" alt="Assistant"> |
 
-| Sur téléphone : photo de la notification | Analyse en tounsi + brouillon de réponse |
+| Sur téléphone : photo de la notification | Analyse en arabe + brouillon de réponse |
 |---|---|
-| <img src="docs/screenshots/21_mobile_prendre_photo.jpg" width="240" alt="Photo mobile"> | <img src="docs/screenshots/07_entreprise_analyse_derja_brouillon.jpg" width="420" alt="Analyse en tounsi"> |
+| <img src="docs/screenshots/21_mobile_prendre_photo.jpg" width="240" alt="Photo mobile"> | <img src="docs/screenshots/v2/20_entreprise_analyse_arabe.jpg" width="420" alt="Analyse en arabe"> |
 
 <details>
 <summary><b>Plus de captures</b> (administration, admin plateforme)</summary>

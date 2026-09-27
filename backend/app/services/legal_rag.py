@@ -2,7 +2,7 @@
 
 BM25 always runs and every hit is an exact article, so citations stay verifiable. When the legal
 watch pipeline has computed article embeddings (veille.py), questions are also embedded and the two
-rankings are merged by reciprocal rank fusion: a question in derja or with other words than the law
+rankings are merged by reciprocal rank fusion: a question in Arabic or with other words than the law
 still finds the right article. The question is pseudonymised before being embedded.
 """
 from __future__ import annotations

@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 MotivationQualite = Literal["detaillee", "sommaire", "absente"]
 Issue = Literal["maintenu", "reduit", "annule"]
@@ -110,8 +110,14 @@ class AnalyseNotification(BaseModel):
     resume: str
     montant_contestable: float
     mode: Literal["ia", "hors_ligne"]
-    langue: Literal["fr", "derja"] = "fr"
+    langue: Literal["fr", "ar"] = "fr"
     analyse_id: Optional[str] = None
+
+    @field_validator("langue", mode="before")
+    @classmethod
+    def _ancienne_langue(cls, v):
+        # analyses saved by the first version were in Tunisian dialect ("derja"): Arabic is now standard Arabic
+        return "ar" if v == "derja" else v
 
 
 class ScoreExplication(BaseModel):

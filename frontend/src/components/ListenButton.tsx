@@ -3,21 +3,21 @@ import { Loader2, Square, Volume2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { loadSession } from '../api'
 
-type Lang = 'fr' | 'en' | 'derja'
-const LABELS: Record<Lang, string> = { fr: 'FR', en: 'EN', derja: 'Tounsi' }
+type Lang = 'fr' | 'en' | 'ar'
+const LABELS: Record<Lang, string> = { fr: 'FR', en: 'EN', ar: 'العربية' }
 
 // audio already synthesised in this tab, keyed by language + text
 const cache = new Map<string, string>()
 let playing: HTMLAudioElement | null = null
 
-/** Reads a text aloud in French, English or Tunisian derja (OpenAI TTS through the API). */
+/** Reads a text aloud in French, English or Modern Standard Arabic (OpenAI TTS through the API). */
 export default function ListenButton({ text, source = 'fr', tone = 'light', defaultLang }: {
   text: string
-  source?: 'fr' | 'derja'
+  source?: 'fr' | 'ar'
   tone?: 'light' | 'dark'
   defaultLang?: Lang
 }) {
-  const [lang, setLang] = useState<Lang>(defaultLang ?? (source === 'derja' ? 'derja' : 'fr'))
+  const [lang, setLang] = useState<Lang>(defaultLang ?? (source === 'ar' ? 'ar' : 'fr'))
   const [state, setState] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle')
   const audio = useRef<HTMLAudioElement | null>(null)
   useEffect(() => () => { audio.current?.pause() }, [])

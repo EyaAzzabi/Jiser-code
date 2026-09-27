@@ -24,7 +24,7 @@ export function ProcedureList({ checks }: { checks: ProcedureCheck[] }) {
   )
 }
 
-function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; langue: 'fr' | 'derja' }) {
+function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; langue: 'fr' | 'ar' }) {
   const [open, setOpen] = useState<string | null>(null)
   const c = ca.chef
   const article = ca.articles.find((x) => x.id === open)
@@ -46,13 +46,13 @@ function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; la
           <span className="flex items-center gap-1 font-semibold text-navy-900">{aiMode && <Sparkles size={14} className="text-gold" />}En clair :</span>
           <ListenButton text={ca.explication} source={langue} />
         </div>
-        <p className="mt-1">{ca.explication}</p>
+        <p className="mt-1" dir="auto">{ca.explication}</p>
       </div>
       {c.motivation && <p className="mt-2 text-xs italic text-slate-500">Motivation de l'administration : « {c.motivation} »</p>}
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
           <div className="text-sm font-semibold text-slate-700">Arguments de réponse</div>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-600">{ca.arguments.map((a) => <li key={a}>{a}</li>)}</ul>
+          <ul dir={langue === 'ar' ? 'rtl' : undefined} className="mt-1 list-disc space-y-1 ps-5 text-sm text-slate-600">{ca.arguments.map((a) => <li key={a} dir="auto">{a}</li>)}</ul>
         </div>
         <div>
           <div className="text-sm font-semibold text-slate-700">Pièces à rassembler</div>
@@ -83,7 +83,7 @@ function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; la
 export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBusy, actions }: {
   a: Analyse
   mode?: 'entreprise' | 'controle'
-  onLangue?: (l: 'fr' | 'derja') => void
+  onLangue?: (l: 'fr' | 'ar') => void
   langueBusy?: boolean
   actions?: ReactNode
 }) {
@@ -103,10 +103,10 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
             {onLangue && (
               <div className="flex rounded-xl bg-white/10 p-1 text-sm">
                 <Languages size={16} className="mx-1.5 self-center text-gold" />
-                {(['fr', 'derja'] as const).map((l) => (
+                {(['fr', 'ar'] as const).map((l) => (
                   <button key={l} disabled={langueBusy} onClick={() => onLangue(l)}
                     className={clsx('rounded-lg px-3 py-1 font-medium', a.langue === l ? 'bg-white text-navy-900' : 'text-slate-200 hover:bg-white/10')}>
-                    {l === 'fr' ? 'Français' : 'Tounsi'}
+                    {l === 'fr' ? 'Français' : 'العربية'}
                   </button>
                 ))}
               </div>
@@ -117,7 +117,7 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
           </div>
         </div>
         <div className={clsx('mt-4 rounded-xl bg-white/10 p-3 text-sm', langueBusy && 'animate-pulse')}>
-          <p>{a.resume}</p>
+          <p dir="auto">{a.resume}</p>
           <div className="mt-3"><ListenButton text={a.resume} source={a.langue} tone="dark" /></div>
         </div>
       </Card>

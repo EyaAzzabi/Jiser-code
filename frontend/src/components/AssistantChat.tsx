@@ -15,14 +15,14 @@ interface Message {
 
 const WELCOME = {
   fr: 'Bonjour ! Je suis l\'assistant fiscal de JISER. Posez-moi une question sur votre notification, les délais, la procédure ou vos droits.',
-  derja: 'Ahla ! Ana l\'assistant fiscal mte3 JISER. Es2alni 3la notification mte3ek, el délais, el procédure walla 7a9ou9ek.',
+  ar: 'مرحبًا، أنا المساعد الجبائي لمنصة جسر. اسألوني عن الإعلام بنتائج المراجعة، والآجال، والإجراءات، أو حقوقكم.',
 }
 const STARTERS = {
   fr: ['Quel est mon délai pour répondre ?', "Qu'est-ce que la taxation d'office ?", 'Comment contester un redressement de TVA ?'],
-  derja: ['9addeh 3andi wa9t bech njeweb ?', 'Chnowa ma3neha taxation d\'office ?', 'Kifech nconteste redressement mte3 TVA ?'],
+  ar: ['ما هو أجل الرد على الإعلام؟', 'ما المقصود بالتوظيف الإجباري؟', 'كيف أعترض على تعديل الأداء على القيمة المضافة؟'],
 }
 
-export default function AssistantChat({ langue, analyseId, compact }: { langue: 'fr' | 'derja'; analyseId?: string; compact?: boolean }) {
+export default function AssistantChat({ langue, analyseId, compact }: { langue: 'fr' | 'ar'; analyseId?: string; compact?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', texte: WELCOME[langue] }])
   const [suggestions, setSuggestions] = useState<string[]>(STARTERS[langue])
   const [input, setInput] = useState('')
@@ -55,7 +55,8 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let buffer = ''
-      for (;;) {
+      let fini = false
+      while (!fini) {
         const { value, done } = await reader.read()
         if (done) break
         buffer += decoder.decode(value, { stream: true })
@@ -69,9 +70,11 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
           else if (ev.type === 'fin') {
             update((l) => ({ ...l, mode: ev.mode, streaming: false }))
             if (ev.suggestions?.length) setSuggestions(ev.suggestions)
+            fini = true   // answer complete: do not wait for the connection to close
           }
         }
       }
+      if (fini) void reader.cancel().catch(() => {})
       update((l) => ({ ...l, streaming: false }))
     } catch (e) {
       update((l) => ({ ...l, texte: l.texte || `Erreur : ${(e as Error).message}`, streaming: false }))
@@ -89,7 +92,7 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
             </div>
             <div className={clsx('max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
               m.role === 'assistant' ? 'bg-canvas text-slate-700' : 'bg-navy-900 text-white')}>
-              <p className="whitespace-pre-line">{m.texte}{m.streaming && <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-gold align-middle" />}</p>
+              <p className="whitespace-pre-line" dir="auto">{m.texte}{m.streaming && <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-gold align-middle" />}</p>
               {m.articles && m.articles.length > 0 && (
                 <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-2">
                   {m.articles.map((a) => (
@@ -122,7 +125,7 @@ export default function AssistantChat({ langue, analyseId, compact }: { langue: 
           ))}
         </div>
         <form onSubmit={(e) => { e.preventDefault(); void ask(input) }} className="flex gap-2">
-          <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={langue === 'derja' ? 'Ekteb so2alek…' : 'Écrivez votre question…'}
+          <input value={input} onChange={(e) => setInput(e.target.value)} dir="auto" placeholder={langue === 'ar' ? 'اكتبوا سؤالكم…' : 'Écrivez votre question…'}
             className="flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-gold/30" />
           <button type="submit" disabled={busy || !input.trim()} aria-label="Envoyer" className="rounded-xl bg-navy-900 px-4 text-white hover:bg-navy-800 disabled:opacity-40"><Send size={16} /></button>
         </form>

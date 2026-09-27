@@ -30,7 +30,7 @@ JISER (جسر, « pont ») est une plateforme d'IA pour le **contentieux fiscal 
 
 | Espace | Utilisateur | Ce qu'il fait |
 |---|---|---|
-| **Entreprise** | Chef d'entreprise | Dépose sa notification (PDF, photo), la comprend chef par chef en français ou en tounsi, contrôle la procédure, prépare sa réponse, échange en temps réel avec l'agent, contrôle ses données personnelles. |
+| **Entreprise** | Chef d'entreprise | Dépose sa notification (PDF, photo), la comprend chef par chef en français ou en arabe standard, contrôle la procédure, prépare sa réponse, échange en temps réel avec l'agent, contrôle ses données personnelles. |
 | **Administration · ministre** | Ministre des Finances | Pilotage national en temps réel, filtres, statistiques anonymes, chiffres officiels, simulateur d'impact. |
 | **Administration · chef de centre** | Chef d'un des 27 CRCI | Stock de son centre, affectation des dossiers, validation des conciliations importantes et des comptes de ses agents. |
 | **Administration · chargé du contentieux** | Agent d'un CRCI | Dossiers de son centre, score SHAP, avis IA, contrôle qualité, copilote, messagerie avec les entreprises. |
@@ -197,10 +197,11 @@ Code : [`backend/app/`](../backend/app/)
 |---|---|---|
 | **Règles déterministes** | Contrôle de procédure, délais, calculs | Le droit est exact |
 | **Machine learning** (XGBoost + SHAP) | Probabilité qu'un chef tienne devant le juge, tri du stock, conciliation | Prédiction mesurable et explicable |
-| **IA générative** (LLM + RAG) | Lecture des photos, explications FR/tounsi, assistant, rédaction, avis, aide à la messagerie | Langage naturel ancré dans les articles |
+| **IA générative** (LLM + RAG) | Lecture des photos, explications en français ou en arabe standard, assistant, rédaction, avis, aide à la messagerie | Langage naturel ancré dans les articles |
 
 - **Passerelle LLM** : OpenAI `gpt-5.4-mini` en principal, Gemini Flash en secours automatique, Claude en option ; sorties structurées ; disjoncteur ; cache disque (pseudonymisé) ; mode hors ligne.
-- **RAG hybride** : 305 articles ; BM25 (mots exacts) + embeddings `text-embedding-3-small` (sens), fusionnés. Exemple mesuré : « chhal 3andi wa9t bech njeweb 3al notification » → article 43 du CDPF en premier (BM25 seul : article 27).
+- **RAG hybride** : 305 articles ; BM25 (mots exacts) + embeddings `text-embedding-3-small` (sens), fusionnés. Exemple mesuré : la question « ما هو أجل الرد على الإعلام بنتائج المراجعة؟ » → **article 44 du CDPF** en premier ; BM25 seul ne trouve **aucun** article, car les codes sont en français.
+- **Langues** : français et **arabe standard moderne** (الفصحى), avec la terminologie fiscale officielle tunisienne (« الفصل 44 من مجلة الحقوق والإجراءات الجبائية », « التوظيف الإجباري »). Affichage de droite à gauche automatique ; voix arabe. Le brouillon de réponse officiel reste en français.
 - **Anti-hallucination** : numéros d'articles injectés dans les faits ; le modèle ne cite que ceux-là.
 
 | Mesure (625 dossiers de test) | Valeur |

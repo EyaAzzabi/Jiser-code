@@ -54,7 +54,7 @@ story.append(Paragraph(
 story.append(Paragraph("2. La solution", h2))
 story += bullets([
     "<b>Espace entreprise</b> : dépôt de la notification (PDF, fichier ou <b>photo prise directement avec le téléphone</b>), "
-    "explication chef par chef en français ou en tounsi, <b>lecture à voix haute</b> (français, anglais, tounsi), contestabilité, "
+    "explication chef par chef en français ou en <b>arabe standard</b>, <b>lecture à voix haute</b> (français, anglais, arabe), contestabilité, "
     "vices de procédure, articles cités, pièces à réunir, date limite avec <b>rappels e-mail à J-15, J-7, J-3 et J-1</b>, "
     "assistant fiscal en streaming, brouillon de réponse (art. 44), favoris, export PDF et partage.",
     "<b>Espace administration</b> (chef du contentieux) : tableau de bord avec synthèse IA du stock, <b>chiffres officiels du "
@@ -73,7 +73,7 @@ story.append(Paragraph(
     "annulé » à partir de 26 variables (type de chef, montant, qualité de la motivation, base légale, vices, justificatifs, "
     "réponse du contribuable…) ; SHAP explique chaque score ; le tri du stock combine montant recouvrable estimé et ancienneté. "
     "<b>IA générative</b> : OpenAI gpt-5.4-mini (Gemini Flash en secours automatique) lit les photos, reformule en français ou en "
-    "tounsi, répond aux questions par recherche augmentée (BM25 sur 305 articles), rédige réponses, avis et conciliations. "
+    "arabe standard, répond aux questions par recherche augmentée hybride (BM25 + vecteurs sur 305 articles), rédige réponses, avis et conciliations. "
     "Garde-fous : sorties structurées validées (Pydantic), le modèle ne cite que les articles fournis, repli sur les règles et le "
     "modèle ML si l'IA ne répond pas.", p))
 story.append(Paragraph(
@@ -116,7 +116,7 @@ story += [res, Spacer(1, 3)]
 story.append(Paragraph(
     "Prototype fonctionnel de bout en bout, testé dans un navigateur : inscription avec code reçu par e-mail, analyse d'une "
     "notification de 180 000 DT (2 vices détectés : durée de vérification, art. 40 ; chef non motivé, art. 43), explications en "
-    "tounsi et à voix haute, brouillon de réponse, avis juridique et proposition de conciliation (102 721 DT encaissables tout de "
+    "arabe et à voix haute, brouillon de réponse, avis juridique et proposition de conciliation (102 721 DT encaissables tout de "
     "suite contre une espérance de 84 721 DT au contentieux, dans plusieurs années). Utilisable sur téléphone. Ces performances "
     "sont mesurées sur des données simulées calibrées : elles valident la méthode, pas un gain réel. Face au tri par montant, le "
     "gain est faible ; l'apport principal de JISER est l'explication des scores, le contrôle qualité et la conciliation.", p))
@@ -128,7 +128,7 @@ built = Table([
     ["40 routes d'API", "Analyse, rédaction, assistant en streaming, voix, export PDF, favoris, notifications, conciliation, audit"],
     ["Données réelles", "CDPF officiel 2024 · statistiques du ministère des Finances (RAP 2020) · loi de finances 2026"],
     ["Automatisations", "E-mails n8n : code de connexion, bienvenue, échéance enregistrée, rappels J-15 / J-7 / J-3 / J-1"],
-    ["Langues", "Français, tounsi (écrit et oral), anglais pour la lecture à voix haute"],
+    ["Langues", "Français et arabe standard (écrit et oral, terminologie fiscale officielle), anglais pour la voix"],
 ], colWidths=[30 * mm, 148 * mm])
 built.setStyle(TableStyle([
     ("FONT", (0, 0), (-1, -1), "Helvetica", 8.2), ("FONT", (0, 0), (0, -1), "Helvetica-Bold", 8.2),
@@ -143,9 +143,9 @@ shots = ROOT / "docs" / "screenshots" / "note"
 w = 55 * mm
 row1 = [Image(str(shots / "10_administration_tableau_de_bord.jpg"), width=w, height=w * 900 / 1440),
         Image(str(shots / "12_administration_dossier_avis_ia.jpg"), width=w, height=w * 940 / 1190),
-        Image(str(shots / "07_entreprise_analyse_derja_brouillon.jpg"), width=w, height=w * 940 / 1190)]
+        Image(str(shots / "20_entreprise_analyse_arabe.jpg"), width=w, height=w * 940 / 1190)]
 caps1 = [Paragraph("Chiffres officiels et simulateur d'impact", cap), Paragraph("Score SHAP et avis juridique de l'IA", cap),
-         Paragraph("Notification expliquée en tounsi", cap)]
+         Paragraph("Notification expliquée en arabe", cap)]
 gal = Table([row1, caps1], colWidths=[59 * mm] * 3)
 gal.setStyle(TableStyle([("ALIGN", (0, 0), (-1, -1), "CENTER"), ("VALIGN", (0, 0), (-1, 0), "BOTTOM"),
                          ("LEFTPADDING", (0, 0), (-1, -1), 1), ("RIGHTPADDING", (0, 0), (-1, -1), 1)]))

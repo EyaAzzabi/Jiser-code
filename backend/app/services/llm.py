@@ -35,9 +35,9 @@ SYSTEM_PROMPT = (
     "l'administration fiscale à traiter les notifications de redressement. Tu t'appuies uniquement "
     "sur les articles de loi et les faits fournis dans la demande et tu cites les numéros d'articles. "
     "Si une information manque, dis-le au lieu de l'inventer. Tu écris clairement, sans jargon inutile, "
-    "pour un chef d'entreprise qui n'est pas juriste. Quand on te demande le tunisien (derja), écris en "
-    "derja tunisienne UNIQUEMENT en caractères latins (arabizi : 3, 7, 9, 5 pour ع ح ق خ ; ex. « lazmek tjeweb "
-    "9bal 45 jour ») — aucun caractère arabe — en gardant les termes juridiques en français. "
+    "pour un chef d'entreprise qui n'est pas juriste. Quand on te demande l'arabe, écris en arabe standard "
+    "moderne (الفصحى), jamais en dialecte, avec la terminologie fiscale officielle tunisienne (ex. « الفصل 44 من "
+    "مجلة الحقوق والإجراءات الجبائية »). "
     "Tu rappelles qu'un professionnel doit relire avant toute décision. Les jetons entre crochets "
     "(ex. [ENTREPRISE_1], [MATRICULE_1], [PERSONNE_1]) remplacent des données confidentielles : "
     "reprends-les exactement tels quels, sans les commenter."
@@ -257,39 +257,11 @@ def _cache_path(kind: str, payload: dict):
 
 
 ARABIC_SCRIPT = re.compile(r"[؀-ۿ]")
-# last-resort transliteration to arabizi, used only if a rewrite request still leaves Arabic script
-_ARABIZI = str.maketrans({
-    "ا": "a", "أ": "a", "إ": "i", "آ": "a", "ب": "b", "ت": "t", "ث": "th", "ج": "j", "ح": "7", "خ": "5",
-    "د": "d", "ذ": "dh", "ر": "r", "ز": "z", "س": "s", "ش": "ch", "ص": "s", "ض": "dh", "ط": "t", "ظ": "dh",
-    "ع": "3", "غ": "gh", "ف": "f", "ق": "9", "ك": "k", "ل": "l", "م": "m", "ن": "n", "ه": "h", "و": "ou",
-    "ي": "i", "ى": "a", "ة": "a", "ء": "2", "ؤ": "2", "ئ": "2", "،": ",", "؟": "?", "ً": "", "ٌ": "",
-    "ٍ": "", "َ": "a", "ُ": "ou", "ِ": "i", "ّ": "", "ْ": "",
-})
 
 
-def _arabizi(model: T) -> T:
-    return type(model).model_validate_json(model.model_dump_json().translate(_ARABIZI))
-
-
-def parse(kind: str, prompt: list[dict] | str, schema: type[T], max_tokens: int = 8000, cache: bool = True,
-          latin_only: bool = False) -> T:
-    """Ask the configured LLM for a structured answer validated against `schema`.
-
-    latin_only: for derja answers, which must be written in Latin script (arabizi). Models sometimes
-    slip into Arabic script; the answer is then sent back once to be rewritten.
-    """
-    result = _parse(kind, prompt, schema, max_tokens, cache)
-    if latin_only and ARABIC_SCRIPT.search(result.model_dump_json()):
-        fix = ("Réécris exactement ce JSON en remplaçant chaque mot écrit en caractères arabes par son équivalent en "
-               "derja tunisienne en caractères latins (arabizi, chiffres 3/7/9/5). Ne change rien d'autre.\n\n"
-               + result.model_dump_json())
-        try:
-            result = _parse(kind + "-latin", fix, schema, max_tokens, cache=False)
-        except LLMUnavailable:
-            pass
-        if ARABIC_SCRIPT.search(result.model_dump_json()):
-            result = _arabizi(result)
-    return result
+def parse(kind: str, prompt: list[dict] | str, schema: type[T], max_tokens: int = 8000, cache: bool = True) -> T:
+    """Ask the configured LLM for a structured answer validated against `schema`."""
+    return _parse(kind, prompt, schema, max_tokens, cache)
 
 
 def _parse(kind: str, prompt: list[dict] | str, schema: type[T], max_tokens: int, cache: bool) -> T:

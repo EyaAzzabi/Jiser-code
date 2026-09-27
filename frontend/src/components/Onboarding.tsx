@@ -70,7 +70,7 @@ const ko = (n: number) => (n > 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} Mo
 // ---- Wizard --------------------------------------------------------------------------------
 
 type StepId = 'bienvenue' | 'famille' | 'role' | 'identite' | 'otp' | `section-${number}` | 'justificatifs' | 'preferences' | 'recap' | 'envoye'
-const LANGUES: Record<string, string> = { Français: 'fr', 'Tounsi (derja)': 'derja' }
+const LANGUES: Record<string, string> = { Français: 'fr', 'العربية': 'ar' }
 
 export default function Onboarding({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) {
   const navigate = useNavigate()
@@ -210,7 +210,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
                 <p className="mx-auto mt-2 max-w-lg text-slate-600">Le pont entre le contribuable et l'administration fiscale. Chaque compte est vérifié avant d'être activé.</p>
                 <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left sm:grid-cols-3">
                   {[
-                    { icon: FileSearch, t: 'Comprendre', d: 'La notification expliquée chef par chef, en français ou en derja.' },
+                    { icon: FileSearch, t: 'Comprendre', d: 'La notification expliquée chef par chef, en français ou en arabe.' },
                     { icon: Scale, t: 'Vérifier', d: 'La procédure contrôlée article par article (CDPF).' },
                     { icon: Gavel, t: 'Résoudre', d: 'Échange sécurisé avec l\'administration, réponse ou conciliation.' },
                   ].map(({ icon: Icon, t, d }) => (

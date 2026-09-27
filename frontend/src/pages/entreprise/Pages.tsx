@@ -11,7 +11,8 @@ import ExportMenu from '../../components/ExportMenu'
 import { StarButton } from '../../components/Favoris'
 import { Badge, Button, Card, ErrorBox, SectionTitle, Spinner, TipBanner } from '../../components/ui'
 
-export const langueOf = (s: Session): 'fr' | 'derja' => (s.utilisateur?.langue === 'derja' ? 'derja' : 'fr')
+// Arabic is Modern Standard Arabic ("derja" profiles from the first version are shown in Arabic)
+export const langueOf = (s: Session): 'fr' | 'ar' => (['ar', 'derja'].includes(s.utilisateur?.langue ?? '') ? 'ar' : 'fr')
 
 function Title({ title, sub, actions }: { title: string; sub: string; actions?: React.ReactNode }) {
   return (
@@ -36,16 +37,16 @@ export function EntrepriseDashboard({ session }: { session: Session }) {
   useEffect(() => { api.analyses().then(setRows).catch((e) => setError(e.message)) }, [])
   const u = session.utilisateur
   const next = rows?.filter((r) => r.jours_restants >= 0).sort((a, b) => a.jours_restants - b.jours_restants)[0]
-  const derja = langueOf(session) === 'derja'
+  const arabe = langueOf(session) === 'ar'
 
   return (
     <div className="space-y-6">
-      <Title title={derja ? `Ahla ${u?.prenom ?? ''} 👋` : `Bonjour ${u?.prenom ?? ''} 👋`}
-        sub={derja ? 'Houni tetba3 notifications mte3ek, el délais w les réponses.' : 'Suivez vos notifications, vos délais et vos réponses.'}
+      <Title title={arabe ? `مرحبًا ${u?.prenom ?? ''} 👋` : `Bonjour ${u?.prenom ?? ''} 👋`}
+        sub={arabe ? 'تابعوا هنا إعلاماتكم وآجالكم وردودكم.' : 'Suivez vos notifications, vos délais et vos réponses.'}
         actions={<Link to="/entreprise/analyser"><Button variant="gold"><FileUp size={16} /> Analyser une notification</Button></Link>} />
       <TipBanner id="entreprise-dashboard" title="Votre parcours" steps={[
         'Déposez la notification reçue : JISER l\'analyse chef par chef.',
-        'Posez vos questions à l\'assistant IA, en français ou en tounsi.',
+        'Posez vos questions à l\'assistant IA, en français ou en arabe.',
         'Générez le brouillon de réponse et envoyez-le avant la date limite.']} />
       {error && <ErrorBox message={error} />}
       {!rows ? <Spinner label="Chargement…" /> : (
@@ -219,7 +220,7 @@ export function DossierDetail() {
     try { const c = await messagerieApi.ouvrir(id); navigate(`/entreprise/messagerie/${c.id}`) } catch (e) { setError((e as Error).message) }
   }
 
-  const switchLang = async (l: 'fr' | 'derja') => {
+  const switchLang = async (l: 'fr' | 'ar') => {
     if (!id || !a || a.langue === l) return
     setLangBusy(true)
     try { setA(await api.analyse(id, l)) } catch (e) { setError((e as Error).message) } finally { setLangBusy(false) }
@@ -280,13 +281,13 @@ export function DossierDetail() {
 // ---- Assistant et réponses ------------------------------------------------------------------
 
 export function Assistant({ session }: { session: Session }) {
-  const [langue, setLangue] = useState<'fr' | 'derja'>(langueOf(session))
+  const [langue, setLangue] = useState<'fr' | 'ar'>(langueOf(session))
   const [rows, setRows] = useState<AnalyseResume[]>([])
   const [ctx, setCtx] = useState('')
   useEffect(() => { api.analyses().then(setRows).catch(() => setRows([])) }, [])
   return (
     <div className="space-y-6">
-      <Title title="Assistant fiscal IA" sub="Posez vos questions en français ou en tounsi. L'assistant s'appuie sur les textes de loi et cite ses sources."
+      <Title title="Assistant fiscal IA" sub="Posez vos questions en français ou en arabe. L'assistant s'appuie sur les textes de loi et cite ses sources."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             {rows.length > 0 && (
@@ -296,9 +297,9 @@ export function Assistant({ session }: { session: Session }) {
               </select>
             )}
             <div className="flex rounded-xl bg-white p-1 ring-1 ring-slate-200">
-              {(['fr', 'derja'] as const).map((l) => (
+              {(['fr', 'ar'] as const).map((l) => (
                 <button key={l} onClick={() => setLangue(l)} className={clsx('rounded-lg px-3 py-1.5 text-sm font-medium', langue === l ? 'bg-navy-900 text-white' : 'text-slate-600')}>
-                  {l === 'fr' ? 'Français' : 'Tounsi'}
+                  {l === 'fr' ? 'Français' : 'العربية'}
                 </button>
               ))}
             </div>

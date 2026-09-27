@@ -72,7 +72,7 @@ export interface Analyse {
   resume: string
   montant_contestable: number
   mode: 'ia' | 'hors_ligne'
-  langue: 'fr' | 'derja'
+  langue: 'fr' | 'ar'
   analyse_id: string | null
 }
 

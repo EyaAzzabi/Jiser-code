@@ -185,7 +185,7 @@ export default function Messagerie({ espace, base }: { espace: 'entreprise' | 'a
                     <div key={m.id} className={clsx('flex', mine ? 'justify-end' : 'justify-start')}>
                       <div className={clsx('max-w-[78%] rounded-2xl px-4 py-2.5 text-sm shadow-sm', mine ? 'rounded-br-md bg-navy-900 text-white' : 'rounded-bl-md bg-canvas text-slate-800')}>
                         {!mine && <div className="mb-0.5 text-xs font-semibold text-gold-dark">{m.auteur_nom}</div>}
-                        {m.contenu && <p className="whitespace-pre-line">{m.contenu}</p>}
+                        {m.contenu && <p className="whitespace-pre-line" dir="auto">{m.contenu}</p>}
                         {m.a_piece && (
                           <button onClick={() => ouvrirPiece(m)} className={clsx('mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs', mine ? 'bg-white/10' : 'bg-white ring-1 ring-slate-200')}>
                             <FileText size={14} />{m.piece_nom}

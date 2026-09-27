@@ -173,6 +173,11 @@ def deconnexion(authorization: str | None = Header(default=None)):
 ENTREPRISE = permission("analyses:propres")
 
 
+def _langue(v: str | None) -> str:
+    """Languages: French or Modern Standard Arabic ("derja", from the first version, now means Arabic)."""
+    return "ar" if v in ("ar", "derja") else "fr"
+
+
 def _save_analysis(result: AnalyseNotification, session: dict) -> AnalyseNotification:
     row = repo().analysis_add({
         "utilisateur_id": session["utilisateur_id"], "reference": result.notification.reference,
@@ -196,7 +201,7 @@ async def analyser_fichier(fichier: UploadFile = File(...), pieces_ratio: float 
             notif, _mode = extraction.from_upload(data, fichier.filename or "", fichier.content_type)
         except extraction.ExtractionError as e:
             raise HTTPException(status_code=422, detail=str(e)) from e
-        result = analysis.analyse(notif, pieces_ratio, today=TODAY, langue="derja" if langue == "derja" else "fr")
+        result = analysis.analyse(notif, pieces_ratio, today=TODAY, langue=_langue(langue))
         _save_analysis(result, session)
         get_store().log("analyse_notification", notif.reference,
                         f"{sum(c.contestabilite != 'solide' for c in result.chefs)} chef(s) contestable(s)", result.mode, session["email"])
@@ -217,9 +222,10 @@ def une_analyse(analyse_id: str, langue: str | None = None, session: dict = Depe
     row = repo().analysis_get(analyse_id, session["utilisateur_id"])
     if row is None:
         raise HTTPException(404, "Analyse introuvable")
+    ancienne = row["resultat"].get("langue") == "derja"   # dialect text from the first version: regenerate in Arabic
     result = AnalyseNotification.model_validate(row["resultat"])
-    if langue and langue != result.langue:   # switch language on demand (FR <-> derja)
-        result = analysis.analyse(result.notification, today=TODAY, langue="derja" if langue == "derja" else "fr")
+    if ancienne or (langue and _langue(langue) != result.langue):   # switch language on demand (FR <-> AR)
+        result = analysis.analyse(result.notification, today=TODAY, langue=_langue(langue or result.langue))
     result.analyse_id = analyse_id
     return result
 
@@ -307,17 +313,17 @@ def exemple(nom: str, _: dict = Depends(compte)):
 
 class VoixRequest(BaseModel):
     texte: str
-    source: str = "fr"     # language of the text: fr | derja
-    langue: str = "fr"     # language to listen in: fr | en | derja
+    source: str = "fr"     # language of the text: fr | ar
+    langue: str = "fr"     # language to listen in: fr | en | ar
 
 
 @app.post("/api/voix", tags=["contribuable"], response_class=Response)
 def lire_a_voix_haute(req: VoixRequest, _: dict = Depends(compte)):
-    """Text-to-speech of an explanation, in French, English or Tunisian derja (MP3). Names are never sent."""
+    """Text-to-speech of an explanation, in French, English or Arabic (MP3). Names are never sent."""
     if not req.texte.strip():
         raise HTTPException(422, "Texte vide.")
     try:
-        audio = voix.synthese(req.texte, req.source, req.langue)
+        audio = voix.synthese(req.texte, _langue(req.source), req.langue if req.langue == "en" else _langue(req.langue))
     except voix.VoixIndisponible as e:
         raise HTTPException(503, str(e)) from e
     return Response(content=audio, media_type="audio/mpeg", headers={"Cache-Control": "private, max-age=86400"})

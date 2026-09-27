@@ -2,8 +2,8 @@
 
 /* JISER palette, taken from the logo: deep navy, bridge blue, gold accent. */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Tajawal", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", "Tajawal", "Inter", ui-sans-serif, system-ui, sans-serif;
   --color-navy-950: #051a33;
   --color-navy-900: #0b2f5b;
   --color-navy-800: #123d72;

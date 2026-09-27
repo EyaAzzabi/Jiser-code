@@ -1,8 +1,7 @@
-"""Read explanations aloud (text-to-speech) in French, English or Tunisian derja.
+"""Read explanations aloud (text-to-speech) in French, English or Modern Standard Arabic.
 
-1. The text is adapted for listening in the target language by the LLM (translation to English;
-   for derja, rewriting in Arabic script so the voice pronounces it like a Tunisian speaker would).
-   French text going to French is read as it is.
+1. The text is adapted for listening in the target language by the LLM (translation). A text
+   already in the target language (French to French, Arabic to Arabic) is read as it is.
 2. OpenAI's TTS model turns it into MP3, with a spoken-style instruction per language.
 Results are cached on disk: the same explanation is only synthesised once.
 """
@@ -23,8 +22,8 @@ MAX_CHARS = 3500
 VOICES = {
     "fr": ("coral", "Parle en français, d'une voix calme, claire et bienveillante, comme un conseiller fiscal qui explique simplement."),
     "en": ("coral", "Speak in clear, calm and friendly English, like an advisor explaining simply."),
-    "derja": ("coral", "Parle en dialecte tunisien (derja), avec un accent tunisien naturel, d'une voix chaleureuse et claire. "
-                       "Prononce les termes juridiques français à la française."),
+    "ar": ("coral", "تحدّث باللغة العربية الفصحى، بصوت هادئ وواضح ومطمئن، كمستشار جبائي يشرح ببساطة. "
+                    "Speak Modern Standard Arabic with clear, correct pronunciation."),
 }
 
 
@@ -38,24 +37,18 @@ class _Script(BaseModel):
 
 def _prepare(texte: str, source: str, cible: str) -> str:
     texte = texte.strip()[:MAX_CHARS]
-    if cible == "fr" and source == "fr":
+    if cible == source:
         return texte
     consigne = {
         "fr": "Réécris ce texte en français clair, prêt à être lu à voix haute. Garde tous les faits, montants, dates et articles.",
         "en": "Translate this text into clear, natural English, ready to be read aloud. Keep every fact, amount, date and "
               "article number (e.g. « article 44 du CDPF » becomes « article 44 of the CDPF »).",
-        "derja": "EXCEPTION À LA RÈGLE DES CARACTÈRES LATINS : ce texte sert uniquement à une synthèse vocale, il doit donc être "
-                 "écrit en caractères arabes. Réécris ce texte en derja tunisienne parlée, EN CARACTÈRES ARABES, prêt à être lu à voix haute par une voix "
-                 "tunisienne. Garde tous les faits, montants, dates et numéros d'articles ; les termes juridiques peuvent rester "
-                 "en français (caractères latins). Écris les nombres en chiffres.",
+        "ar": "Traduis ce texte en arabe standard moderne (الفصحى), clair, prêt à être lu à voix haute, avec la terminologie "
+              "fiscale officielle tunisienne (« الفصل 44 من مجلة الحقوق والإجراءات الجبائية »). Garde tous les faits, montants, "
+              "dates et numéros d'articles. Écris les nombres en chiffres.",
     }[cible]
     try:
-        script = llm.parse("voix-" + cible, f"{consigne}\n\nTEXTE :\n{texte}", _Script, max_tokens=2500).texte
-        if cible == "derja" and not llm.ARABIC_SCRIPT.search(script):
-            # still in Latin script: the voice would mispronounce arabizi digits (3, 7, 9), so ask once more
-            script = llm.parse("voix-derja-ar", "Écris ce texte tunisien en caractères arabes (et non latins), sans rien "
-                                                "changer au sens, pour une synthèse vocale :\n\n" + script, _Script, max_tokens=2500).texte
-        return script[:MAX_CHARS]
+        return llm.parse("voix-" + cible, f"{consigne}\n\nTEXTE :\n{texte}", _Script, max_tokens=2500).texte[:MAX_CHARS]
     except llm.LLMUnavailable as e:
         raise VoixIndisponible(f"préparation du texte impossible : {e}") from e
 
