@@ -11,7 +11,7 @@ from datetime import date, timedelta
 
 from pydantic import BaseModel
 
-from ..domain import CHEF_TYPES, DELAI_REPONSE_JOURS, DROIT_REPRISE_ANS
+from ..domain import CHEF_TYPES, DELAI_REPONSE_JOURS, DROIT_REPRISE_ANS, PIECES_AR
 from ..schemas import AnalyseNotification, ArticleRef, ChefAnalyse, ChefRedressement, Dossier, Notification
 from . import llm, scoring
 from .legal_rag import get_index
@@ -78,7 +78,37 @@ VICE_TEXT = {
 }
 
 
-def _arguments(chef: ChefRedressement, notif: Notification, vices: list) -> list[str]:
+VICE_TEXT_AR = {
+    "AVIS_PREALABLE": "لم يثبت تبليغ الإعلام المسبق بالمراجعة",
+    "DELAI_AVIS_15J": "انطلقت المراجعة قبل مرور 15 يومًا على الإعلام",
+    "MENTION_ASSISTANCE": "لم يتضمن الإعلام حق الاستعانة بشخص",
+    "DUREE_MAX": "تجاوزت المراجعة المدة القصوى القانونية",
+    "MENTION_DELAI_30J": "لم يتضمن الإعلام أجل الرد المحدد بـ 45 يومًا",
+    "PENALITES_INDIQUEES": "لم يتم بيان مبلغ الخطايا",
+    "DROIT_REPRISE": "إحدى السنوات خارج أجل التقادم",
+}
+
+
+def _arguments_ar(chef: ChefRedressement, notif: Notification, vices: list) -> list[str]:
+    """Rule-based arguments in Modern Standard Arabic (used when the generative AI is off)."""
+    args = [f"إخلال إجرائي: {VICE_TEXT_AR.get(v.code, v.label)}. {v.detail} "
+            f"(الفصل {v.article.replace('cdpf-art-', '').replace('-', ' ')} من مجلة الحقوق والإجراءات الجبائية)" for v in vices]
+    if chef.motivation_qualite == "absente":
+        args.append("هذا العنصر غير معلّل: يوجب الفصل 43 من مجلة الحقوق والإجراءات الجبائية بيان عناصر التعديل وطريقة احتسابها.")
+    elif chef.motivation_qualite == "sommaire":
+        args.append("التعليل مقتضب جدًا: اطلبوا تفاصيل الاحتساب والوثائق التي اعتمدتها الإدارة.")
+    if not chef.article_invoque:
+        args.append("لم يتم ذكر أي سند قانوني لهذا العنصر.")
+    if notif.date_notification.year > chef.exercice + DROIT_REPRISE_ANS:
+        args.append(f"سنة {chef.exercice} خارج أجل التقادم المحدد بأربع سنوات (الفصل 19 من مجلة الحقوق والإجراءات الجبائية).")
+    if not args:
+        args.append("تبدو الإجراءات سليمة: يجب أن ينصبّ الاعتراض على الأصل، مع تقديم الوثائق المثبتة.")
+    return args
+
+
+def _arguments(chef: ChefRedressement, notif: Notification, vices: list, langue: str = "fr") -> list[str]:
+    if langue == "ar":
+        return _arguments_ar(chef, notif, vices)
     args = [f"Vice de procédure : {VICE_TEXT.get(v.code, v.label.lower())}. {v.detail} "
             f"(article {v.article.replace('cdpf-art-', '')} du CDPF)" for v in vices]
     if chef.motivation_qualite == "absente":
@@ -140,7 +170,7 @@ def _llm_rewrite(analyse: AnalyseNotification, langue: str = "fr") -> _LLMAnalys
 def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, today: date | None = None,
             langue: str = "fr") -> AnalyseNotification:
     today = today or date.today()
-    procedure = check_procedure(notif)
+    procedure = check_procedure(notif, langue)
     vices_dossier = [p for p in procedure if p.statut == "vice" and p.code != "CHEFS_MOTIVES"]
     dossier = Dossier(id="upload", notification=notif, etape="Notification", date_etape=notif.date_notification,
                       pieces_fournies_ratio=pieces_ratio, reponse_contribuable=True, statut="en_cours")
@@ -159,8 +189,9 @@ def analyse(notif: Notification, pieces_ratio: float = DEFAULT_PIECES_RATIO, tod
                 chef.type, "قامت الإدارة بتعديل هذا العنصر: اطّلعوا على التعليل أدناه." if langue == "ar"
                 else "L'administration a redressé ce point : lisez la motivation ci-dessous."),
             contestabilite=_contestabilite(float(p[0]), chef, notif),
-            arguments=_arguments(chef, notif, vices_dossier),
-            pieces_a_fournir=meta.get("pieces", ["Toute pièce justifiant l'opération redressée"]),
+            arguments=_arguments(chef, notif, vices_dossier, langue),
+            pieces_a_fournir=[PIECES_AR.get(x, x) if langue == "ar" else x
+                              for x in meta.get("pieces", ["Toute pièce justifiant l'opération redressée"])],
             articles=_articles(chef),
         ))
 

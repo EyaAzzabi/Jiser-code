@@ -6,9 +6,30 @@ import { StarButton } from './Favoris'
 import ListenButton from './ListenButton'
 import { Card, ContestBadge, Kpi, SectionTitle } from './ui'
 
-export function ProcedureList({ checks }: { checks: ProcedureCheck[] }) {
+type Langue = 'fr' | 'ar'
+// fixed texts of the analysis page, in French and in Modern Standard Arabic
+const T = {
+  fr: {
+    enClair: 'En clair :', arguments: 'Arguments de réponse', pieces: 'Pièces à rassembler', motivation: "Motivation de l'administration",
+    dont: (m: string) => `dont ${m} de pénalités`, exercice: 'exercice', reclame: 'Montant réclamé', contestable: 'Montant contestable estimé',
+    contestableHint: 'Selon le modèle et les règles du CDPF', limite: 'Date limite de réponse', reste: (j: number) => `Il reste ${j} jours`,
+    depasse: 'Délai dépassé', vices: 'Vices de procédure', vicesHint: 'Voir le contrôle ci-dessous', reguliere: 'Procédure régulière',
+    procedure: 'Contrôle de la procédure', procedureSub: 'Chaque point est vérifié par rapport au Code des droits et procédures fiscaux.',
+    chefs: 'Chefs de redressement', chefsSub: "Ce qu'on vous reproche, et ce que vous pouvez répondre.",
+  },
+  ar: {
+    enClair: 'بإيجاز:', arguments: 'حجج الرد', pieces: 'الوثائق الواجب جمعها', motivation: 'تعليل الإدارة',
+    dont: (m: string) => `منها ${m} خطايا`, exercice: 'سنة', reclame: 'المبلغ المطالب به', contestable: 'المبلغ القابل للاعتراض (تقديري)',
+    contestableHint: 'حسب النموذج وقواعد مجلة الحقوق والإجراءات الجبائية', limite: 'آخر أجل للرد', reste: (j: number) => `بقي ${j} يومًا`,
+    depasse: 'انقضى الأجل', vices: 'الإخلالات الإجرائية', vicesHint: 'انظروا المراقبة أدناه', reguliere: 'إجراءات سليمة',
+    procedure: 'مراقبة الإجراءات', procedureSub: 'تم التثبت من كل نقطة وفق مجلة الحقوق والإجراءات الجبائية.',
+    chefs: 'عناصر التعديل', chefsSub: 'ما تؤاخذكم به الإدارة، وما يمكنكم الرد به.',
+  },
+}
+
+export function ProcedureList({ checks, langue = 'fr' }: { checks: ProcedureCheck[]; langue?: Langue }) {
   return (
-    <ul className="divide-y divide-slate-100">
+    <ul className="divide-y divide-slate-100" dir={langue === 'ar' ? 'rtl' : undefined}>
       {checks.map((c) => (
         <li key={c.code} className="flex gap-3 py-2.5 text-sm">
           {c.statut === 'ok' ? <CheckCircle2 className="mt-0.5 shrink-0 text-emerald-500" size={18} />
@@ -24,39 +45,40 @@ export function ProcedureList({ checks }: { checks: ProcedureCheck[] }) {
   )
 }
 
-function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; langue: 'fr' | 'ar' }) {
+function ChefCard({ ca, aiMode, langue }: { ca: ChefAnalyse; aiMode: boolean; langue: Langue }) {
   const [open, setOpen] = useState<string | null>(null)
+  const t = T[langue]
   const c = ca.chef
   const article = ca.articles.find((x) => x.id === open)
   return (
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="text-xs font-semibold text-slate-400">CHEF {c.id.replace('C', 'N°')} · {c.impot} · exercice {c.exercice}</div>
+          <div className="text-xs font-semibold text-slate-400">CHEF {c.id.replace('C', 'N°')} · {c.impot} · {t.exercice} {c.exercice}</div>
           <h3 className="mt-1 font-semibold text-navy-900">{c.libelle}</h3>
         </div>
         <div className="text-right">
           <div className="font-display text-xl font-bold text-navy-900">{dt(c.montant_principal + c.penalites)}</div>
-          <div className="text-xs text-slate-500">dont {dt(c.penalites)} de pénalités</div>
+          <div className="text-xs text-slate-500">{t.dont(dt(c.penalites))}</div>
         </div>
       </div>
       <div className="mt-3"><ContestBadge value={ca.contestabilite} /></div>
       <div className="mt-3 rounded-xl bg-bridge-light p-3 text-sm text-slate-700">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="flex items-center gap-1 font-semibold text-navy-900">{aiMode && <Sparkles size={14} className="text-gold" />}En clair :</span>
+          <span className="flex items-center gap-1 font-semibold text-navy-900">{aiMode && <Sparkles size={14} className="text-gold" />}{t.enClair}</span>
           <ListenButton text={ca.explication} source={langue} />
         </div>
         <p className="mt-1" dir="auto">{ca.explication}</p>
       </div>
-      {c.motivation && <p className="mt-2 text-xs italic text-slate-500">Motivation de l'administration : « {c.motivation} »</p>}
+      {c.motivation && <p className="mt-2 text-xs italic text-slate-500">{t.motivation} : « {c.motivation} »</p>}
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
-          <div className="text-sm font-semibold text-slate-700">Arguments de réponse</div>
+          <div className="text-sm font-semibold text-slate-700" dir="auto">{t.arguments}</div>
           <ul dir={langue === 'ar' ? 'rtl' : undefined} className="mt-1 list-disc space-y-1 ps-5 text-sm text-slate-600">{ca.arguments.map((a) => <li key={a} dir="auto">{a}</li>)}</ul>
         </div>
         <div>
-          <div className="text-sm font-semibold text-slate-700">Pièces à rassembler</div>
-          <ul className="mt-1 space-y-1 text-sm text-slate-600">{ca.pieces_a_fournir.map((p) => <li key={p}>☐ {p}</li>)}</ul>
+          <div className="text-sm font-semibold text-slate-700" dir="auto">{t.pieces}</div>
+          <ul className="mt-1 space-y-1 text-sm text-slate-600" dir={langue === 'ar' ? 'rtl' : undefined}>{ca.pieces_a_fournir.map((p) => <li key={p}>☐ {p}</li>)}</ul>
         </div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -89,6 +111,7 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
 }) {
   const n = a.notification
   const vices = a.procedure.filter((p) => p.statut === 'vice').length
+  const t = T[a.langue]
   return (
     <div className="space-y-6">
       <Card tone="dark">
@@ -123,22 +146,22 @@ export default function AnalyseView({ a, mode = 'entreprise', onLangue, langueBu
       </Card>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <Kpi label="Montant réclamé" value={dt(a.montant_total)} />
-        <Kpi label="Montant contestable estimé" value={dt(a.montant_contestable)} tone="warning" hint="Selon le modèle et les règles du CDPF" />
+        <Kpi label={t.reclame} value={dt(a.montant_total)} />
+        <Kpi label={t.contestable} value={dt(a.montant_contestable)} tone="warning" hint={t.contestableHint} />
         {mode === 'entreprise'
-          ? <Kpi label="Date limite de réponse" value={frDate(a.date_limite_reponse)} tone={a.jours_restants <= 7 ? 'danger' : 'default'}
-            hint={<span className="flex items-center gap-1"><Clock size={12} /> {a.jours_restants >= 0 ? `Il reste ${a.jours_restants} jours` : 'Délai dépassé'}</span>} />
+          ? <Kpi label={t.limite} value={frDate(a.date_limite_reponse)} tone={a.jours_restants <= 7 ? 'danger' : 'default'}
+            hint={<span className="flex items-center gap-1"><Clock size={12} /> {a.jours_restants >= 0 ? t.reste(a.jours_restants) : t.depasse}</span>} />
           : <Kpi label="Chefs fragiles" value={`${a.chefs.filter((c) => c.contestabilite !== 'solide').length} / ${a.chefs.length}`} tone="warning" />}
-        <Kpi label="Vices de procédure" value={vices} tone={vices ? 'danger' : 'success'} hint={vices ? 'Voir le contrôle ci-dessous' : 'Procédure régulière'} />
+        <Kpi label={t.vices} value={vices} tone={vices ? 'danger' : 'success'} hint={vices ? t.vicesHint : t.reguliere} />
       </div>
 
       <Card>
-        <SectionTitle sub="Chaque point est vérifié par rapport au Code des droits et procédures fiscaux.">Contrôle de la procédure</SectionTitle>
-        <ProcedureList checks={a.procedure} />
+        <SectionTitle sub={t.procedureSub}>{t.procedure}</SectionTitle>
+        <ProcedureList checks={a.procedure} langue={a.langue} />
       </Card>
 
       <div>
-        <SectionTitle sub={mode === 'entreprise' ? "Ce qu'on vous reproche, et ce que vous pouvez répondre." : 'Points faibles à renforcer avant envoi.'}>Chefs de redressement</SectionTitle>
+        <SectionTitle sub={mode === 'entreprise' ? t.chefsSub : 'Points faibles à renforcer avant envoi.'}>{t.chefs}</SectionTitle>
         <div className={clsx('space-y-4', langueBusy && 'opacity-60')}>{a.chefs.map((ca) => <ChefCard key={ca.chef.id} ca={ca} aiMode={a.mode === 'ia'} langue={a.langue} />)}</div>
       </div>
     </div>

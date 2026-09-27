@@ -75,21 +75,29 @@ SUSPENSION_TAUX = 0.20            # art. 52 : suspension de l'exécution contre 
 
 PROCEDURE_RULES: list[dict] = [
     {"code": "AVIS_PREALABLE", "article": "cdpf-art-39",
-     "label": "Avis préalable de vérification approfondie notifié"},
+     "label": "Avis préalable de vérification approfondie notifié",
+     "label_ar": "تبليغ الإعلام المسبق بالمراجعة الجبائية المعمقة"},
     {"code": "DELAI_AVIS_15J", "article": "cdpf-art-39",
-     "label": "Début de la vérification au moins 15 jours après l'avis"},
+     "label": "Début de la vérification au moins 15 jours après l'avis",
+     "label_ar": "انطلاق المراجعة بعد 15 يومًا على الأقل من الإعلام"},
     {"code": "MENTION_ASSISTANCE", "article": "cdpf-art-39",
-     "label": "Mention du droit de se faire assister dans l'avis"},
+     "label": "Mention du droit de se faire assister dans l'avis",
+     "label_ar": "التنصيص في الإعلام على حق الاستعانة بشخص يختاره المطالب بالأداء"},
     {"code": "DUREE_MAX", "article": "cdpf-art-40",
-     "label": "Durée de la vérification approfondie respectée (6 mois / 1 an)"},
+     "label": "Durée de la vérification approfondie respectée (6 mois / 1 an)",
+     "label_ar": "احترام المدة القصوى للمراجعة الجبائية المعمقة (6 أشهر / سنة)"},
     {"code": "CHEFS_MOTIVES", "article": "cdpf-art-43",
-     "label": "Chefs de redressement et méthode de calcul indiqués"},
+     "label": "Chefs de redressement et méthode de calcul indiqués",
+     "label_ar": "بيان عناصر التعديل وطريقة احتسابها"},
     {"code": "MENTION_DELAI_30J", "article": "cdpf-art-43",
-     "label": "Invitation à répondre dans le délai légal de 45 jours"},
+     "label": "Invitation à répondre dans le délai légal de 45 jours",
+     "label_ar": "الدعوة إلى الرد في الأجل القانوني المحدد بـ 45 يومًا"},
     {"code": "PENALITES_INDIQUEES", "article": "cdpf-art-43",
-     "label": "Montant de l'impôt et des pénalités indiqués"},
+     "label": "Montant de l'impôt et des pénalités indiqués",
+     "label_ar": "بيان مبلغ الأداء والخطايا"},
     {"code": "DROIT_REPRISE", "article": "cdpf-art-19",
-     "label": "Exercices vérifiés dans le délai de reprise (4 ans)"},
+     "label": "Exercices vérifiés dans le délai de reprise (4 ans)",
+     "label_ar": "السنوات المراجعة داخلة في أجل التقادم (4 سنوات)"},
 ]
 
 GOUVERNORATS = [
@@ -106,3 +114,29 @@ SECTEURS = ["Commerce de gros", "Commerce de détail", "BTP", "Industrie textile
 
 ETAPES = ["Notification", "Réponse du contribuable", "Réplique de l'administration",
           "Taxation d'office", "Tribunal de première instance", "Cour d'appel"]
+
+
+# Documents to gather, in Modern Standard Arabic (Arabic interface)
+PIECES_AR = {
+    "Factures d'achat originales": "أصول فواتير الشراء",
+    "Preuves de paiement (virements, chèques)": "ما يثبت الخلاص (تحويلات، صكوك)",
+    "Bons de livraison": "وصولات التسليم",
+    "Identifiant fiscal du fournisseur": "المعرف الجبائي للمزوّد",
+    "Factures et contrats justifiant les charges": "الفواتير والعقود المثبتة للأعباء",
+    "Lien des charges avec l'activité": "ما يثبت صلة الأعباء بالنشاط",
+    "Grand livre des comptes de charges": "دفتر الأستاذ لحسابات الأعباء",
+    "Relevés bancaires": "الكشوفات البنكية",
+    "Journal des ventes": "دفتر المبيعات",
+    "Inventaires de stock": "جرد المخزون",
+    "Rapprochement CA déclaré / encaissements": "مطابقة رقم المعاملات المصرح به مع المقبوضات",
+    "Comptabilité complète et régulière": "محاسبة كاملة ومنتظمة",
+    "Justificatifs des marges pratiquées": "ما يثبت هوامش الربح المعتمدة",
+    "Pièces sur les pertes et invendus": "وثائق الخسائر والبضائع غير المبيعة",
+    "Déclarations mensuelles de retenue": "التصاريح الشهرية بالخصم من المورد",
+    "Certificats de retenue remis": "شهادات الخصم من المورد المسلّمة",
+    "Preuves de reversement": "ما يثبت دفع المبالغ المخصومة إلى الخزينة",
+    "Documentation prix de transfert": "ملف أسعار التحويل",
+    "Contrats intra-groupe": "العقود المبرمة داخل المجمع",
+    "Comparables de prix de marché": "أسعار السوق المماثلة",
+    "Toute pièce justifiant l'opération redressée": "كل وثيقة تثبت العملية موضوع التعديل",
+}

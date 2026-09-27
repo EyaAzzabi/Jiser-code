@@ -116,7 +116,7 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 
 <img src="docs/screenshots/v2/17_admin_veille_juridique.jpg" alt="Veille juridique">
 
-<p align="center"><i>Pipeline hebdomadaire : 7 modifications réelles détectées dans le Code de la TVA lors de la première exécution, en attente de validation par un juriste (différences mot à mot).</i></p>
+<p align="center"><i>Pipeline hebdomadaire (planificateur interne) : à la première exécution, 7 écarts réels détectés dans le Code de la TVA, examinés mot à mot : 4 articles publiés (versions précédentes archivées, embeddings recalculés), 3 rejetés avec motif.</i></p>
 
 ### 6. Espace entreprise
 

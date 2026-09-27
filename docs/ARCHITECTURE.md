@@ -255,7 +255,7 @@ sequenceDiagram
 
 ## 9. Veille juridique automatisée
 
-Code : [`services/veille.py`](../backend/app/services/veille.py). Déclenchement : planificateur interne hebdomadaire, workflow n8n (lundi 6 h, `POST /api/n8n/veille`), ou bouton dans l'espace administrateur.
+Code : [`services/veille.py`](../backend/app/services/veille.py). Déclenchement : **planificateur interne hebdomadaire** (mode actuel) ou bouton dans l'espace administrateur. En production, avec une API en ligne, le workflow n8n `jiser-veille` (lundi 6 h, `POST /api/n8n/veille`) peut prendre le relais.
 
 ```mermaid
 flowchart LR
@@ -273,7 +273,7 @@ flowchart LR
 - **Rien n'atteint l'IA sans validation humaine.**
 - **Versions** : `data/legal/versions/<code>.json` garde chaque texte remplacé, avec ses dates de validité.
 - **Simulation** : un changement fictif, clairement marqué, démontre le circuit ; le valider ne modifie jamais la base.
-- **Première exécution réelle** : CDPF identique (154 articles), Code IRPP/IS identique (114), **Code de la TVA : 7 articles différents** de la base, placés en attente de validation.
+- **Première exécution réelle** : CDPF identique (154 articles), Code IRPP/IS identique (114), **Code de la TVA : 7 articles différents**. Après revue : **4 publiés** (art. 3, 4, 5, 20 : l'ancienne base contenait des articles de la loi de promulgation), **3 rejetés** avec motif (art. 2 et 6 : extraits tronqués ; art. 13 : à vérifier au JORT). Revue assistée par IA, à confirmer par un juriste.
 
 ---
 

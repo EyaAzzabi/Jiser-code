@@ -220,7 +220,13 @@ def decider(cid: str, decision: str, par: str, motif: str = "") -> dict:
     c = next((x for x in attente if x["id"] == cid), None)
     if c is None:
         raise LookupError("Changement introuvable ou déjà traité.")
-    _ecrire(EN_ATTENTE, [x for x in attente if x["id"] != cid])
+    restants = [x for x in attente if x["id"] != cid]
+    _ecrire(EN_ATTENTE, restants)
+    if not any(x["source"] == c["source"] for x in restants):   # every change of this source reviewed
+        e = _lire(ETAT, {"sources": {}, "executions": []})
+        if c["source"] in e["sources"]:
+            e["sources"][c["source"]]["statut"] = "a_jour"
+            _ecrire(ETAT, e)
     from .db import repo
     repo().journal_add({"action": "veille_juridique", "cible": f"{c['code'].upper()} art. {c['article']} ({c['type']})",
                         "recommandation": "Changement détecté par la veille" + (" (simulation)" if c["simulation"] else ""),
