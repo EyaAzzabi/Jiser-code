@@ -62,6 +62,7 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 | 🔒 **Confidentialité dès la conception** | Chiffrement au repos, **pseudonymisation avant toute IA externe**, k-anonymat pour le ministre, accès tracés et visibles par l'entreprise, export et effacement |
 | 💬 **Messagerie en temps réel** | WebSocket, accusés de lecture, pièces jointes chiffrées, IA qui résume l'échange, suggère une réponse et liste les pièces manquantes |
 | 📡 **Veille juridique automatisée** | Chaque semaine : collecte des textes officiels, détection article par article, validation par un juriste, versions archivées, embeddings recalculés |
+| 📱 **Une notification papier, photographiée page par page** | Photo depuis le téléphone, plusieurs pages lues ensemble, redressement automatique, HEIC et PDF scannés acceptés : 9 champs sur 9 lus correctement en 6 s sur une photo de test dégradée |
 | 📊 **Données réelles** | CDPF officiel 2024, statistiques du ministère des Finances, loi de finances 2026 ; simulation calibrée sur les jugements officiels |
 
 ---
@@ -124,9 +125,9 @@ JISER (جسر, « pont ») relie les deux côtés du litige, en respectant la hi
 |---|---|---|
 | <img src="docs/screenshots/04_entreprise_tableau_de_bord.jpg" alt="Tableau de bord"> | <img src="docs/screenshots/05_entreprise_analyser.jpg" alt="Analyser"> | <img src="docs/screenshots/08_entreprise_assistant.jpg" alt="Assistant"> |
 
-| Sur téléphone : photo de la notification | Analyse en arabe + brouillon de réponse |
-|---|---|
-| <img src="docs/screenshots/21_mobile_prendre_photo.jpg" width="240" alt="Photo mobile"> | <img src="docs/screenshots/v2/20_entreprise_analyse_arabe.jpg" width="420" alt="Analyse en arabe"> |
+| Sur téléphone : chaque page photographiée | Analyse obtenue depuis les photos | Analyse en arabe + brouillon |
+|---|---|---|
+| <img src="docs/screenshots/v2/22_mobile_pages_photographiees.jpg" width="240" alt="Pages photographiées"> | <img src="docs/screenshots/v2/23_mobile_analyse_photo.jpg" width="240" alt="Analyse depuis photo"> | <img src="docs/screenshots/v2/20_entreprise_analyse_arabe.jpg" width="360" alt="Analyse en arabe"> |
 
 <details>
 <summary><b>Plus de captures</b> (administration, admin plateforme)</summary>
@@ -182,11 +183,15 @@ Mesurés sur 625 dossiers de test jamais vus par le modèle ([`models/metrics.js
 | AUC « dossier recouvré à plus de 50 % » | **0,82** |
 | Montant recouvré en traitant 20 % du stock : tri JISER vs ancienneté | **107,3 MDT vs 28,5 MDT (+276 %)** |
 | Répartition des issues simulées vs jugements officiels 2020 | 51,9 / 33,6 / 14,5 % vs 51,5 / 33,9 / 14,5 % |
+| Lecture d'une notification photographiée (photo de test dégradée : inclinaison, ombre, flou) | **9 champs sur 9**, ~6 s ; mêmes contrôles de procédure que le PDF |
+| Recherche juridique pour une question en arabe | article 44 trouvé en premier (BM25 seul : aucun article) |
 | Tests de sécurité (accès, isolation, chiffrement, pseudonymisation, droits) | **8/8** |
 
 ---
 
 ## Architecture
+
+### Architecture actuelle (prototype fonctionnel)
 
 ```mermaid
 flowchart LR
@@ -203,6 +208,55 @@ flowchart LR
     B --> N[(n8n<br/>e-mails)]
     V[Veille juridique<br/>hebdomadaire] --> G
 ```
+
+### Architecture cible (production nationale)
+
+La meilleure architecture pour un déploiement à l'échelle de la DGI : **souveraine** (données et modèles hébergés en Tunisie), **sécurisée dès la conception**, **scalable** et **observable**. Le prototype a été construit pour y migrer sans réécriture : mêmes contrats d'API, passerelle LLM multi-fournisseurs, dépôt de données interchangeable.
+
+```mermaid
+flowchart TB
+    subgraph Acces["Accès"]
+        E[Entreprises<br/>web + application mobile PWA]
+        A[Agents DGI<br/>ministre · chefs de centre · chargés]
+    end
+    E --> WAF[WAF + CDN · TLS 1.3<br/>anti-DDoS, limitation de débit]
+    A --> SSO[SSO de l'État + MFA<br/>annuaire des agents]
+    WAF --> GW[API Gateway<br/>authentification, quotas, journaux]
+    SSO --> GW
+    subgraph Cloud["Cloud souverain en Tunisie · Kubernetes"]
+        GW --> API[API métier FastAPI<br/>réplicas sans état]
+        API --> RT[Temps réel<br/>WebSocket + Redis pub/sub]
+        API --> Q[File de tâches<br/>Redis / RabbitMQ]
+        Q --> WIA[Workers IA<br/>OCR local · extraction · analyse]
+        Q --> WV[Workers veille juridique<br/>Airflow ou n8n]
+        WIA --> OCR[OCR hébergé localement<br/>arabe + français]
+        WIA --> LLM[LLM hébergé localement<br/>vLLM · modèle open-weight arabe/français]
+        API --> PG[(PostgreSQL + pgvector<br/>RLS · réplication · sauvegardes chiffrées)]
+        API --> OBJ[(Stockage objet chiffré<br/>notifications, pièces, justificatifs)]
+        API --> KMS[KMS / HSM<br/>clés de chiffrement, rotation]
+        WV --> PG
+        MLO[MLOps · MLflow<br/>réentraînement sur l'historique DGI,<br/>suivi de dérive, validation] --> API
+    end
+    API --> RNE[API du registre national<br/>des entreprises]
+    API --> SI[Système d'information DGI<br/>dossiers et décisions réels]
+    API --> JORT[Sources officielles<br/>JORT · jibaya.tn · notes communes]
+    OBS[Observabilité · SIEM<br/>Prometheus, Grafana, journaux d'audit] -.-> API
+```
+
+| Brique | Prototype actuel | Production cible | Pourquoi |
+|---|---|---|---|
+| Hébergement | PC / cloud public | **Cloud souverain en Tunisie**, Kubernetes, plusieurs zones | Secret fiscal, disponibilité |
+| Identité | OTP par e-mail + validation humaine | **SSO de l'État + MFA** pour les agents ; vérification des entreprises via l'**API du RNE** | Aucun faux compte, révocation immédiate |
+| IA générative | OpenAI / Gemini, texte pseudonymisé | **LLM open-weight hébergé localement** (vLLM), même passerelle `llm.py` | Aucune donnée ne quitte le pays |
+| Lecture des photos | Modèle de vision externe | **OCR local arabe/français** puis LLM local | Supprime la seule exception de confidentialité |
+| Base de données | Supabase (PostgreSQL + RLS) | **PostgreSQL + pgvector** géré en interne, réplication, sauvegardes chiffrées | Recherche vectorielle en base, reprise après sinistre |
+| Chiffrement | Clé Fernet côté serveur | **KMS / HSM**, rotation des clés, chiffrement par dossier | Standard de sécurité de l'État |
+| Temps réel | Hub WebSocket en mémoire | **Redis pub/sub**, plusieurs instances | Des milliers d'utilisateurs simultanés |
+| Tâches longues | Threads du serveur | **File de tâches + workers** (OCR, analyses, veille) | Aucune requête bloquée |
+| Veille juridique | Planificateur interne hebdomadaire | **Airflow ou n8n**, sources officielles (JORT, notes communes, lois de finances) | Couverture complète, historique |
+| Modèle ML | XGBoost sur données calibrées | **MLOps** : réentraînement sur l'historique réel de la DGI, suivi de dérive, validation avant mise en service | Scores fiables et auditables |
+| Observabilité | Journal d'audit | **Prometheus, Grafana, SIEM**, alertes | Détection d'incidents, conformité |
+| Intégrations | — | **SI de la DGI**, RNE, messagerie officielle | Plus de ressaisie, dossier unique |
 
 Documentation complète : **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
@@ -261,6 +315,9 @@ Sans ces services, l'application reste utilisable : règles et modèle ML à la 
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture technique complète |
 | [docs/CONFIDENTIALITE.md](docs/CONFIDENTIALITE.md) | Garanties de confidentialité et loi 2004-63 |
 | [docs/JISER_note_de_synthese.pdf](docs/JISER_note_de_synthese.pdf) | Note de synthèse (2 pages) |
+| [docs/PITCH_DECK.md](docs/PITCH_DECK.md) | Pitch deck final : slide par slide, texte, visuels, notes de l'orateur, timing |
+| [docs/SCRIPT_VIDEO_TEASER.md](docs/SCRIPT_VIDEO_TEASER.md) | Script de la vidéo teaser (2 minutes) |
+| [docs/JISER_PROMPT_COMPLET.md](docs/JISER_PROMPT_COMPLET.md) | Présentation complète du projet et réponses aux questions du jury |
 
 ## Limites
 
