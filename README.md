@@ -308,6 +308,19 @@ npm run dev -- --host                                               # http://loc
 
 Sans ces services, l'application reste utilisable : règles et modèle ML à la place de l'IA générative, base en mémoire, codes écrits dans le journal du serveur.
 
+### Mise en ligne
+
+| Élément | Hébergement | Fichier |
+|---|---|---|
+| Interface React | **GitHub Pages** : https://eyaazzabi.github.io/Jiser/ (publiée à chaque push) | `.github/workflows/pages.yml` |
+| API FastAPI | **Render** (service Docker gratuit) | `render.yaml`, `Dockerfile` |
+
+1. **API** : sur render.com, *New › Blueprint*, choisir ce dépôt, coller les valeurs du `.env` dans les variables demandées, déployer.
+2. **Interface** : dans le dépôt GitHub, *Settings › Pages › Source : GitHub Actions*. Si l'URL Render diffère de `https://jiser-api.onrender.com`, la renseigner dans *Settings › Variables › Actions* sous le nom `JISER_API_URL`.
+3. L'image Docker sert aussi l'interface : l'URL Render seule suffit comme lien de secours.
+
+L'offre gratuite de Render met le service en veille après 15 minutes sans visite : le premier accès prend environ une minute. Ouvrir le lien avant une démonstration.
+
 ## Documents
 
 | Document | Contenu |

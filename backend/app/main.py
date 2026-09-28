@@ -53,10 +53,15 @@ async def reseau_indisponible(_request, exc: httpx.TransportError):
 
 @app.on_event("startup")
 def warm_up() -> None:
-    get_index()
-    get_store()
+    # load the legal base, the files and the model in the background: the server answers at once
+    # (small cloud instances would otherwise take minutes before opening their port)
+    def charger() -> None:
+        get_index()
+        get_store()
+        administration.dashboard()
+        llm.probe()
     repo()
-    threading.Thread(target=llm.probe, daemon=True).start()
+    threading.Thread(target=charger, daemon=True).start()
     rappels.demarrer_planificateur()
     veille.demarrer_planificateur()
 

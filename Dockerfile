@@ -1,5 +1,5 @@
 # JISER · image de production : l'API FastAPI sert aussi l'interface React compilée (un seul service).
-# Construite par Hugging Face Spaces (ou n'importe quel hébergeur Docker). Les secrets sont fournis en
+# Construite par Render (render.yaml) ou n'importe quel hébergeur Docker. Les secrets sont fournis en
 # variables d'environnement par l'hébergeur : aucun fichier .env n'entre dans l'image.
 
 # 1. Interface React
@@ -24,4 +24,5 @@ COPY --chown=jiser scripts scripts
 COPY --from=interface --chown=jiser /app/frontend/dist frontend/dist
 USER jiser
 EXPOSE 7860
-CMD ["python", "-m", "uvicorn", "app.main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "7860", "--proxy-headers", "--forwarded-allow-ips", "*"]
+# the host sets PORT (Render: 10000); 7860 otherwise
+CMD ["sh", "-c", "python -m uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port ${PORT:-7860} --proxy-headers --forwarded-allow-ips '*'"]

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi, comptesApi, espaceDuRole, frDate, ROLE_LABELS, saveSession, type Controle, type Piece, type Session, type Utilisateur } from '../api'
 import { Button } from './ui'
+import { asset } from '../apiBase'
 
 type Statut = Utilisateur & { pieces: Piece[]; controles: Controle[]; delai_heures: number }
 
@@ -42,7 +43,7 @@ export default function CompteEnAttente({ session }: { session: Session }) {
     <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
       <div className="w-full max-w-2xl rounded-3xl bg-white p-8 shadow-xl">
         <div className="flex items-center justify-between">
-          <img src="/logo.png" alt="JISER" className="w-28" />
+          <img src={asset('logo.png')} alt="JISER" className="w-28" />
           <button onClick={logout} className="flex items-center gap-1 text-sm text-slate-500 hover:text-rose-700"><LogOut size={16} /> Se déconnecter</button>
         </div>
         <div className={clsx('mt-6 flex items-start gap-4 rounded-2xl p-5', refuse ? 'bg-rose-50' : 'bg-gold-light/60')}>

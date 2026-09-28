@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { espaceDuRole, saveSession, type Role, type Session } from '../api'
 import OtpCode from './OtpCode'
 import { Button } from './ui'
+import { asset } from '../apiBase'
 
 /** E-mail + OTP sign-in form. `intention="admin"` is the private platform-administrator entrance. */
 export function LoginForm({ intention, onDone, footer }: { intention: 'connexion' | 'admin'; onDone: (s: Session) => void; footer?: ReactNode }) {
@@ -63,7 +64,7 @@ export function AccessGate({ session, roles, onLogin, onSignup }: { session: Ses
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-xl">
-        <img src="/logo.png" alt="JISER" className="mx-auto w-36" />
+        <img src={asset('logo.png')} alt="JISER" className="mx-auto w-36" />
         <h2 className="mt-4 text-2xl font-bold text-navy-900">{wrongRole ? 'Espace non autorisé' : 'Espace sécurisé'}</h2>
         <p className="mt-2 text-slate-600">{wrongRole ? "Votre profil n'a pas accès à cet espace." : 'Connectez-vous ou créez votre espace pour continuer.'}</p>
         <div className="mt-6 flex flex-col gap-2">

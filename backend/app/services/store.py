@@ -5,6 +5,7 @@ Dossiers are loaded once at startup; the journal is read and written through the
 from __future__ import annotations
 
 import json
+import threading
 from dataclasses import dataclass
 from datetime import date
 from functools import lru_cache
@@ -49,8 +50,17 @@ def _dominant_type(d: Dossier) -> str:
     return CHEF_TYPES.get(top.type, {}).get("label", top.libelle)
 
 
-@lru_cache(maxsize=1)
+_verrou = threading.Lock()
+
+
 def get_store() -> Store:
+    """Loaded once; the lock stops a request and the startup thread from loading it twice at the same time."""
+    with _verrou:
+        return _charger_store()
+
+
+@lru_cache(maxsize=1)
+def _charger_store() -> Store:
     # dossiers live in Supabase when configured (seeded by scripts/seed_supabase.py), else the local file
     raw = repo().dossiers_all() or json.loads((SYNTHETIC_DIR / "dossiers.json").read_text(encoding="utf-8"))
     dossiers = {d["id"]: Dossier.model_validate(d) for d in raw}

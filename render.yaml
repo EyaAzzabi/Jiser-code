@@ -1,0 +1,37 @@
+# JISER API on Render (free Docker web service). Render reads this file: New > Blueprint > this repository.
+# Secret values are not in this file: Render asks for each "sync: false" variable at creation
+# (paste them from your .env; never commit them).
+services:
+  - type: web
+    name: jiser-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/status
+    autoDeploy: true
+    envVars:
+      - key: APP_URL
+        value: https://eyaazzabi.github.io/Jiser
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: N8N_SHARED_SECRET
+        sync: false
+      - key: N8N_OTP_WEBHOOK_URL
+        sync: false
+      - key: N8N_WELCOME_WEBHOOK_URL
+        sync: false
+      - key: N8N_RAPPEL_WEBHOOK_URL
+        sync: false
+      - key: N8N_NOTIF_WEBHOOK_URL
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: JISER_LLM_PROVIDER
+        value: openai

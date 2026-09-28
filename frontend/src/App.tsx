@@ -9,6 +9,7 @@ import Administration from './pages/Administration'
 import AdminPlateforme from './pages/AdminPlateforme'
 import Entreprise from './pages/Entreprise'
 import Home from './pages/Home'
+import { asset } from './apiBase'
 
 function PublicHeader({ session, onLogin, onSignup }: { session: Session | null; onLogin: () => void; onSignup: () => void }) {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ function PublicHeader({ session, onLogin, onSignup }: { session: Session | null;
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2.5">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src="/logo-icon.png" alt="Logo JISER" className="h-11 w-11" />
+          <img src={asset('logo-icon.png')} alt="Logo JISER" className="h-11 w-11" />
           <div className="leading-tight">
             <div className="font-display text-xl font-extrabold tracking-wide text-navy-900">J<span className="text-gold">i</span>SER <span className="font-sans font-normal text-gold">جسر</span></div>
             <div className="hidden text-[11px] text-slate-500 sm:block">Le pont entre le contribuable et l'administration fiscale</div>
@@ -54,7 +55,7 @@ function Footer() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-3">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <div className="rounded-xl bg-white p-1"><img src="/logo-icon.png" alt="" className="h-9 w-9" /></div>
+            <div className="rounded-xl bg-white p-1"><img src={asset('logo-icon.png')} alt="" className="h-9 w-9" /></div>
             <div className="font-display text-lg font-bold text-white">J<span className="text-gold">i</span>SER <span className="font-sans font-normal text-gold">جسر</span></div>
           </div>
           <p className="mt-3 max-w-md text-sm">Le pont entre le contribuable et l'administration fiscale. IA · Conseil · Solution.</p>

@@ -6,6 +6,7 @@ import { authApi, comptesApi, saveSession, type Session, type Utilisateur } from
 import OtpCode from './OtpCode'
 import { FAMILLES, roleConfig, ROLES, validateSection, type Famille, type Field, type Role } from './onboardingConfig'
 import { Button } from './ui'
+import { asset } from '../apiBase'
 
 type Values = Record<string, unknown>
 
@@ -174,7 +175,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
       <div className="animate-fade-up relative flex max-h-[94vh] w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl">
         {step !== 'bienvenue' && (
           <aside className="hidden w-64 shrink-0 bg-gradient-to-b from-navy-900 to-navy-700 p-6 text-white md:block">
-            <img src="/logo-icon.png" alt="" className="h-12 w-12 rounded-xl bg-white p-1" />
+            <img src={asset('logo-icon.png')} alt="" className="h-12 w-12 rounded-xl bg-white p-1" />
             <div className="mt-3 font-display text-lg font-bold">Demande d'accès</div>
             {cfg && <div className="text-xs text-gold">{cfg.label}</div>}
             <ol className="mt-6 space-y-1">
@@ -205,7 +206,7 @@ export default function Onboarding({ onClose, onLogin }: { onClose: () => void; 
 
             {step === 'bienvenue' && (
               <div className="py-4 text-center">
-                <img src="/logo.png" alt="JISER" className="mx-auto w-48" />
+                <img src={asset('logo.png')} alt="JISER" className="mx-auto w-48" />
                 <h2 className="mt-4 text-3xl font-bold text-navy-900">Bienvenue sur JISER</h2>
                 <p className="mx-auto mt-2 max-w-lg text-slate-600">Le pont entre le contribuable et l'administration fiscale. Chaque compte est vérifié avant d'être activé.</p>
                 <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left sm:grid-cols-3">

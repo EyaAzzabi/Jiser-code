@@ -2,12 +2,13 @@ import { AlertTriangle, ArrowRight, BadgeCheck, Bot, Building2, CheckCircle2, Cl
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, espaceDuRole, type ModelMetrics, type Session } from '../api'
+import { asset } from '../apiBase'
 
 function HeroMockup() {
   return (
     <div className="relative mx-auto w-full max-w-md">
       <div className="rounded-3xl bg-white p-6 shadow-2xl shadow-navy-950/40">
-        <img src="/logo.png" alt="JISER" className="mx-auto w-52" />
+        <img src={asset('logo.png')} alt="JISER" className="mx-auto w-52" />
       </div>
       <div className="animate-float absolute -left-10 top-8 hidden w-56 rounded-2xl bg-white p-3 text-sm shadow-xl md:block">
         <div className="flex items-center gap-2 font-semibold text-rose-600"><AlertTriangle size={16} /> Vice de procédure</div>

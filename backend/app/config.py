@@ -56,4 +56,14 @@ SEUIL_VALIDATION_CONCILIATION = float(_env("SEUIL_VALIDATION_CONCILIATION", "100
 # key for encryption at rest (Fernet). If empty, a key is derived from the server secrets.
 DATA_KEY = _env("JISER_DATA_KEY")
 
-CORS_ORIGINS = [APP_URL, "http://localhost:5173", "http://127.0.0.1:5173"]
+
+def _origine(url: str) -> str:
+    """https://eyaazzabi.github.io/Jiser -> https://eyaazzabi.github.io (browsers send the origin only)."""
+    from urllib.parse import urlparse
+    u = urlparse(url)
+    return f"{u.scheme}://{u.netloc}" if u.scheme and u.netloc else url
+
+
+# the interface may be hosted apart from the API (GitHub Pages): allow its origin
+CORS_ORIGINS = sorted({_origine(APP_URL), "http://localhost:5173", "http://127.0.0.1:5173",
+                       *(_origine(o.strip()) for o in _env("JISER_CORS_ORIGINS").split(",") if o.strip())})

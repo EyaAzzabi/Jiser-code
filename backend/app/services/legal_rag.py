@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
 import unicodedata
 from functools import lru_cache
 
@@ -108,6 +109,17 @@ class LegalIndex:
         return out
 
 
-@lru_cache(maxsize=1)
+_verrou = threading.Lock()
+
+
 def get_index() -> LegalIndex:
+    with _verrou:   # one load only, even if the startup thread and a request ask at the same time
+        return _charger_index()
+
+
+@lru_cache(maxsize=1)
+def _charger_index() -> LegalIndex:
     return LegalIndex()
+
+
+get_index.cache_clear = _charger_index.cache_clear   # used by the legal watch after a publication

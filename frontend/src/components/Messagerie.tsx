@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { ArrowLeft, Check, CheckCheck, FileText, Lock, MessageSquarePlus, Paperclip, Send, Sparkles, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { wsUrl } from '../apiBase'
 import { api, fileToBase64, loadSession, messagerieApi, type AideIA, type AnalyseResume, type Conversation, type Message } from '../api'
 import { Button, Card, ErrorBox, PageHeader, Spinner } from './ui'
 
@@ -17,7 +18,7 @@ export function useTempsReel(onEvent: (e: Evenement) => void) {
     let stop = false
     let retry: ReturnType<typeof setTimeout>
     const connect = () => {
-      const s = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/messagerie/ws`)
+      const s = new WebSocket(wsUrl('/api/messagerie/ws'))
       ws.current = s
       s.onopen = () => s.send(JSON.stringify({ type: 'auth', token: loadSession()?.token }))
       s.onmessage = (m) => {
