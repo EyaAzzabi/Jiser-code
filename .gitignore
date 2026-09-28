@@ -24,3 +24,8 @@ Thumbs.db
 
 # n8n workflows with the real shared secret baked in
 n8n/local/
+
+# original demo recordings (compressed copies live in docs/videos)
+videos_jiser/
+# stray nested clone
+/Jiser/

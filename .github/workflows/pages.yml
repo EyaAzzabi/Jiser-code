@@ -6,7 +6,7 @@ name: Interface sur GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ["frontend/**", ".github/workflows/pages.yml"]
+    paths: ["frontend/**", "docs/videos/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -37,6 +37,8 @@ jobs:
           VITE_API_URL: ${{ vars.JISER_API_URL || 'https://jiser-api.onrender.com' }}
       # deep links (/Jiser/entreprise…) are served the app itself, which then routes on the client
       - run: cp frontend/dist/index.html frontend/dist/404.html
+      # demo videos, played straight in the browser from the README (https://eyaazzabi.github.io/Jiser/videos/…)
+      - run: mkdir -p frontend/dist/videos && cp docs/videos/*.mp4 docs/videos/*.jpg docs/videos/index.html frontend/dist/videos/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist

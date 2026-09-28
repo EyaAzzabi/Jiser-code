@@ -25,9 +25,75 @@
 </p>
 
 <p align="center">
-  <b>Application en ligne : <a href="https://eyaazzabi.github.io/Jiser/">https://eyaazzabi.github.io/Jiser/</a></b><br>
+  <b>Application en ligne : <a href="https://eyaazzabi.github.io/Jiser/">https://eyaazzabi.github.io/Jiser/</a></b> · <b><a href="https://eyaazzabi.github.io/Jiser/videos/">Vidéos de démonstration</a></b><br>
   <sub>Hébergement gratuit : le premier accès après 15 minutes d'inactivité peut prendre environ une minute.</sub>
 </p>
+
+<p align="center">
+  <a href="#-démonstrations-vidéo">Vidéos</a> ·
+  <a href="#-essayer-jiser">Essayer</a> ·
+  <a href="#le-problème">Problème</a> ·
+  <a href="#la-solution">Solution</a> ·
+  <a href="#aperçu">Aperçu</a> ·
+  <a href="#confidentialité-des-données-loi-organique-2004-63">Confidentialité</a> ·
+  <a href="#résultats">Résultats</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#lancer-le-projet">Lancer le projet</a>
+</p>
+
+---
+
+## 🎬 Démonstrations vidéo
+
+Chaque rôle filmé sur l'application en ligne, avec des données fictives. Cliquez sur une image pour lancer la vidéo dans le navigateur, ou [voyez-les toutes sur une page](https://eyaazzabi.github.io/Jiser/videos/).
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://eyaazzabi.github.io/Jiser/videos/01_entreprise.mp4"><img src="docs/videos/01_entreprise.jpg" alt="Vidéo : espace entreprise"></a>
+      <b>▶ Entreprise</b> · 6 min<br>
+      <sub>Création de l'espace, e-mail vérifié, situation fiscale, consentements, puis analyse d'une notification de redressement par l'IA.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://eyaazzabi.github.io/Jiser/videos/02_charge_contentieux.mp4"><img src="docs/videos/02_charge_contentieux.jpg" alt="Vidéo : chargé du contentieux"></a>
+      <b>▶ Chargé(e) du contentieux</b> · 3 min<br>
+      <sub>Demande d'accès, validation par l'administrateur, stock du centre, score de solidité expliqué (SHAP), lettre de conciliation.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://eyaazzabi.github.io/Jiser/videos/03_ministre.mp4"><img src="docs/videos/03_ministre.jpg" alt="Vidéo : ministre des Finances"></a>
+      <b>▶ Ministre des Finances</b> · 2 min<br>
+      <sub>Inscription avec décret de nomination, pilotage national anonyme avec filtres, copilote juridique.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://eyaazzabi.github.io/Jiser/videos/04_administrateur_plateforme.mp4"><img src="docs/videos/04_administrateur_plateforme.jpg" alt="Vidéo : administrateur de la plateforme"></a>
+      <b>▶ Administrateur de la plateforme</b> · 1 min<br>
+      <sub>Santé des services, journal d'audit de l'IA, base juridique, veille juridique automatisée.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top" align="center">
+      <a href="https://eyaazzabi.github.io/Jiser/videos/05_mobile_chef_de_centre.mp4"><img src="docs/videos/05_mobile_chef_de_centre.jpg" width="220" alt="Vidéo : chef de centre sur téléphone"></a><br>
+      <b>▶ Chef de centre, sur téléphone</b> · 5 min<br>
+      <sub>Tout le parcours depuis un smartphone : rôle, code par e-mail, centre régional, consentements, tableau de bord et synthèse IA.</sub>
+    </td>
+    <td width="50%" valign="top">
+
+### 📱 Essayer JISER
+
+1. Scannez le QR code, ou ouvrez **[eyaazzabi.github.io/Jiser](https://eyaazzabi.github.io/Jiser/)**.
+2. **Créer mon espace** : entreprise ou administration.
+3. Entrez le code reçu par e-mail.
+4. Côté entreprise, déposez une notification ou choisissez un **exemple** (Textile Jasmin, Distribution El Amen).
+
+<p align="center"><img src="docs/flyer/qr_application.png" width="170" alt="QR code vers l'application JISER"></p>
+
+<sub>Les comptes administration sont validés par un humain avant tout accès. Flyer A5 imprimable : <a href="docs/flyer/JISER_flyer_A5.pdf">docs/flyer</a>.</sub>
+
+</td>
+  </tr>
+</table>
 
 ---
 
@@ -219,6 +285,8 @@ flowchart LR
     V[Veille juridique<br/>hebdomadaire] --> G
 ```
 
+<sub>En ligne : l'interface est servie par <b>GitHub Pages</b>, l'API par <b>Render</b> (image Docker), la base par <b>Supabase</b> et les e-mails par <b>n8n Cloud</b>.</sub>
+
 ### Architecture cible (production nationale)
 
 La meilleure architecture pour un déploiement à l'échelle de la DGI : **souveraine** (données et modèles hébergés en Tunisie), **sécurisée dès la conception**, **scalable** et **observable**. Le prototype a été construit pour y migrer sans réécriture : mêmes contrats d'API, passerelle LLM multi-fournisseurs, dépôt de données interchangeable.
@@ -255,7 +323,7 @@ flowchart TB
 
 | Brique | Prototype actuel | Production cible | Pourquoi |
 |---|---|---|---|
-| Hébergement | PC / cloud public | **Cloud souverain en Tunisie**, Kubernetes, plusieurs zones | Secret fiscal, disponibilité |
+| Hébergement | GitHub Pages (interface) + Render (API Docker), gratuits | **Cloud souverain en Tunisie**, Kubernetes, plusieurs zones | Secret fiscal, disponibilité |
 | Identité | OTP par e-mail + validation humaine | **SSO de l'État + MFA** pour les agents ; vérification des entreprises via l'**API du RNE** | Aucun faux compte, révocation immédiate |
 | IA générative | OpenAI / Gemini, texte pseudonymisé | **LLM open-weight hébergé localement** (vLLM), même passerelle `llm.py` | Aucune donnée ne quitte le pays |
 | Lecture des photos | Modèle de vision externe | **OCR local arabe/français** puis LLM local | Supprime la seule exception de confidentialité |
@@ -325,6 +393,7 @@ Sans ces services, l'application reste utilisable : règles et modèle ML à la 
 | **Application** | **https://eyaazzabi.github.io/Jiser/** | GitHub Pages (publiée à chaque push) | `.github/workflows/pages.yml` |
 | API FastAPI | https://jiser-api.onrender.com (documentation : [/docs](https://jiser-api.onrender.com/docs)) | Render, service Docker gratuit | `render.yaml`, `Dockerfile` |
 | Lien de secours | https://jiser-api.onrender.com (l'API sert aussi l'interface) | Render | `Dockerfile` |
+| Vidéos | https://eyaazzabi.github.io/Jiser/videos/ | GitHub Pages, avec l'interface | `docs/videos/` |
 | QR code et flyer | [docs/flyer/](docs/flyer/) | | `scripts/qr_flyer.py` |
 
 Pour redéployer ou recréer l'hébergement :
@@ -339,6 +408,8 @@ L'offre gratuite de Render met le service en veille après 15 minutes sans visit
 
 | Document | Contenu |
 |---|---|
+| [Vidéos de démonstration](https://eyaazzabi.github.io/Jiser/videos/) ([docs/videos/](docs/videos/)) | Les 5 parcours filmés : entreprise, chargé, ministre, chef de centre sur téléphone, administrateur |
+| [docs/flyer/](docs/flyer/) | Flyer A5 (PDF et PNG) et QR codes de l'application et du code source |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture technique complète |
 | [docs/CONFIDENTIALITE.md](docs/CONFIDENTIALITE.md) | Garanties de confidentialité et loi 2004-63 |
 | [docs/JISER_note_de_synthese.pdf](docs/JISER_note_de_synthese.pdf) | Note de synthèse (2 pages) |
