@@ -8,6 +8,11 @@
 </p>
 
 <p align="center">
+  Élaboré par <b>Eya Azzabi</b>, <b>Sarah Felah</b>, <b>Eya Rachdi</b> et <b>Eya Idi</b><br>
+  dans le cadre du hackathon national « IA &amp; Finances publiques » : prototype réalisé du <b>25 au 26 septembre 2026</b>, finale le <b>29 septembre 2026</b>
+</p>
+
+<p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.11-0b2f5b?logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-REST%20%2B%20WebSocket-0b2f5b?logo=fastapi&logoColor=white">
   <img alt="React" src="https://img.shields.io/badge/React-19-0b2f5b?logo=react&logoColor=white">
@@ -38,7 +43,8 @@
   <a href="#confidentialité-des-données-loi-organique-2004-63">Confidentialité</a> ·
   <a href="#résultats">Résultats</a> ·
   <a href="#architecture">Architecture</a> ·
-  <a href="#lancer-le-projet">Lancer le projet</a>
+  <a href="#lancer-le-projet">Lancer le projet</a> ·
+  <a href="#équipe">Équipe</a>
 </p>
 
 ---
@@ -417,6 +423,15 @@ L'offre gratuite de Render met le service en veille après 15 minutes sans visit
 | [docs/SCRIPT_VIDEO_TEASER.md](docs/SCRIPT_VIDEO_TEASER.md) | Script de la vidéo teaser (2 minutes) |
 | [docs/JISER_PROMPT_COMPLET.md](docs/JISER_PROMPT_COMPLET.md) | Présentation complète du projet et réponses aux questions du jury |
 
+## Équipe
+
+Projet élaboré par une équipe de quatre data scientists, dans le cadre du **hackathon national « IA & Finances publiques » 2026** (prototype développé du 25 septembre 2026 à 17 h au 26 septembre 2026 à 8 h ; équipe classée 2e sur 30 au premier tour et sélectionnée pour la finale du 29 septembre 2026).
+
+- **Eya Azzabi** ([@EyaAzzabi](https://github.com/EyaAzzabi))
+- **Sarah Felah**
+- **Eya Rachdi**
+- **Eya Idi**
+
 ## Limites
 
 - Modèle entraîné sur des données simulées calibrées : à réentraîner sur l'historique réel de la DGI.
@@ -428,5 +443,6 @@ L'offre gratuite de Render met le service en veille après 15 minutes sans visit
 
 <p align="center">
   <img src="frontend/public/logo-icon.png" width="56" alt="JISER"><br>
-  <sub>JISER · جسر · Le pont entre le contribuable et l'administration fiscale</sub>
+  <sub>JISER · جسر · Le pont entre le contribuable et l'administration fiscale</sub><br>
+  <sub>Eya Azzabi · Sarah Felah · Eya Rachdi · Eya Idi · Hackathon « IA &amp; Finances publiques », septembre 2026</sub>
 </p>
