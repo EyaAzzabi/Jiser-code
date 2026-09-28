@@ -24,5 +24,4 @@ COPY --chown=jiser scripts scripts
 COPY --from=interface --chown=jiser /app/frontend/dist frontend/dist
 USER jiser
 EXPOSE 7860
-CMD ["python", "-m", "uvicorn", "app.main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "7860", \
-     "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "7860", "--proxy-headers", "--forwarded-allow-ips", "*"]
