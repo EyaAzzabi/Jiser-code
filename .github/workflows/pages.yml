@@ -1,6 +1,6 @@
 # Publishes the JISER interface on GitHub Pages (https://eyaazzabi.github.io/Jiser/) at every push.
 # The interface is static; it calls the API hosted on Render (repository variable JISER_API_URL).
-# Requires Settings > Pages > Source: GitHub Actions.
+# Requires Settings > Pages > Source: GitHub Actions (enabled).
 name: Interface sur GitHub Pages
 
 on:
