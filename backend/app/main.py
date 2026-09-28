@@ -22,7 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, SYNTHETIC_DIR
+from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, ROOT, SYNTHETIC_DIR
 from .deps import compte, current_session, journaliser_acces, n8n_auth, permission
 from .domain import DELAI_REPONSE_JOURS
 from .routers import comptes as comptes_router
@@ -614,3 +614,21 @@ def systeme(_: dict = Depends(PLATEFORME)):
 def echeances(jours: int = 7, _: None = Depends(n8n_auth)):
     """Called daily by the n8n reminder workflow: replies due within `jours` days."""
     return repo().upcoming_deadlines(jours)
+
+
+# ---- Interface web (déploiement : un seul service sert l'API et l'application) ----------------------
+
+FRONTEND_DIST = ROOT / "frontend" / "dist"
+if (FRONTEND_DIST / "index.html").exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/assets", StaticFiles(directory=FRONTEND_DIST / "assets"), name="assets")
+
+    @app.get("/{chemin:path}", include_in_schema=False)
+    def application_web(chemin: str):
+        """Built React app: real files as they are, every other path to index.html (client-side routing)."""
+        if chemin.startswith("api/"):
+            raise HTTPException(404, "Route inconnue")
+        fichier = (FRONTEND_DIST / chemin).resolve()
+        if chemin and fichier.is_file() and FRONTEND_DIST.resolve() in fichier.parents:
+            return FileResponse(fichier)
+        return FileResponse(FRONTEND_DIST / "index.html", headers={"Cache-Control": "no-cache"})
