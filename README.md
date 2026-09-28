@@ -19,6 +19,16 @@
   <img alt="Loi 2004-63" src="https://img.shields.io/badge/Donn%C3%A9es-loi%202004--63%20%C2%B7%20INPDP-059669">
 </p>
 
+<p align="center">
+  <a href="https://eyaazzabi.github.io/Jiser/"><img alt="Essayer JISER en ligne" src="https://img.shields.io/badge/Essayer%20JISER-eyaazzabi.github.io%2FJiser-c29a2e?style=for-the-badge&logo=githubpages&logoColor=white"></a>
+  <a href="https://jiser-api.onrender.com/docs"><img alt="API en ligne" src="https://img.shields.io/badge/API-jiser--api.onrender.com-0b2f5b?style=for-the-badge&logo=render&logoColor=white"></a>
+</p>
+
+<p align="center">
+  <b>Application en ligne : <a href="https://eyaazzabi.github.io/Jiser/">https://eyaazzabi.github.io/Jiser/</a></b><br>
+  <sub>Hébergement gratuit : le premier accès après 15 minutes d'inactivité peut prendre environ une minute.</sub>
+</p>
+
 ---
 
 ## Le problème
@@ -310,10 +320,14 @@ Sans ces services, l'application reste utilisable : règles et modèle ML à la 
 
 ### Mise en ligne
 
-| Élément | Hébergement | Fichier |
-|---|---|---|
-| Interface React | **GitHub Pages** : https://eyaazzabi.github.io/Jiser/ (publiée à chaque push) | `.github/workflows/pages.yml` |
-| API FastAPI | **Render** (service Docker gratuit) | `render.yaml`, `Dockerfile` |
+| Élément | Lien | Hébergement | Fichier |
+|---|---|---|---|
+| **Application** | **https://eyaazzabi.github.io/Jiser/** | GitHub Pages (publiée à chaque push) | `.github/workflows/pages.yml` |
+| API FastAPI | https://jiser-api.onrender.com (documentation : [/docs](https://jiser-api.onrender.com/docs)) | Render, service Docker gratuit | `render.yaml`, `Dockerfile` |
+| Lien de secours | https://jiser-api.onrender.com (l'API sert aussi l'interface) | Render | `Dockerfile` |
+| QR code et flyer | [docs/flyer/](docs/flyer/) | | `scripts/qr_flyer.py` |
+
+Pour redéployer ou recréer l'hébergement :
 
 1. **API** : sur render.com, *New › Blueprint*, choisir ce dépôt, coller les valeurs du `.env` dans les variables demandées, déployer.
 2. **Interface** : dans le dépôt GitHub, *Settings › Pages › Source : GitHub Actions*. Si l'URL Render diffère de `https://jiser-api.onrender.com`, la renseigner dans *Settings › Variables › Actions* sous le nom `JISER_API_URL`.
