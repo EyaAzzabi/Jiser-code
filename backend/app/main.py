@@ -16,9 +16,10 @@ import re
 import threading
 from datetime import date
 
+import httpx
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, DATA_DIR, LEGAL_DIR, SYNTHETIC_DIR
@@ -40,6 +41,14 @@ app = FastAPI(title="JISER API", version="0.3.0",
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"])
 for r in (comptes_router, pilotage_router, messagerie_router, confidentialite, veille_router):
     app.include_router(r.router)
+
+
+@app.exception_handler(httpx.TransportError)
+async def reseau_indisponible(_request, exc: httpx.TransportError):
+    """Internet or the database briefly unreachable (Wi-Fi drop, DNS): a clear message instead of a 500."""
+    logging.getLogger("jiser").warning("network error: %s", exc)
+    return JSONResponse(status_code=503, content={"detail": "Connexion momentanément perdue avec la base de données. "
+                                                            "Vérifiez la connexion internet puis réessayez."})
 
 
 @app.on_event("startup")
