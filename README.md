@@ -57,20 +57,20 @@ Chaque rôle filmé sur l'application en ligne, avec des données fictives. Cliq
   <tr>
     <td width="50%" valign="top">
       <a href="https://eyaazzabi.github.io/Jiser/videos/01_entreprise.mp4"><img src="docs/videos/01_entreprise.jpg" alt="Vidéo : espace entreprise"></a>
-      <b>▶ Entreprise</b> · 6 min<br>
-      <sub>Création de l'espace, e-mail vérifié, situation fiscale, consentements, puis analyse d'une notification de redressement par l'IA.</sub>
+      <b>▶ Entreprise</b> · 2 min<br>
+      <sub>Création de l'espace, validation, dépôt d'une notification, analyse par l'IA (montants, délai, vices de procédure), messagerie, assistant fiscal, brouillon de réponse.</sub>
     </td>
     <td width="50%" valign="top">
-      <a href="https://eyaazzabi.github.io/Jiser/videos/02_charge_contentieux.mp4"><img src="docs/videos/02_charge_contentieux.jpg" alt="Vidéo : chargé du contentieux"></a>
-      <b>▶ Chargé(e) du contentieux</b> · 3 min<br>
-      <sub>Demande d'accès, validation par l'administrateur, stock du centre, score de solidité expliqué (SHAP), lettre de conciliation.</sub>
+      <a href="https://eyaazzabi.github.io/Jiser/videos/03_ministre_et_chef_de_centre.mp4"><img src="docs/videos/03_ministre_et_chef_de_centre.jpg" alt="Vidéo : ministre et chef de centre"></a>
+      <b>▶ Ministre et chef de centre (sur téléphone)</b> · 1 min<br>
+      <sub>Le ministre : pilotage national anonyme et copilote juridique. Le chef de centre, depuis un smartphone : inscription, synthèse IA du stock, score de solidité expliqué.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <a href="https://eyaazzabi.github.io/Jiser/videos/03_ministre.mp4"><img src="docs/videos/03_ministre.jpg" alt="Vidéo : ministre des Finances"></a>
-      <b>▶ Ministre des Finances</b> · 2 min<br>
-      <sub>Inscription avec décret de nomination, pilotage national anonyme avec filtres, copilote juridique.</sub>
+      <a href="https://eyaazzabi.github.io/Jiser/videos/02_charge_contentieux.mp4"><img src="docs/videos/02_charge_contentieux.jpg" alt="Vidéo : chargé du contentieux"></a>
+      <b>▶ Chargé(e) du contentieux</b> · 3 min<br>
+      <sub>Demande d'accès, validation par l'administrateur, stock du centre, score de solidité expliqué (SHAP), lettre de conciliation.</sub>
     </td>
     <td width="50%" valign="top">
       <a href="https://eyaazzabi.github.io/Jiser/videos/04_administrateur_plateforme.mp4"><img src="docs/videos/04_administrateur_plateforme.jpg" alt="Vidéo : administrateur de la plateforme"></a>
@@ -78,28 +78,19 @@ Chaque rôle filmé sur l'application en ligne, avec des données fictives. Cliq
       <sub>Santé des services, journal d'audit de l'IA, base juridique, veille juridique automatisée.</sub>
     </td>
   </tr>
-  <tr>
-    <td width="50%" valign="top" align="center">
-      <a href="https://eyaazzabi.github.io/Jiser/videos/05_mobile_chef_de_centre.mp4"><img src="docs/videos/05_mobile_chef_de_centre.jpg" width="220" alt="Vidéo : chef de centre sur téléphone"></a><br>
-      <b>▶ Chef de centre, sur téléphone</b> · 5 min<br>
-      <sub>Tout le parcours depuis un smartphone : rôle, code par e-mail, centre régional, consentements, tableau de bord et synthèse IA.</sub>
-    </td>
-    <td width="50%" valign="top">
+</table>
 
 ### 📱 Essayer JISER
+
+<img src="docs/flyer/qr_application.png" width="150" align="right" alt="QR code vers l'application JISER">
 
 1. Scannez le QR code, ou ouvrez **[eyaazzabi.github.io/Jiser](https://eyaazzabi.github.io/Jiser/)**.
 2. **Créer mon espace** : entreprise ou administration.
 3. Entrez le code reçu par e-mail.
 4. Côté entreprise, déposez une notification ou choisissez un **exemple** (Textile Jasmin, Distribution El Amen).
 
-<p align="center"><img src="docs/flyer/qr_application.png" width="170" alt="QR code vers l'application JISER"></p>
-
 <sub>Les comptes administration sont validés par un humain avant tout accès. Flyer A5 imprimable : <a href="docs/flyer/JISER_flyer_A5.pdf">docs/flyer</a>.</sub>
-
-</td>
-  </tr>
-</table>
+<br clear="right">
 
 ---
 
@@ -414,7 +405,7 @@ L'offre gratuite de Render met le service en veille après 15 minutes sans visit
 
 | Document | Contenu |
 |---|---|
-| [Vidéos de démonstration](https://eyaazzabi.github.io/Jiser/videos/) ([docs/videos/](docs/videos/)) | Les 5 parcours filmés : entreprise, chargé, ministre, chef de centre sur téléphone, administrateur |
+| [Vidéos de démonstration](https://eyaazzabi.github.io/Jiser/videos/) ([docs/videos/](docs/videos/)) | 4 vidéos courtes : entreprise (2 min), ministre et chef de centre sur téléphone (1 min), chargé du contentieux, administrateur |
 | [docs/flyer/](docs/flyer/) | Flyer A5 (PDF et PNG) et QR codes de l'application et du code source |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture technique complète |
 | [docs/CONFIDENTIALITE.md](docs/CONFIDENTIALITE.md) | Garanties de confidentialité et loi 2004-63 |
