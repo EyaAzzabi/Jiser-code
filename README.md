@@ -4,12 +4,12 @@
 
 <p align="center">
   <b>Plateforme d'IA pour le contentieux fiscal tunisien</b><br>
-  Hackathon national « IA &amp; Finances publiques » 2026 · Défi principal T3, avec T9, T14 et T20 · <b>Finaliste</b>
+  Hackathon national « IA &amp; Finances publiques » 2026 · Défi principal T3, avec T9, T14 et T20 · <b>🏆 1<sup>re</sup> place nationale</b>
 </p>
 
 <p align="center">
   Élaboré par <b>Eya Azzabi</b>, <b>Sarah Faleh</b>, <b>Eya Rachdi</b> et <b>Eya Idi</b><br>
-  dans le cadre du hackathon national « IA &amp; Finances publiques » : prototype réalisé du <b>25 au 26 septembre 2026</b>, finale le <b>29 septembre 2026</b>
+  dans le cadre du hackathon national « IA &amp; Finances publiques » : prototype réalisé du <b>25 au 26 septembre 2026</b>, <b>1<sup>re</sup> place nationale</b> à la finale du <b>29 septembre 2026</b>
 </p>
 
 <p align="center">
@@ -35,6 +35,7 @@
 </p>
 
 <p align="center">
+  <a href="#-1re-place-nationale-">1<sup>re</sup> place</a> ·
   <a href="#-démonstrations-vidéo">Vidéos</a> ·
   <a href="#-essayer-jiser">Essayer</a> ·
   <a href="#le-problème">Problème</a> ·
@@ -46,6 +47,18 @@
   <a href="#lancer-le-projet">Lancer le projet</a> ·
   <a href="#équipe">Équipe</a>
 </p>
+
+---
+
+## 🏆 1<sup>re</sup> place nationale 🇹🇳
+
+Le 29 septembre 2026, JISER a remporté la **1<sup>re</sup> place** du hackathon national « IA & Finances publiques ».
+
+Au-delà du résultat, nous sommes surtout fières d'avoir osé. Il y a eu la peur, le doute et le stress d'une nuit de développement, et nous y sommes allées quand même. Cette aventure nous a rappelé ce que nous aimons : construire, défendre une idée, créer sous pression et transformer une vision en quelque chose de réel.
+
+JISER est né d'une envie simple : mettre l'IA au service d'un vrai besoin de la fiscalité et des finances publiques, avec un outil **utile, concret et humain**. Cette 1<sup>re</sup> place n'est pas une fin, mais un début. Un jour, nous espérons voir ce pont franchir les frontières. 🤍
+
+**Merci** à ESPRIT (École Supérieure Privée d'Ingénierie et de Technologies), à Esprit School of Business, au ministère de l'Économie et des Finances, à l'École nationale des douanes, à l'École nationale de fiscalité et à toutes les personnes qui ont rendu cette expérience possible. ✨
 
 ---
 
@@ -416,7 +429,7 @@ L'offre gratuite de Render met le service en veille après 15 minutes sans visit
 
 ## Équipe
 
-Projet élaboré par une équipe de quatre data scientists, dans le cadre du **hackathon national « IA & Finances publiques » 2026** (prototype développé du 25 septembre 2026 à 17 h au 26 septembre 2026 à 8 h ; équipe classée 2e sur 30 au premier tour et sélectionnée pour la finale du 29 septembre 2026).
+Projet élaboré par une équipe de quatre data scientists, dans le cadre du **hackathon national « IA & Finances publiques » 2026** (prototype développé du 25 septembre 2026 à 17 h au 26 septembre 2026 à 8 h ; 2<sup>e</sup> sur 30 au premier tour, puis **1<sup>re</sup> place nationale à la finale du 29 septembre 2026**).
 
 - **Eya Azzabi** ([@EyaAzzabi](https://github.com/EyaAzzabi))
 - **Sarah Faleh**
@@ -435,5 +448,5 @@ Projet élaboré par une équipe de quatre data scientists, dans le cadre du **h
 <p align="center">
   <img src="frontend/public/logo-icon.png" width="56" alt="JISER"><br>
   <sub>JISER · جسر · Le pont entre le contribuable et l'administration fiscale</sub><br>
-  <sub>Eya Azzabi · Sarah Faleh · Eya Rachdi · Eya Idi · Hackathon « IA &amp; Finances publiques », septembre 2026</sub>
+  <sub>Eya Azzabi · Sarah Faleh · Eya Rachdi · Eya Idi · 1<sup>re</sup> place nationale, hackathon « IA &amp; Finances publiques », septembre 2026</sub>
 </p>
